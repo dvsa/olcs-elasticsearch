@@ -68,7 +68,7 @@ curl -XPUT 'localhost:9200/application_v1' -d '
           "filter" : ["standard", "lowercase", "stop"]
         },
         "application_edgengram_analyzer": {
-          "tokenizer": "case_edgengram_tokenizer",
+          "tokenizer": "application_edgengram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"]
         }
       },
