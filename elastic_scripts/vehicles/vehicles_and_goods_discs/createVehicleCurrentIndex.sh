@@ -52,11 +52,11 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
           "format": "dateOptionalTime",
           "include_in_all": false
         },
-        "status": {
+        "lic_status_desc": {
           "type": "string",
           "include_in_all": false
         },
-        "type_of_licence": {
+        "lic_type_desc": {
           "type": "string",
           "include_in_all": false
         },
