@@ -28,8 +28,8 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "type": "date",
       "format": "dateOptionalTime"
     },
-    "lic_corr_postcode": {
-      "analyzer": "case_ngram_analyzer",
+    "correspondence_postcode": {
+      "analyzer": "case_edgengram_analyzer",
       "type": "string"
     },
     "lic_id": {
@@ -49,10 +49,6 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "type": "long"
     },
     "org_name": {
-      "analyzer": "case_ngram_analyzer",
-      "type": "string"
-    },
-    "postcode": {
       "analyzer": "case_ngram_analyzer",
       "type": "string"
     },
@@ -77,12 +73,25 @@ curl -XPUT 'localhost:9200/case_v1' -d '
         "case_ngram_analyzer": {
           "tokenizer": "case_ngram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"]
+        },
+        "case_edgengram_analyzer": {
+          "tokenizer": "case_edgengram_tokenizer",
+          "filter" : ["standard", "lowercase", "stop"]
         }
       },
       "tokenizer": {
         "case_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
+          "max_gram": "10",
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+        "case_edgengram_tokenizer": {
+          "type": "edgeNGram",
+          "min_gram": "2",
           "max_gram": "10",
           "token_chars": [
             "letter",
