@@ -34,11 +34,11 @@ curl -XPUT 'localhost:9200/psv_disc_v1' -d '
           "type": "long",
           "include_in_all": false
         },
-        "status": {
+        "lic_status_desc": {
           "type": "string",
           "include_in_all": false
         },
-        "type_of_licence": {
+        "lic_type_desc": {
           "type": "string",
           "include_in_all": false
         }
