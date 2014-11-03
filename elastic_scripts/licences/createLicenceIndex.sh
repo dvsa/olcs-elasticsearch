@@ -20,9 +20,9 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
             "type" : "long",
             "include_in_all" : false
           },
-          "corr_postcode" : {
+          "correspondence_postcode" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "analyzer" : "licence_edgengram_analyzer"
           },
           "is_mlh" : {
             "type" : "string",
@@ -52,7 +52,7 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
             "type" : "string",
             "analyzer" : "licence_ngram_analyzer"
           },
-          "org_type" : {
+          "org_type_desc" : {
             "type" : "string",
             "analyzer" : "licence_ngram_analyzer"
           },
@@ -85,12 +85,25 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
         "licence_ngram_analyzer": {
           "tokenizer": "licence_ngram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"]
+        },
+        "licence_edgengram_analyzer": {
+          "tokenizer": "licence_edgengram_tokenizer",
+          "filter" : ["standard", "lowercase", "stop"]
         }
       },
       "tokenizer": {
         "licence_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
+          "max_gram": "10",
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+        "licence_edgengram_tokenizer": {
+          "type": "edgeNGram",
+          "min_gram": "2",
           "max_gram": "10",
           "token_chars": [
             "letter",
