@@ -12,7 +12,7 @@ curl -XPUT 'localhost:9200/vehicle_removed_v1' -d '
         "analyzer": "vehicle_removed_ngram_analyzer"
       },
       "properties": {
-        "deleted_date": {
+        "removal_date": {
           "type": "date",
           "format": "dateOptionalTime",
           "include_in_all": false
