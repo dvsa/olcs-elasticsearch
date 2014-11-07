@@ -41,6 +41,10 @@ curl -XPUT 'localhost:9200/applicationorgnametest_v1' -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
+          "org_name_wildcard" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
           "org_id" : {
             "type" : "long",
             "include_in_all" : false
