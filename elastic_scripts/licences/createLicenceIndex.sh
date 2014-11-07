@@ -36,6 +36,14 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
             "type" : "long",
             "include_in_all" : false
           },
+          "lic_status_desc" : {
+            "type" : "string",
+            "analyzer" : "licence_ngram_analyzer"
+          },
+          "lic_type_desc" : {
+            "type" : "string",
+            "analyzer" : "licence_ngram_analyzer"
+          },
           "lic_no" : {
             "type" : "string",
             "analyzer" : "licence_ngram_analyzer"
@@ -50,7 +58,11 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
           },
           "org_name" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "index" : "not_analyzed"
+          },
+          "org_name_wildcard" : {
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "org_type_desc" : {
             "type" : "string",

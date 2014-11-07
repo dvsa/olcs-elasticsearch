@@ -13,8 +13,7 @@ curl -XPUT 'localhost:9200/application_v1' -d '
       },
       "properties" : {
           "app_id" : {
-            "type" : "long",
-            "include_in_all" : false
+            "type" : "long"
           },
           "app_status_desc" : {
             "type" : "string"
@@ -39,11 +38,15 @@ curl -XPUT 'localhost:9200/application_v1' -d '
           },
           "org_name" : {
             "type" : "string",
-            "analyzer" : "application_ngram_analyzer"
+            "index" : "not_analyzed"
           },
           "org_id" : {
             "type" : "long",
             "include_in_all" : false
+          },
+          "org_name_wildcard" : {
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "received_date" : {
             "type" : "date",

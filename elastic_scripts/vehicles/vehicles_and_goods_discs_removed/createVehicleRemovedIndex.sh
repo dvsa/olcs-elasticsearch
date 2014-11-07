@@ -41,7 +41,11 @@ curl -XPUT 'localhost:9200/vehicle_removed_v1' -d '
         },
         "org_name": {
           "type": "string",
-          "analyzer": "vehicle_removed_ngram_analyzer"
+          "index" : "not_analyzed"
+        },
+        "org_name_wildcard": {
+          "type": "string",
+          "index" : "not_analyzed"
         },
         "ref_data_id": {
           "type": "string",

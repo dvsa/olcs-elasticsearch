@@ -49,8 +49,12 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "type": "long"
     },
     "org_name": {
-      "analyzer": "case_ngram_analyzer",
-      "type": "string"
+      "type": "string",
+      "index" : "not_analyzed"
+    },
+    "org_name_wildcard": {
+      "type": "string",
+      "index" : "not_analyzed"
     },
     "tm_family_name": {
       "analyzer": "case_ngram_analyzer",

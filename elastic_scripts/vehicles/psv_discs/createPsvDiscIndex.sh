@@ -28,7 +28,11 @@ curl -XPUT 'localhost:9200/psv_disc_v1' -d '
         },
         "org_name": {
           "type": "string",
-          "analyzer": "psv_disc_ngram_analyzer"
+          "index" : "not_analyzed"
+        },
+        "org_name_wildcard": {
+          "type": "string",
+          "index" : "not_analyzed"
         },
         "psv_id": {
           "type": "long",
