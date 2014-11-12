@@ -20,6 +20,14 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "include_in_all": "false",
       "type": "long"
     },
+    "app_status_desc": {
+      "analyzer": "case_ngram_analyzer",
+      "type": "string"
+    },
+    "lic_status_desc": {
+      "analyzer": "case_ngram_analyzer",
+      "type": "string"
+    },
     "case_type_desc": {
       "analyzer": "case_ngram_analyzer",
       "type": "string"
