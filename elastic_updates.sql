@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS `elastic_updates` (
   `id` VARCHAR(32) NOT NULL,
   `index_name` VARCHAR(20) NULL,
-  `update_time_started` INT NULL,
-  `update_time_ended` INT NULL,
+  `previous_runtime` INT NULL,
+  `runtime` INT NULL,
   PRIMARY KEY (`id`)
     )
 ENGINE = InnoDB;
 
 
-insert into elastic_updates (`id`,`index_name`,`update_time_started`,`update_time_ended`) values
+insert into elastic_updates (`id`,`index_name`,`previous_runtime`,`runtime`) values
        (0,'application',0,0),
        (1,'case',0,0),
        (2,'licence',0,0),
