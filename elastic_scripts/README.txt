@@ -35,4 +35,7 @@ be.
 2. Run Index Deletion.
 3. Follow CREATE AN INDEX STEPS again.
 
+NB
+For the vehicle index vehicles_and_goods_discs there needed to be an additional index creating for delta performance:
 
+create index idx_vhl_removal on licence_vehicle(removal_date);
