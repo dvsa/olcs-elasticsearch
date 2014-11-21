@@ -1,4 +1,4 @@
-curl -XGET 'http://localhost:9200/_search' -d '{
+curl -XGET 'http://localhost:9200/_search?pretty=1' -d '{
   "size": "0",
   "query": {
     "match_all": {}
