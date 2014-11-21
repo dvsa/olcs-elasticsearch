@@ -36,6 +36,12 @@ be.
 3. Follow CREATE AN INDEX STEPS again.
 
 NB
-For the vehicle index vehicles_and_goods_discs there needed to be an additional index creating for delta performance:
+There needed to be an additional indices creating for delta performance:
 
 create index idx_vhl_removal on licence_vehicle(removal_date);
+create index idx_veh_last_mod on vehicle(last_modified_on);
+create index idx_lic_last_mod on licence(last_modified_on);
+create index idx_vhl_last_mod on licence_vehicle(last_modified_on);
+create index idx_org_last_mod on organisation(last_modified_on);
+create index idx_gd_last_mod on goods_disc(last_modified_on);
+
