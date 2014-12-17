@@ -69,13 +69,21 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
           "include_in_all": false
         },
         "vrm": {
-          "type": "string"
+          "type": "string",
+          "analyzer": "vehicle_current_edgengram_analyzer"
         }
       }
     }
   },
   "settings": {
     "analysis": {
+      "char_filter" : {
+        "spaces_removed_pattern":{
+          "type":"pattern_replace",
+          "pattern":"\\s",
+          "replacement":""
+        } 
+      },
       "analyzer": {
         "vehicle_current_ngram_analyzer": {
           "tokenizer": "vehicle_current_ngram_tokenizer",
@@ -84,12 +92,26 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
             "lowercase",
             "stop"
           ]
+        },
+        "vehicle_current_edgengram_analyzer": {
+          "tokenizer": "vehicle_current_edgengram_tokenizer",
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {
         "vehicle_current_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
+          "max_gram": "10",
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+      "vehicle_current_edgengram_tokenizer": {
+          "type": "edgeNGram",
+          "min_gram": "2",
           "max_gram": "10",
           "token_chars": [
             "letter",
