@@ -81,6 +81,13 @@ curl -XPUT 'localhost:9200/case_v1' -d '
   },
   "settings": {
     "analysis": {
+      "char_filter" : {
+        "spaces_removed_pattern":{
+          "type":"pattern_replace",
+          "pattern":"\\s",
+          "replacement":""
+        } 
+      },
       "analyzer": {
         "case_ngram_analyzer": {
           "tokenizer": "case_ngram_tokenizer",
@@ -88,7 +95,8 @@ curl -XPUT 'localhost:9200/case_v1' -d '
         },
         "case_edgengram_analyzer": {
           "tokenizer": "case_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"] 
         }
       },
       "tokenizer": {

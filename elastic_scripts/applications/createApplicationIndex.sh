@@ -65,6 +65,13 @@ curl -XPUT 'localhost:9200/application_v1' -d '
   },
   "settings": {
     "analysis": {
+      "char_filter" : {
+        "spaces_removed_pattern":{
+          "type":"pattern_replace",
+          "pattern":"\\s",
+          "replacement":""
+        } 
+      },
       "analyzer": {
         "application_ngram_analyzer": {
           "tokenizer": "application_ngram_tokenizer",
@@ -72,7 +79,8 @@ curl -XPUT 'localhost:9200/application_v1' -d '
         },
         "application_edgengram_analyzer": {
           "tokenizer": "application_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {

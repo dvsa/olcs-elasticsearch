@@ -93,6 +93,13 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
   },
   "settings": {
     "analysis": {
+      "char_filter" : {
+        "spaces_removed_pattern":{
+          "type":"pattern_replace",
+          "pattern":"\\s",
+          "replacement":""
+        } 
+      },
       "analyzer": {
         "licence_ngram_analyzer": {
           "tokenizer": "licence_ngram_tokenizer",
@@ -100,7 +107,8 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
         },
         "licence_edgengram_analyzer": {
           "tokenizer": "licence_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {
