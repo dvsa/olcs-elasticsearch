@@ -1,6 +1,3 @@
-db=$0
-username=$1
-password=$2
 
 curl -XPUT 'localhost:9200/_river/olcs_busreg_river/_meta' -d '{ 
     "type": "jdbc", 
