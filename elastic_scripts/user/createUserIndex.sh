@@ -12,53 +12,71 @@ curl -XPUT 'localhost:9200/user_v1' -d '
         "analyzer": "user_ngram_analyzer"
       },
       "properties" : {
-          "app_id" : {
-            "type" : "long"
-          },
-          "app_status_desc" : {
-            "type" : "string"
-          },
-          "correspondence_postcode" : {
-            "type" : "string",
-            "analyzer" : "application_edgengram_analyzer"
-          },
-          "lic_id" : {
+          "user_id" : {
             "type" : "long",
             "include_in_all" : false
           },
-          "lic_no" : {
-            "type" : "string",
-            "analyzer" : "application_ngram_analyzer"
-          },
-          "lic_status_desc" : {
-            "type" : "string"
-          },
-          "lic_type_desc" : {
-            "type" : "string"
-          },
-          "org_name" : {
-            "type" : "string",
-            "index" : "not_analyzed"
+          "role_id" : {
+            "type" : "long",
+            "include_in_all" : false
           },
           "org_id" : {
             "type" : "long",
             "include_in_all" : false
           },
+          "con_det_id" : {
+            "type" : "long",
+            "include_in_all" : false
+        },
+          "identity_pid" : {
+            "type" : "string",
+            "include_in_all" : false
+          },
+          "last_successful_login_date" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+        },
+        "team_id" : {
+            "type" : "long",
+            "include_in_all" : false
+          },
+          "email_address" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+          },
+          "forename" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+          },
+        "family_name" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+          },
+          "team_name" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+          },
+          "org_name" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
           "org_name_wildcard" : {
             "type" : "string",
             "index" : "not_analyzed"
           },
-          "received_date" : {
-            "type" : "date",
-            "format" : "dateOptionalTime"
+          "user_type" : {
+            "type" : "string",
           },
-          "tot_auth_trailers" : {
-            "type" : "long",
+          "role" : {
+            "type" : "string",
+          },
+          "disabled" : {
+            "type" : "string",
             "include_in_all" : false
           },
-          "tot_auth_vehicles" : {
-            "type" : "long",
-            "include_in_all" : false
+          "description" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
           }
         }
     }
