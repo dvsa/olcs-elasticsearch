@@ -32,10 +32,6 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "analyzer": "case_ngram_analyzer",
       "type": "string"
     },
-    "close_date": {
-      "type": "date",
-      "format": "dateOptionalTime"
-    },
     "correspondence_postcode": {
       "analyzer": "case_edgengram_analyzer",
       "type": "string"
