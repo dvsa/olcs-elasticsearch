@@ -65,10 +65,10 @@ curl -XPUT 'localhost:9200/user_v1' -d '
             "index" : "not_analyzed"
           },
           "user_type" : {
-            "type" : "string",
+            "type" : "string"
           },
           "role" : {
-            "type" : "string",
+            "type" : "string"
           },
           "disabled" : {
             "type" : "string",
