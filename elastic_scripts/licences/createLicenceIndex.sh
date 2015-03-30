@@ -24,6 +24,10 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
             "type" : "string",
             "analyzer" : "licence_edgengram_analyzer"
           },
+         "no_of_licences_held" : {
+            "type" : "long",
+            "include_in_all" : false
+          },
           "is_mlh" : {
             "type" : "string",
             "include_in_all" : false
