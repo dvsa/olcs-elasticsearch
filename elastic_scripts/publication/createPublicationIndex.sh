@@ -21,7 +21,7 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
           "include_in_all": false
         },
         "ta_id": {
-          "type": "long",
+          "type": "string",
           "include_in_all": false
         },
         "pub_sec_id": {
