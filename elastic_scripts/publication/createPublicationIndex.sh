@@ -56,7 +56,7 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
         "pub_sec_desc": {
           "type": "string",
           "analyzer": "publication_ngram_analyzer"
-        },
+        }
       }
     }
   },
