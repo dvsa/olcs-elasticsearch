@@ -1,1 +1,1 @@
-curl -XDELETE 'localhost:9200/busreg_v1'
+curl -XDELETE 'localhost:9200/brtemp_v1'
