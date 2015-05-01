@@ -15,10 +15,13 @@ SELECT
     rd1.description AS description,
     ta.name AS ta_name,
     ps.description AS pub_sec_desc,
+    'TODO TEXT1 TO BE ETL - NO OLBS DATA' text1,
+    'TODO TEXT2 TO BE ETL - NO OLBS DATA' text2,
+    'TODO TEXT3 TO BE ETL - NO OLBS DATA' text3,
     CONCAT_WS(' ',
-            IFNULL(pl.text1, ''),
-            IFNULL(pl.text2, ''),
-            IFNULL(pl.text3, '')) AS text_all
+            IFNULL(pl.text1, 'TODO TEXT1 TO BE ETL - NO OLBS DATA'),
+            IFNULL(pl.text2, 'TODO TEXT2 TO BE ETL - NO OLBS DATA'),
+            IFNULL(pl.text3, 'TODO TEXT3 TO BE ETL - NO OLBS DATA')) AS text_all
 FROM
     publication_link pl
         INNER JOIN
