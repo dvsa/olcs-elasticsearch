@@ -3,7 +3,7 @@ SELECT
 	o.id org_id,
     o.name org_name,
     LOWER(o.name) org_name_wildcard,
-    o.is_irfo,
+    o.is_irfo is_irfo,
     (select count(lic.id) from licence lic where lic.organisation_id = o.id and lic.status = 'lsts_valid') no_of_licences_held,
     'B713SL TODO' postcode,
     'ASSANDUNE HIGHASHES PITHEAVLIS TODO' saon_desc,
@@ -11,7 +11,6 @@ SELECT
     'CH437SZ TODO' irfo_postcode,
     'HAREHILLS LANE TODO' irfo_saon_desc,
     'LEEDS TODO' irfo_town,
-    o.id org_id,
     'B' ta_id
 FROM
     organisation o

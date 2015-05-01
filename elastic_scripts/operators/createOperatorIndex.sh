@@ -12,60 +12,6 @@ curl -XPUT 'localhost:9200/operator_v1' -d '
         "analyzer": "operator_ngram_analyzer"
       },
       "properties" : {
-          "addr_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "case_count" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "correspondence_postcode" : {
-            "type" : "string",
-            "analyzer" : "operator_edgengram_analyzer"
-          },
-         "no_of_licences_held" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "is_mlh" : {
-            "type" : "string",
-            "include_in_all" : false
-          },
-          "lead_tc" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "lic_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "lic_status_desc" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "lic_status_desc_whole" : {
-            "type" : "string",
-            "include_in_all" : false,
-            "index" : "not_analyzed"
-          },
-          "lic_type_desc" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "lic_type_desc_whole" : {
-            "type" : "string",
-            "include_in_all" : false,
-            "index" : "not_analyzed"
-          },
-          "lic_no" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "licence_traffic_area" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
           "org_id" : {
             "type" : "long",
             "include_in_all" : false
@@ -78,34 +24,41 @@ curl -XPUT 'localhost:9200/operator_v1' -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
-          "org_type_desc_whole" : {
-            "type" : "string",
-            "include_in_all" : false,
-            "index" : "not_analyzed"
-          },
-          "org_type_desc" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "ref_data_id" : {
-            "type" : "string",
+         "is_irfo" : {
+            "type" : "long",
             "include_in_all" : false
           },
-          "saon_desc" : {
-            "type" : "string",
-            "analyzer" : "operator_ngram_analyzer"
-          },
-          "ta_id" : {
-            "type" : "string",
+         "no_of_licences_held" : {
+            "type" : "long",
             "include_in_all" : false
           },
-          "town" : {
+         "postcode" : {
+            "type" : "string",
+            "analyzer" : "operator_edgengram_analyzer"
+          },
+    	 "saon_desc" : {
             "type" : "string",
             "analyzer" : "operator_ngram_analyzer"
           },
-          "trading_name" : {
+         "town" : {
             "type" : "string",
             "analyzer" : "operator_ngram_analyzer"
+          },
+        "irfo_postcode" : {
+            "type" : "string",
+            "analyzer" : "operator_edgengram_analyzer"
+          },
+    	 "irfo_saon_desc" : {
+            "type" : "string",
+            "analyzer" : "operator_ngram_analyzer"
+          },
+         "irfo_town" : {
+            "type" : "string",
+            "analyzer" : "operator_ngram_analyzer"
+          },
+    	 "ta_id" : {
+            "type" : "string",
+            "include_in_all" : false
           }
         }
     }
