@@ -14,7 +14,11 @@ SELECT
     p.pub_status AS pub_status,
     rd1.description AS description,
     ta.name AS ta_name,
-    ps.description AS pub_sec_desc
+    ps.description AS pub_sec_desc,
+    CONCAT_WS(' ',
+            IFNULL(pl.text1, ''),
+            IFNULL(pl.text2, ''),
+            IFNULL(pl.text3, '')) AS text_all
 FROM
     publication_link pl
         INNER JOIN
