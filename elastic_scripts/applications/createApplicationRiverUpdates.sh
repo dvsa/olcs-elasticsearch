@@ -1,6 +1,6 @@
-db=$0
-username=$1
-password=$2
+db=$1
+username=$2
+password=$3
 
 sql_script=$(<applications.sql)
 escaped_sql=${sql_script//\'/\\\"} 
