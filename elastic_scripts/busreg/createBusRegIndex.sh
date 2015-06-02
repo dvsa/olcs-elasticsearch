@@ -57,7 +57,7 @@ curl -XPUT 'localhost:9200/busreg_v1' -d '
 		},
 		"date_1st_reg" : {
 			"type": "date",
-    		"format": "dateOptionalTime"
+                        "format": "yyyy-MM-dd"
 		},
 		"bus_reg_status" : {
 			"type" : "string"
