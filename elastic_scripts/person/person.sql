@@ -11,7 +11,7 @@ SELECT
     LOWER(p.forename) AS person_forename_wildcard,
     p.family_name AS person_family_name,
     LOWER(p.family_name) AS person_family_name_wildcard,
-    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else DATE_FORMAT(now(), '%Y-%m-%d') end person_birth_date,
+    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else now() end person_birth_date,
     p.other_name person_other_name,
     p.birth_place person_birth_place,
     p.title person_title,
@@ -20,10 +20,10 @@ SELECT
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
     l.lic_no lic_no,
-    rd_lic_type.description,
-    rd_lic_status.description,
-    tm.id,
-    rd_tm_status.description
+    rd_lic_type.description lic_type_desc,
+    rd_lic_status.description lic_status_desc,
+    tm.id tm_id,
+    rd_tm_status.description tm_status_desc
 FROM
     transport_manager tm
         INNER JOIN
@@ -58,7 +58,7 @@ UNION ALL SELECT
     LOWER(p.forename) AS person_forename_wildcard,
     p.family_name AS person_family_name,
     LOWER(p.family_name) AS person_family_name_wildcard,
-    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else DATE_FORMAT(now(), '%Y-%m-%d') end person_birth_date,
+    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else now() end person_birth_date,
     p.other_name person_other_name,
     p.birth_place person_birth_place,
     p.title person_title,
@@ -67,10 +67,10 @@ UNION ALL SELECT
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
     l.lic_no lic_no,
-    rd_lic_type.description,
-    rd_lic_status.description,
-    null id,
-    null tm_status
+    rd_lic_type.description lic_type_desc,
+    rd_lic_status.description lic_status_desc,
+    null tm_id,
+    null tm_status_desc
 FROM
     person p
         INNER JOIN
