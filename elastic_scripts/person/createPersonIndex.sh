@@ -1,65 +1,98 @@
-curl -XPUT 'localhost:9200/application_v1' -d '
+curl -XPUT 'localhost:9200/person_v1' -d '
 {
   "aliases" : {
-      "application" : {}
+      "person" : {}
   },
   "mappings": {
-    "application": {
+    "person": {
       "_all": {
         "type": "string",
         "null_value": "na",
         "index": "analyzed",
-        "analyzer": "application_ngram_analyzer"
+        "analyzer": "person_ngram_analyzer"
       },
       "properties" : {
-          "app_id" : {
+          "person_id" : {
             "type" : "long"
           },
-          "app_status_desc" : {
+        "org_id" : {
+            "type" : "long"
+          },
+        "lic_id" : {
+            "type" : "long"
+          },
+        "tm_id" : {
+            "type" : "long"
+          },
+        "contact_type" : {
             "type" : "string"
           },
-          "correspondence_postcode" : {
-            "type" : "string",
-            "analyzer" : "application_edgengram_analyzer"
-          },
-          "lic_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "lic_no" : {
-            "type" : "string",
-            "analyzer" : "application_ngram_analyzer"
-          },
-          "lic_status_desc" : {
-            "type" : "string"
-          },
-          "lic_type_desc" : {
-            "type" : "string"
-          },
-          "org_name" : {
+        "person_forename" : {
             "type" : "string",
             "index" : "not_analyzed"
           },
-          "org_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "org_name_wildcard" : {
+        "person_forename_wildcard" : {
             "type" : "string",
             "index" : "not_analyzed"
           },
-          "received_date" : {
-            "type" : "date",
-            "format" : "dateOptionalTime"
+        "person_family_name" : {
+            "type" : "string",
+            "index" : "not_analyzed"
           },
-          "tot_auth_trailers" : {
-            "type" : "long",
-            "include_in_all" : false
+        "person_family_name_wildcard" : {
+            "type" : "string",
+            "index" : "not_analyzed"
           },
-          "tot_auth_vehicles" : {
-            "type" : "long",
-            "include_in_all" : false
-          }
+         "person_birth_date" : {
+              "type": "date",
+              "format": "yyyy-MM-dd"
+         },
+         "person_other_name" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+         "person_other_name_wildcard" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+         "person_birth_place" : {
+            "type" : "string",
+            "analyzer" : "person_ngram_analyzer"
+         },
+         "person_title" : {
+              "type" : "string"
+         },
+         "person_deleted" : {
+                "type": "date",
+                "format": "yyyy-MM-dd"
+         },
+         "person_created_on" : {
+                "type": "date",
+                "format": "yyyy-MM-dd"
+         },
+           "org_name" : {
+             "type" : "string",
+             "index" : "not_analyzed"
+         },
+         "org_name_wildcard" : {
+             "type" : "string",
+             "index" : "not_analyzed"
+         },
+         "lic_no" : {
+             "type" : "string",
+             "analyzer" : "person_ngram_analyzer"
+         },
+         "lic_status_desc" : {
+             "type" : "string",
+             "analyzer" : "person_ngram_analyzer"
+           },
+         "lic_type_desc" : {
+               "type" : "string"
+          },
+          "tm_status_desc" : {
+              "type" : "string",
+              "analyzer" : "person_ngram_analyzer"
+            },
         }
     }
   },
@@ -73,18 +106,18 @@ curl -XPUT 'localhost:9200/application_v1' -d '
         } 
       },
       "analyzer": {
-        "application_ngram_analyzer": {
-          "tokenizer": "application_ngram_tokenizer",
+        "person_ngram_analyzer": {
+          "tokenizer": "person_ngram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"]
         },
-        "application_edgengram_analyzer": {
-          "tokenizer": "application_edgengram_tokenizer",
+        "person_edgengram_analyzer": {
+          "tokenizer": "person_edgengram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"],
           "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {
-        "application_ngram_tokenizer": {
+        "person_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
           "max_gram": "10",
@@ -93,7 +126,7 @@ curl -XPUT 'localhost:9200/application_v1' -d '
             "digit"
           ]
         },
-        "application_edgengram_tokenizer": {
+        "person_edgengram_tokenizer": {
           "type": "edgeNGram",
           "min_gram": "2",
           "max_gram": "10",
