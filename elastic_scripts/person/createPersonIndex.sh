@@ -84,14 +84,15 @@ curl -XPUT 'localhost:9200/person_v1' -d '
          },
          "lic_status_desc" : {
              "type" : "string",
-             "analyzer" : "person_ngram_analyzer"
+             "index" : "not_analyzed"
            },
          "lic_type_desc" : {
-               "type" : "string"
+               "type" : "string",
+               "index" : "not_analyzed"
           },
           "tm_status_desc" : {
               "type" : "string",
-              "analyzer" : "person_ngram_analyzer"
+              "index" : "not_analyzed"
             }
         }
     }
