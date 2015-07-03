@@ -20,25 +20,10 @@ SELECT
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
     l.lic_no lic_no,
-    (SELECT 
-            description
-        FROM
-            ref_data
-        WHERE
-            id = l.licence_type) AS lic_type_desc,
-    (SELECT 
-            description
-        FROM
-            ref_data
-        WHERE
-            l.status = id) AS lic_status_desc,
-    tm.id tm_id,
-    (SELECT 
-            description
-        FROM
-            ref_data
-        WHERE
-            tm_status = id) AS tm_status_desc
+    rd_lic_type.description,
+    rd_lic_status.description,
+    tm.id,
+    rd_tm_status.description
 FROM
     transport_manager tm
         INNER JOIN
@@ -48,8 +33,12 @@ FROM
         LEFT JOIN
     transport_manager_licence tml ON (tml.transport_manager_id = tm.id)
         LEFT JOIN
-    (licence l, organisation o) ON (o.id = l.organisation_id
-        AND l.id = tml.licence_id)
+    (licence l, organisation o, ref_data rd_lic_type, ref_data rd_lic_status) ON (o.id = l.organisation_id
+        AND l.id = tml.licence_id
+        AND rd_lic_type.id = l.licence_type
+        AND rd_lic_status.id = l.status)
+        INNER JOIN
+    ref_data rd_tm_status ON (rd_tm_status.id = tm.tm_status)
         INNER JOIN
     elastic_updates eu ON (eu.index_name = 'people')
 WHERE
@@ -78,20 +67,10 @@ UNION ALL SELECT
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
     l.lic_no lic_no,
-    (SELECT 
-            description
-        FROM
-            ref_data
-        WHERE
-            id = l.licence_type) AS lic_type_desc,
-    (SELECT 
-            description
-        FROM
-            ref_data
-        WHERE
-            l.status = id) AS lic_status_desc,
-    NULL tm_id,
-    NULL tm_status_desc
+    rd_lic_type.description,
+    rd_lic_status.description,
+    null id,
+    null tm_status
 FROM
     person p
         INNER JOIN
@@ -101,8 +80,12 @@ FROM
         LEFT JOIN
     licence l ON (l.organisation_id = o.id)
         INNER JOIN
+    ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
+        INNER JOIN
+    ref_data rd_lic_status ON (rd_lic_status.id = l.status)
+        INNER JOIN
     elastic_updates eu ON (eu.index_name = 'people')
 WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime));
+        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
