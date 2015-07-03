@@ -92,7 +92,7 @@ curl -XPUT 'localhost:9200/person_v1' -d '
           "tm_status_desc" : {
               "type" : "string",
               "analyzer" : "person_ngram_analyzer"
-            },
+            }
         }
     }
   },
