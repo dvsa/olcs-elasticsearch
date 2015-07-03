@@ -11,7 +11,7 @@ SELECT
     LOWER(p.forename) AS person_forename_wildcard,
     p.family_name AS person_family_name,
     LOWER(p.family_name) AS person_family_name_wildcard,
-    DATE_FORMAT(p.birth_date, '%Y-%m-%d') person_birth_date,
+    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else now() end person_birth_date,
     p.other_name person_other_name,
     p.birth_place person_birth_place,
     p.title person_title,
@@ -69,7 +69,7 @@ UNION ALL SELECT
     LOWER(p.forename) AS person_forename_wildcard,
     p.family_name AS person_family_name,
     LOWER(p.family_name) AS person_family_name_wildcard,
-    DATE_FORMAT(p.birth_date, '%Y-%m-%d') person_birth_date,
+    case when p.birth_date is not null then DATE_FORMAT(p.birth_date, '%Y-%m-%d') else now() end person_birth_date,
     p.other_name person_other_name,
     p.birth_place person_birth_place,
     p.title person_title,
@@ -106,4 +106,3 @@ WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime));
-        
