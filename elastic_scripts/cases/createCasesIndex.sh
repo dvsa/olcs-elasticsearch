@@ -68,6 +68,10 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "analyzer": "case_ngram_analyzer",
       "type": "string"
     },
+    "tm_name": {
+      "analyzer": "case_ngram_analyzer",
+      "type": "string"
+    },
     "tm_id": {
       "include_in_all": "false",
       "type": "long"

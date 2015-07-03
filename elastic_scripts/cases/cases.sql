@@ -23,6 +23,7 @@ SELECT
     rd_as.description app_status_desc,
     p_tm.forename tm_forename,
     p_tm.family_name tm_family_name,
+    CONCAT_WS(' ',IFNULL(p_tm.forename, ''),IFNULL(p_tm.family_name, '')) as tm_name,
     c.open_date
 FROM
     cases c
