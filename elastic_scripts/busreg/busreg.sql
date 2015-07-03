@@ -25,11 +25,18 @@ SELECT
     LOWER(org.name) org_name_wildcard,
     br1.start_point AS start_point,
     br1.finish_point AS finish_point,
-    '2015-01-01' AS date_1st_reg,
+    CASE 
+        WHEN 
+            br1.status = 'breg_s_cancelled'
+        THEN 
+            DATE_FORMAT(br1.effective_date,'%Y-%m-%d')
+        ELSE
+            DATE_FORMAT(bus_reg_var0.effective_date,'%Y-%m-%d')
+	END AS date_1st_reg,
     CASE
         WHEN
             br1.status = 'breg_s_registered'
-                AND end_date <= NOW()
+                AND br1.end_date <= NOW()
         THEN
             'Expired'
         ELSE rd_bus_status.description
@@ -38,6 +45,8 @@ SELECT
     br1.variation_no
 FROM
     bus_reg AS br1
+        INNER JOIN
+    bus_reg AS bus_reg_var0 ON (bus_reg_var0.reg_no = br1.reg_no and bus_reg_var0.variation_no = 0)
         INNER JOIN
     licence lic ON lic.id = br1.licence_id
         INNER JOIN
@@ -62,3 +71,4 @@ WHERE
         AND (br1.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+
