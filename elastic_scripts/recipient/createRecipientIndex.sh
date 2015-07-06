@@ -18,7 +18,6 @@ curl -XPUT 'localhost:9200/recipient_v1' -d '
         "r_id" : {
             "type" : "long"
           },
-        
         "hearing_date_time" : {
             "type" : "date",
             "format" : "dateOptionalTime"
@@ -35,6 +34,7 @@ curl -XPUT 'localhost:9200/recipient_v1' -d '
               "type" : "string",
               "index" : "not_analyzed"
           }
+      }
     }
   },
   "settings": {
