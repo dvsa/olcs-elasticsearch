@@ -49,7 +49,7 @@ curl -XPUT 'localhost:9200/pi_hearing_v1' -d '
         "org_name_wildcard" : {
               "type" : "string",
               "index" : "not_analyzed"
-          },
+          }
         }
     }
   },
