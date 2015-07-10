@@ -13,7 +13,8 @@ curl -XPUT 'localhost:9200/recipient_v1' -d '
       },
       "properties" : {
         "ta_id" : {
-            "type" : "long"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
         "r_id" : {
             "type" : "long"
