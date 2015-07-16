@@ -32,6 +32,10 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "analyzer": "case_ngram_analyzer",
       "type": "string"
     },
+    "case_status_desc": {
+        "analyzer": "case_ngram_analyzer",
+        "type": "string"
+      },
     "correspondence_postcode": {
       "analyzer": "case_edgengram_analyzer",
       "type": "string"
