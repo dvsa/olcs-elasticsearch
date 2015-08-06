@@ -16,6 +16,10 @@ curl -XPUT 'localhost:9200/recipient_v1' -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
+          "traffic_area" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            },
         "r_id" : {
             "type" : "long"
           },

@@ -3,6 +3,7 @@ select
             IFNULL(ta.id, 'none'),
             IFNULL(rta.recipient_id, 'none')) AS _id,
     ta.id ta_id,
+    ta.name traffic_area,
     rta.recipient_id r_id, 
     r.contact_name, 
     r.email_address
