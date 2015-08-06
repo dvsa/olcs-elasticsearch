@@ -43,15 +43,18 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
         },
         "pub_status": {
           "type": "string",
-          "analyzer": "publication_ngram_analyzer"
+          "analyzer": "publication_ngram_analyzer",
+          "index" : "not_analyzed"
         },
         "description": {
           "type": "string",
-          "analyzer": "publication_ngram_analyzer"
+          "analyzer": "publication_ngram_analyzer",
+          "index" : "not_analyzed"
         },
         "ta_name": {
           "type": "string",
-          "analyzer": "publication_ngram_analyzer"
+          "analyzer": "publication_ngram_analyzer",
+          "index" : "not_analyzed"
         },
         "pub_sec_desc": {
           "type": "string",
