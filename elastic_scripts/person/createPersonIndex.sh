@@ -78,6 +78,10 @@ curl -XPUT 'localhost:9200/person_v1' -d '
              "type" : "string",
              "index" : "not_analyzed"
          },
+         "org_type" : {
+             "type" : "string",
+             "index" : "not_analyzed"
+         },
          "lic_no" : {
              "type" : "string",
              "analyzer" : "person_ngram_analyzer"
