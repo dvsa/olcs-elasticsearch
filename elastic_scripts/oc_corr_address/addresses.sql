@@ -37,6 +37,12 @@ SELECT
         FROM
             ref_data
         WHERE
+            id = org.type) AS org_type,
+    (SELECT 
+            description
+        FROM
+            ref_data
+        WHERE
             id = lic.licence_type) AS lic_type,
     lic.lic_no AS lic_no,
     org.name org_name,
@@ -46,7 +52,8 @@ SELECT
         FROM
             operating_centre_opposition oco
         WHERE
-            (oco.operating_centre_id = oc.id)) AS oc_opposition_count
+            (oco.operating_centre_id = oc.id)) AS oc_opposition_count,
+    ta.name AS traffic_area
 FROM
     address addr
         INNER JOIN
@@ -59,6 +66,8 @@ FROM
     licence lic ON app.licence_id = lic.id
         INNER JOIN
     organisation org ON lic.organisation_id = org.id
+        INNER JOIN
+    traffic_area ta on lic.traffic_area_id = ta.id
         INNER JOIN
     elastic_updates eu ON (eu.index_name = 'addresses')
 WHERE

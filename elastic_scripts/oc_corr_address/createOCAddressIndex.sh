@@ -68,14 +68,25 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "string"
           },
 		"app_status" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
 		"lic_status" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "lic_type" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
+          "org_type" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            },
+            "traffic_area" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              },
         "org_name" : {
             "type" : "string",
             "index" : "not_analyzed"
