@@ -16,7 +16,8 @@ curl -XPUT 'localhost:9200/application_v1' -d '
             "type" : "long"
           },
           "app_status_desc" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "correspondence_postcode" : {
             "type" : "string",
@@ -31,10 +32,12 @@ curl -XPUT 'localhost:9200/application_v1' -d '
             "analyzer" : "application_ngram_analyzer"
           },
           "lic_status_desc" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "lic_type_desc" : {
-            "type" : "string"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "org_name" : {
             "type" : "string",
