@@ -19,6 +19,12 @@ SELECT
     DATE_FORMAT(p.created_on, '%Y-%m-%d') person_created_on,
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
+    (SELECT 
+            description
+        FROM
+            ref_data
+        WHERE
+            o.type = id) AS org_type,
     l.lic_no lic_no,
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
@@ -74,6 +80,12 @@ UNION ALL SELECT
     DATE_FORMAT(p.created_on, '%Y-%m-%d') person_created_on,
     o.name org_name,
     LOWER(o.name) AS org_name_wildcard,
+    (SELECT 
+            description
+        FROM
+            ref_data
+        WHERE
+            o.type = id) AS org_type,
     l.lic_no lic_no,
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
@@ -105,3 +117,4 @@ WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+        
