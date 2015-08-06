@@ -23,7 +23,15 @@ SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     tm.id tm_id,
-    rd_tm_status.description tm_status_desc
+    rd_tm_status.description tm_status_desc,
+    (SELECT 
+            name
+        FROM
+            traffic_area
+        WHERE
+            l.traffic_area_id = id) AS traffic_area,
+       
+            l.traffic_area_id as ta_code
 FROM
     transport_manager tm
         INNER JOIN
@@ -70,7 +78,15 @@ UNION ALL SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     null tm_id,
-    null tm_status_desc
+    null tm_status_desc,
+    (SELECT 
+            name
+        FROM
+            traffic_area
+        WHERE
+            l.traffic_area_id = id) AS traffic_area,
+       
+            l.traffic_area_id as ta_code
 FROM
     person p
         INNER JOIN

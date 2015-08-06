@@ -90,6 +90,14 @@ curl -XPUT 'localhost:9200/person_v1' -d '
                "type" : "string",
                "index" : "not_analyzed"
           },
+          "traffic_area" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+         },
+         "ta_code" : {
+             "type" : "string",
+             "index" : "not_analyzed"
+        },
           "tm_status_desc" : {
               "type" : "string",
               "index" : "not_analyzed"
