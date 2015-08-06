@@ -33,7 +33,8 @@ curl -XPUT 'localhost:9200/busreg_v1' -d '
     		"analyzer" : "busreg_edgengram_analyzer"
     	},
     	"lic_status" : {
-    		"type" : "string"
+    		"type" : "string",
+            "index" : "not_analyzed"
     	},
     	"org_name" : {
             "type" : "string",
@@ -60,8 +61,17 @@ curl -XPUT 'localhost:9200/busreg_v1' -d '
                         "format": "yyyy-MM-dd"
 		},
 		"bus_reg_status" : {
-			"type" : "string"
+			"type" : "string",
+            "index" : "not_analyzed"
 		},
+		"traffic_area" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+        },
+        "ta_code" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+        },
 		"route_no" : {
 			"type" : "integer"
 		},

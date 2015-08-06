@@ -32,7 +32,7 @@ SELECT
             DATE_FORMAT(br1.effective_date,'%Y-%m-%d')
         ELSE
             DATE_FORMAT(bus_reg_var0.effective_date,'%Y-%m-%d')
-	END AS date_1st_reg,
+    END AS date_1st_reg,
     CASE
         WHEN
             br1.status = 'breg_s_registered'
@@ -42,7 +42,14 @@ SELECT
         ELSE rd_bus_status.description
     END AS bus_reg_status,
     br1.route_no,
-    br1.variation_no
+    br1.variation_no,
+    (SELECT 
+            name
+        FROM
+            traffic_area
+        WHERE
+            lic.traffic_area_id = id) AS traffic_area,
+            lic.traffic_area_id as ta_code
 FROM
     bus_reg AS br1
         INNER JOIN
@@ -71,4 +78,3 @@ WHERE
         AND (br1.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-
