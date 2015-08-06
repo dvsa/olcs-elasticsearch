@@ -21,20 +21,20 @@ curl -XPUT 'localhost:9200/case_v1' -d '
       "type": "long"
     },
     "app_status_desc": {
-      "analyzer": "case_ngram_analyzer",
-      "type": "string"
+      "type": "string",
+      "index" : "not_analyzed"
     },
     "lic_status_desc": {
-      "analyzer": "case_ngram_analyzer",
-      "type": "string"
+      "type": "string",
+      "index" : "not_analyzed"
     },
     "case_type_desc": {
-      "analyzer": "case_ngram_analyzer",
-      "type": "string"
+      "type": "string",
+      "index" : "not_analyzed"
     },
     "case_status_desc": {
-        "analyzer": "case_ngram_analyzer",
-        "type": "string"
+        "type": "string",
+        "index" : "not_analyzed"
       },
     "correspondence_postcode": {
       "analyzer": "case_edgengram_analyzer",
