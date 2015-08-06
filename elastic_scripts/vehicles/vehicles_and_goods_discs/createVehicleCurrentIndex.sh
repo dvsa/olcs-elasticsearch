@@ -58,11 +58,13 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
         },
         "lic_status_desc": {
           "type": "string",
-          "include_in_all": false
+          "include_in_all": false,
+          "index" : "not_analyzed"
         },
         "lic_type_desc": {
           "type": "string",
-          "include_in_all": false
+          "include_in_all": false,
+          "index" : "not_analyzed"
         },
         "veh_id": {
           "type": "long",
