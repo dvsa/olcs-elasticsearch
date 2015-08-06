@@ -34,7 +34,8 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
         },
         "pub_type": {
           "type": "string",
-          "include_in_all": false
+          "include_in_all": false,
+          "index" : "not_analyzed"
         },
         "pub_date": {
           "type": "date",
