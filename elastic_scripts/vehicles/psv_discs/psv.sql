@@ -26,7 +26,7 @@ FROM
         LEFT JOIN
     psv_disc psv ON (l.id = psv.licence_id)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'psv_disc')
+    elastic_update eu ON (eu.index_name = 'psv_disc')
 WHERE
     (o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR psv.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

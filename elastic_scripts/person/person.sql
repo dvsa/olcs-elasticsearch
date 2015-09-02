@@ -54,7 +54,7 @@ FROM
         INNER JOIN
     ref_data rd_tm_status ON (rd_tm_status.id = tm.tm_status)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'people')
+    elastic_update eu ON (eu.index_name = 'people')
 WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
@@ -112,7 +112,7 @@ FROM
         INNER JOIN
     ref_data rd_lic_status ON (rd_lic_status.id = l.status)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'people')
+    elastic_update eu ON (eu.index_name = 'people')
 WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

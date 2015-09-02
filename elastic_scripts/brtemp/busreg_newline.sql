@@ -45,7 +45,7 @@ FROM
         INNER JOIN
     ref_data AS rd_bus_status ON (rd_bus_status.id = br1.status)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = \"brtemp\")
+    elastic_update eu ON (eu.index_name = \"brtemp\")
 WHERE
     br1.variation_no = COALESCE((SELECT 
                     MAX(variation_no)

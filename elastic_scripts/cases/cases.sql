@@ -44,7 +44,7 @@ FROM
         AND (cd_tm.id = tm.home_cd_id)
         AND p_tm.id = cd_tm.person_id)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'case')
+    elastic_update eu ON (eu.index_name = 'case')
 WHERE
     (c.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

@@ -34,7 +34,7 @@ FROM
         INNER JOIN
     ref_data rd_as ON (rd_as.id = a.status)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'application')
+    elastic_update eu ON (eu.index_name = 'application')
 WHERE
     (ad.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

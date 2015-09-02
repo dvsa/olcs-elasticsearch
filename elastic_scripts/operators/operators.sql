@@ -24,7 +24,7 @@ CONCAT_WS('_',
 FROM
     organisation o
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'operator')
+    elastic_update eu ON (eu.index_name = 'operator')
         LEFT JOIN 
     (contact_details cd_org, address a_org) ON (cd_org.id = o.contact_details_id AND a_org.id = cd_org.address_id)
         LEFT JOIN

@@ -33,7 +33,7 @@ FROM
         INNER JOIN
     ref_data rd1 ON p.pub_status = rd1.id
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'publications')
+    elastic_update eu ON (eu.index_name = 'publications')
 WHERE
     (pl.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

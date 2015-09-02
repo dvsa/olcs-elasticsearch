@@ -14,7 +14,7 @@ curl -XPUT 'localhost:9200/_river/olcs_person_river/_meta' -d '{
         "url": "jdbc:mysql://'"$host"':3306/'"$db"'",
         "user": "'"$username"'", 
         "password": "'"$password"'", 
-        "sql": [{"statement":"update elastic_updates set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"people\""},{"statement":"'"$final_sql"'"}],
+        "sql": [{"statement":"update elastic_update set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"people\""},{"statement":"'"$final_sql"'"}],
         "index": "person_v1",
         "type": "person"
     }  

@@ -70,7 +70,7 @@ FROM
         LEFT JOIN
     traffic_area ta2 ON (o.lead_tc_area_id = ta2.id)
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'licence')
+    elastic_update eu ON (eu.index_name = 'licence')
 WHERE
     (o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

@@ -29,7 +29,7 @@ FROM
         INNER JOIN
     organisation o ON l.organisation_id = o.id
         INNER JOIN
-    elastic_updates eu ON (eu.index_name = 'pi_hearing')
+    elastic_update eu ON (eu.index_name = 'pi_hearing')
 WHERE
     (      o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
