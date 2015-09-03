@@ -102,10 +102,26 @@ curl -XPUT 'localhost:9200/person_v1' -d '
              "type" : "string",
              "index" : "not_analyzed"
         },
-          "tm_status_desc" : {
+        "tm_status_desc" : {
               "type" : "string",
               "index" : "not_analyzed"
-            }
+        },
+        "found_as" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+        },
+        "date_added" : {
+              "type": "date",
+              "format": "yyyy-MM-dd"
+        },
+        "date_removed" : {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        },
+        "disqualified" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+        }
         }
     }
   },
