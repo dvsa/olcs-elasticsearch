@@ -1,10 +1,3 @@
-desc publication_link;
-
-select text1,text2,text3 from 
-publication_link 
-where text3 is not null;
-
-
 SELECT 
     CONCAT_WS('_',
             IFNULL(pl.id, 'none'),
