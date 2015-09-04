@@ -57,7 +57,6 @@ WHERE
         OR loc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
   union all     
--- Correspondence address
         SELECT 
     CONCAT_WS('_',
             IFNULL(addr.id, 'none'),
