@@ -56,7 +56,7 @@ WHERE
         OR oc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR loc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-  union      
+  union all     
 -- Correspondence address
         SELECT 
     CONCAT_WS('_',
@@ -97,18 +97,3 @@ WHERE
     (addr.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-union all
-SELECT 
-
-Added - Check Id fields all exist
-address_type fixed string
-
-   
-    app_status,
-    lic_status,
-    org_type,
-    lic_type,
-    lic.lic_no AS lic_no,
-   
-    oc_opposition_count,
-    traffic_area
