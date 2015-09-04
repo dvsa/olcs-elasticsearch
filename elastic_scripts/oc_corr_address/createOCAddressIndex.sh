@@ -16,10 +16,6 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "long",
             "include_in_all" : false
           },
-          "app_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
         "org_id" : {
             "type" : "long",
             "include_in_all" : false
@@ -28,7 +24,7 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "long",
             "include_in_all" : false
           },
-        "aoc_id" : {
+        "loc_id" : {
             "type" : "long",
             "include_in_all" : false
           },
@@ -40,6 +36,10 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "string",
             "analyzer" : "address_ngram_analyzer"
           },
+          "address_type" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            }
         "paon_desc" : {
             "type" : "string",
             "analyzer" : "address_ngram_analyzer"
@@ -67,26 +67,6 @@ curl -XPUT 'localhost:9200/address_v1' -d '
           "country_code" : {
             "type" : "string"
           },
-		"app_status" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-		"lic_status" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "lic_type" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "org_type" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-            "traffic_area" : {
-                "type" : "string",
-                "index" : "not_analyzed"
-              },
         "org_name" : {
             "type" : "string",
             "index" : "not_analyzed"
@@ -95,10 +75,14 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
-        "oc_opposition_count" : {
+        "complaint_case_id" : {
             "type" : "long",
             "include_in_all" : false
-          }
+          },
+          "opposition_case_id" : {
+              "type" : "long",
+              "include_in_all" : false
+            }
         }
     }
   },
