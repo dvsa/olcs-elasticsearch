@@ -39,7 +39,7 @@ curl -XPUT 'localhost:9200/address_v1' -d '
           "address_type" : {
               "type" : "string",
               "index" : "not_analyzed"
-            }
+            },
         "paon_desc" : {
             "type" : "string",
             "analyzer" : "address_ngram_analyzer"
