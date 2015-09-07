@@ -73,7 +73,11 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
         "vrm": {
           "type": "string",
           "analyzer": "vehicle_current_edgengram_analyzer"
-        }
+        },
+        "section_26": {
+            "type": "integer",
+            "include_in_all": false
+          }
       }
     }
   },

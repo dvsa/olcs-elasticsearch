@@ -14,6 +14,7 @@ SELECT
         WHERE
             l.status = id) AS lic_status_desc,
     v.vrm,
+    v.section_26,
     o.name org_name,
     LOWER(o.name) org_name_wildcard,
     gd.disc_no disc_no,
