@@ -11,6 +11,7 @@
     loc.id AS loc_id,
     lic.id AS lic_id,
     lic.lic_no AS lic_no,
+    rd.description AS lic_status,
     'OC' address_type,
     addr.paon_desc AS paon_desc,
     addr.saon_desc AS saon_desc,
@@ -31,6 +32,8 @@ FROM
     licence_operating_centre loc ON oc.id = loc.operating_centre_id
         INNER JOIN
     licence lic ON loc.licence_id = lic.id
+        INNER JOIN
+    ref_data rd on rd.id = lic.status
         INNER JOIN
     organisation org ON lic.organisation_id = org.id
         LEFT JOIN
@@ -70,6 +73,7 @@ WHERE
     null loc_id,
     lic.id AS lic_id,
     lic.lic_no AS lic_no,
+    rd.description AS lic_status,
     'Correspondence' address_type,
     addr.paon_desc AS paon_desc,
     addr.saon_desc AS saon_desc,
@@ -88,6 +92,8 @@ FROM
       ON addr.id = cd.address_id
         INNER JOIN
     licence lic ON lic.correspondence_cd_id = cd.id
+        INNER JOIN
+    ref_data rd on rd.id = lic.status
         INNER JOIN
     organisation org ON lic.organisation_id = org.id
         INNER JOIN
