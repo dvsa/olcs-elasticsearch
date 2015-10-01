@@ -3,7 +3,7 @@ db=$2
 username=$3
 password=$4
 
-sql_script=$(<gvdiscs.sql)
+sql_script=$(<vehicle_current.sql)
 escaped_sql=${sql_script//\'/\\\"} 
 final_sql=$(echo $escaped_sql | tr '\n' ' ')
 
