@@ -34,7 +34,7 @@ curl -XPUT 'localhost:9200/case_v1' -d '
     },
     "case_status_desc": {
         "type": "string",
-        "analyzer": "case_ngram_analyzer"
+        "index" : "not_analyzed"
       },
     "correspondence_postcode": {
       "analyzer": "case_edgengram_analyzer",
@@ -50,7 +50,7 @@ curl -XPUT 'localhost:9200/case_v1' -d '
     },
     "open_date": {
       "type": "date",
-      "format": "dateOptionalTime"
+      "format": "yyyy-MM-dd"
     },
     "org_id": {
       "include_in_all": "false",

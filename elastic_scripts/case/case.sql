@@ -24,7 +24,12 @@ SELECT
     p_tm.forename tm_forename,
     p_tm.family_name tm_family_name,
     CONCAT_WS(' ',IFNULL(p_tm.forename, ''),IFNULL(p_tm.family_name, '')) as tm_name,
-    c.open_date
+    CASE 
+       WHEN isnull(c.open_date) 
+       THEN null 
+       ELSE 
+           DATE_FORMAT(c.open_date, '%Y-%m-%d') 
+       END open_date
 FROM
     cases c
         LEFT JOIN
@@ -54,4 +59,3 @@ WHERE
         OR a_lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR tm.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR p_tm.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-        
