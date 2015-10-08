@@ -13,7 +13,7 @@ SELECT
     ad.postcode correspondence_postcode,
     a.tot_auth_vehicles,
     a.tot_auth_trailers,
-    DATE_FORMAT(a.received_date,'%Y-%m-%d'),
+    case when isnull(mydate) then null else date_format(a.received_date, '%d/%m/%Y') end, 
     rd_lt.description lic_type_desc,
     rd_ls.description lic_status_desc,
     rd_as.description app_status_desc
