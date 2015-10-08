@@ -54,7 +54,7 @@ curl -XPUT 'localhost:9200/user_v1' -d '
           },
           "team_name" : {
             "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
+            "index" : "not_analyzed"
           },
           "org_name" : {
             "type" : "string",
