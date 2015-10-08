@@ -32,10 +32,6 @@ curl -XPUT 'localhost:9200/user_v1' -d '
             "type" : "string",
             "include_in_all" : false
           },
-          "last_successful_login_date" : {
-            "type" : "date",
-            "format" : "dateOptionalTime"
-        },
         "team_id" : {
             "type" : "long",
             "include_in_all" : false
@@ -74,6 +70,7 @@ curl -XPUT 'localhost:9200/user_v1' -d '
           },
           "disabled" : {
             "type" : "string",
+            "index" : "not_analyzed"
             "include_in_all" : false
           },
           "description" : {

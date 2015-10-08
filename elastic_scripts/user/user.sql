@@ -9,7 +9,6 @@ SELECT
     o.id org_id,
     cd.id con_det_id,
     u.pid identity_pid,
-    u.last_successful_login_date,
     u.team_id,
     cd.email_address,
     cd.forename,
