@@ -40,7 +40,7 @@ curl -XPUT 'localhost:9200/psv_disc_v1' -d '
         },
         "lic_status_desc": {
           "type": "string",
-          "include_in_all": false
+          "index" : "not_analyzed"
         },
         "lic_type_desc": {
           "type": "string",
