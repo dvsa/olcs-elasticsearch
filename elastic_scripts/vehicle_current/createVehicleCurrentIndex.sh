@@ -14,7 +14,7 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
       "properties": {
         "removal_date": {
           "type": "date",
-          "format": "dateOptionalTime",
+          "format": "yyyy-MM-dd",
           "include_in_all": false
         },
         "disc_no": {
@@ -53,7 +53,7 @@ curl -XPUT 'localhost:9200/vehicle_current_v1' -d '
         },
         "specified_date": {
           "type": "date",
-          "format": "dateOptionalTime",
+          "format": "yyyy-MM-dd",
           "include_in_all": false
         },
         "lic_status_desc": {

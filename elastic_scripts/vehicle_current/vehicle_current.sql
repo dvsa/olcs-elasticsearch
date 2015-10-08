@@ -18,8 +18,18 @@ SELECT
     o.name org_name,
     LOWER(o.name) org_name_wildcard,
     gd.disc_no disc_no,
-    lv.removal_date,
-    lv.specified_date,
+    CASE 
+       WHEN isnull(lv.removal_date) 
+       THEN null 
+       ELSE 
+           DATE_FORMAT(lv.removal_date, '%Y-%m-%d') 
+       END removal_date,
+    CASE 
+       WHEN isnull(lv.specified_date) 
+       THEN null 
+       ELSE 
+           DATE_FORMAT(lv.specified_date, '%Y-%m-%d') 
+       END specified_date,
     r1.id ref_data_id,
     l.id lic_id,
     lv.id lic_veh_id,
