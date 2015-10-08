@@ -11,21 +11,11 @@ SELECT
     u.pid identity_pid,
     u.team_id,
     cd.email_address,
-    cd.forename,
-    cd.family_name,
+    p.forename,
+    p.family_name,
     t.name team_name,
     o.name org_name,
-    CASE
-        WHEN
-            (r.code LIKE 'CW%' OR r.code = 'ADMIN'
-                OR r.code = 'SYS')
-        THEN
-            'Internal'
-        WHEN (r.code = 'LA') THEN 'Local Authority'
-        WHEN (r.code LIKE 'PART%') THEN 'Partner'
-        WHEN (r.code = 'TM') THEN 'Transport Manager'
-        ELSE 'Operator'
-    END user_type,
+    r.description user_type,
     r.role,
     CASE
         WHEN (u.locked_date IS NOT NULL) THEN 'Yes'
@@ -47,10 +37,11 @@ FROM
         INNER JOIN
     contact_details cd ON (cd.id = u.contact_details_id)
         INNER JOIN
+    person p ON (p.id = cd.person_id)
+        INNER JOIN
     elastic_update eu ON (eu.index_name = 'user')
 WHERE
     (u.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR r.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR cd.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-        
