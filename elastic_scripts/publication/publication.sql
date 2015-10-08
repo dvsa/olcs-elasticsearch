@@ -10,10 +10,15 @@ SELECT
     ps.id AS pub_sec_id,
     p.publication_no AS pub_no,
     p.pub_type AS pub_type,
-    p.pub_date AS pub_date,
+    CASE 
+       WHEN isnull(p.pub_date) 
+       THEN null 
+       ELSE 
+           DATE_FORMAT(p.pub_date, '%Y-%m-%d') 
+       END pub_date,
     p.pub_status AS pub_status,
     rd1.description AS description,
-    ta.name AS ta_name,
+    ta.name AS traffic_area,
     ps.description AS pub_sec_desc,
     pl.text1 text1,
     pl.text2 text2,
