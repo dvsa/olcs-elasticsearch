@@ -13,7 +13,7 @@ SELECT
     ad.postcode correspondence_postcode,
     a.tot_auth_vehicles,
     a.tot_auth_trailers,
-    a.received_date,
+    DATE_FORMAT(a.received_date,'%Y-%m-%d'),
     rd_lt.description lic_type_desc,
     rd_ls.description lic_status_desc,
     rd_as.description app_status_desc
