@@ -52,8 +52,8 @@ curl -XPUT 'localhost:9200/application_v1' -d '
             "index" : "not_analyzed"
           },
           "received_date" : {
-            "type" : "date",
-            "format" : "dateOptionalTime"
+              "type": "date",
+              "format": "yyyy-MM-dd"
           },
           "tot_auth_trailers" : {
             "type" : "long",
