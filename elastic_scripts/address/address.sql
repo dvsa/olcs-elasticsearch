@@ -11,7 +11,7 @@
     loc.id AS loc_id,
     lic.id AS lic_id,
     lic.lic_no AS lic_no,
-    rd.description AS lic_status,
+    rd.description AS lic_status_desc,
     'OC' address_type,
     addr.paon_desc AS paon_desc,
     addr.saon_desc AS saon_desc,

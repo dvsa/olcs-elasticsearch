@@ -36,7 +36,7 @@ curl -XPUT 'localhost:9200/address_v1' -d '
             "type" : "string",
             "analyzer" : "address_ngram_analyzer"
           },
-          "lic_status" : {
+          "lic_status_desc" : {
               "type" : "string",
               "index" : "not_analyzed"
             },
