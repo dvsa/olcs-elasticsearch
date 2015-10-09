@@ -3,8 +3,17 @@ SELECT
             IFNULL(pl.id, 'none'),
             IFNULL(p.id, 'none'),
             IFNULL(ta.id, 'none'),
-            IFNULL(ps.id, 'none')) AS _id,
+            IFNULL(ps.id, 'none'),
+            IFNULL(l.id, 'none'),
+            IFNULL(o.id, 'none')) AS _id,
     pl.id AS pub_link_id,
+    l.id lic_id,
+    o.id org_id,
+    l.lic_no lic_no,
+    l.licence_type lic_type,
+    o.name org_name,
+    LOWER(o.name) org_name_wildcard,
+    rd_lt.description lic_type_desc,
     p.id AS pub_id,
     ta.id AS ta_id,
     ps.id AS pub_sec_id,
@@ -39,6 +48,9 @@ FROM
     ref_data rd1 ON p.pub_status = rd1.id
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'publications')
+        LEFT JOIN (licence l INNER JOIN organisation o) ON l.id = pl.licence_id AND l.organisation_id = o.id
+    INNER join
+    ref_data rd_lt ON (rd_lt.id = l.licence_type)
 WHERE
     (pl.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

@@ -20,6 +20,14 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
           "type": "long",
           "include_in_all": false
         },
+        "lic_id": {
+            "type": "long",
+            "include_in_all": false
+          },
+          "org_id": {
+              "type": "long",
+              "include_in_all": false
+            },
         "ta_id": {
           "type": "string",
           "include_in_all": false
@@ -49,6 +57,22 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
           "type": "string",
           "index" : "not_analyzed"
         },
+        "lic_no" : {
+            "type" : "string",
+            "analyzer" : "publication_ngram_analyzer"
+          },
+          "lic_type_desc" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+          "org_name" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            },
+            "org_name_wildcard" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            },
         "traffic_area": {
           "type": "string",
           "index" : "not_analyzed"
