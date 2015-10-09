@@ -26,7 +26,7 @@ SELECT
            DATE_FORMAT(p.pub_date, '%Y-%m-%d') 
        END pub_date,
     p.pub_status AS pub_status,
-    rd1.description AS description,
+    rd1.description AS pub_status_desc,
     ta.name AS traffic_area,
     ps.description AS pub_sec_desc,
     pl.text1 text1,

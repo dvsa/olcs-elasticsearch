@@ -53,7 +53,7 @@ curl -XPUT 'localhost:9200/publication_v1' -d '
           "type": "string",
           "index" : "not_analyzed"
         },
-        "description": {
+        "pub_status_desc": {
           "type": "string",
           "index" : "not_analyzed"
         },
