@@ -18,7 +18,7 @@ SELECT
     LOWER(o.name) org_name_wildcard,
     a_lic.postcode correspondence_postcode,
     rd_ct.description case_type_desc,
-    c.description case_status_desc,
+    c.description case_desc,
     rd_ls.description lic_status_desc,
     rd_as.description app_status_desc,
     p_tm.forename tm_forename,
@@ -29,7 +29,13 @@ SELECT
        THEN null 
        ELSE 
            DATE_FORMAT(c.open_date, '%Y-%m-%d') 
-       END open_date
+       END open_date,
+       CASE 
+       WHEN isnull(c.closed_date) 
+       THEN 'Open'
+       ELSE 
+           'Closed' 
+       END case_status_desc
 FROM
     cases c
         LEFT JOIN

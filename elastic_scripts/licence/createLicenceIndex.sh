@@ -42,7 +42,8 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
           },
           "lic_status_desc" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "include_in_all" : false,
+            "index" : "not_analyzed"
           },
           "lic_status_desc_whole" : {
             "type" : "string",
@@ -51,7 +52,8 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
           },
           "lic_type_desc" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "include_in_all" : false,
+            "index" : "not_analyzed"
           },
           "lic_type_desc_whole" : {
             "type" : "string",
@@ -64,7 +66,8 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
           },
           "licence_traffic_area" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "include_in_all" : false,
+            "index" : "not_analyzed"
           },
           "org_id" : {
             "type" : "long",
@@ -85,7 +88,8 @@ curl -XPUT 'localhost:9200/licence_v1' -d '
           },
           "org_type_desc" : {
             "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
+            "include_in_all" : false,
+            "index" : "not_analyzed"
           },
           "ref_data_id" : {
             "type" : "string",

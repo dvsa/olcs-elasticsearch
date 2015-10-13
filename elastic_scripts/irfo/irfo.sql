@@ -6,7 +6,7 @@ SELECT
     o.id org_id,
     o.name org_name,
     LOWER(o.name) org_name_wildcard,
-    rd.description org_type
+    rd.description org_type_desc
 FROM
     irfo_psv_auth ipa
         INNER JOIN 
