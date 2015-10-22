@@ -16,6 +16,10 @@ curl -XPUT 'localhost:9200/irfo_v1' -d '
             "type" : "long",
             "include_in_all" : false
           },
+          "ipa_id" : {
+              "type" : "long",
+              "include_in_all" : false
+            },
           "org_name" : {
             "type" : "string",
             "index" : "not_analyzed"
@@ -28,6 +32,18 @@ curl -XPUT 'localhost:9200/irfo_v1' -d '
                 "type" : "string",
                 "index" : "not_analyzed"
               },
+              "service_route_from" : {
+                  "type" : "string",
+                  "analyzer": "irfo_ngram_analyzer"
+                },
+                "service_route_to" : {
+                    "type" : "string",
+                    "analyzer": "irfo_ngram_analyzer"
+                  },
+              "related_lic_num" : {
+                  "type" : "string",
+                  "analyzer": "irfo_ngram_analyzer"
+                },
           "irfo_status" : {
               "type" : "string",
               "index" : "not_analyzed"

@@ -17,27 +17,29 @@ SELECT
     o.name org_name,
     r.description user_type,
     r.role,
-    CASE
-        WHEN (u.locked_date IS NOT NULL) THEN 'Yes'
-        ELSE 'No'
-    END disabled,
-    t.name description
+    t.name description,
+    concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name) partner_name,
+    la.description la_name,
+    coalesce(la.description,concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name), o.name, t.name) entity,
+    u.deleted_date
 FROM
-    team t
-        INNER JOIN
-    user u ON (u.team_id = t.id)
-        INNER JOIN
+    user u
+        LEFT JOIN
+    team t  ON (u.team_id = t.id)
+        LEFT JOIN
     user_role ur ON (ur.user_id = u.id)
-        INNER JOIN
+        LEFT JOIN
     role r ON (r.id = ur.role_id)
         LEFT JOIN
     organisation_user ou ON (ou.user_id = u.id)
         LEFT JOIN
     organisation o ON (o.id = ou.organisation_id)
         INNER JOIN
-    contact_details cd ON (cd.id = u.contact_details_id)
-        INNER JOIN
-    person p ON (p.id = cd.person_id)
+    (contact_details cd, person p) ON (cd.id = u.contact_details_id AND p.id = cd.person_id)        
+        LEFT JOIN 
+    (contact_details cd_partner, person partner) ON (cd_partner.id = u.partner_contact_details_id AND partner.id = cd_partner.person_id)
+        LEFT JOIN 
+    local_authority la ON (la.id = u.local_authority_id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'user')
 WHERE
