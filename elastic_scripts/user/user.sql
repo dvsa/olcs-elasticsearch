@@ -3,10 +3,12 @@ SELECT
             IFNULL(u.id, 'none'),
             IFNULL(r.id, 'none'),
             IFNULL(o.id, 'none'),
-            IFNULL(cd.id, 'none')) AS _id,
+            IFNULL(cd.id, 'none'),
+            IFNULL(la.id, 'none')) AS _id,
     u.id user_id,
     r.id role_id,
     o.id org_id,
+    la.id la_id,
     cd.id con_det_id,
     u.pid identity_pid,
     u.team_id,
@@ -15,13 +17,20 @@ SELECT
     p.family_name,
     t.name team_name,
     o.name org_name,
+    LOWER(o.name) org_name_wildcard,
     r.description user_type,
     r.role,
     t.name description,
     concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name) partner_name,
     la.description la_name,
     coalesce(la.description,concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name), o.name, t.name) entity,
-    u.deleted_date
+    
+    CASE 
+       WHEN isnull(u.deleted_date) 
+       THEN null 
+       ELSE 
+           DATE_FORMAT(u.deleted_date, '%Y-%m-%d') 
+       END deleted_date
 FROM
     user u
         LEFT JOIN

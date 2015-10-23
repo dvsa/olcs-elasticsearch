@@ -68,15 +68,22 @@ curl -XPUT 'localhost:9200/user_v1' -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
-          "disabled" : {
-            "type" : "string",
-            "index" : "not_analyzed",
-            "include_in_all" : false
-          },
           "description" : {
             "type" : "string",
             "analyzer" : "user_ngram_analyzer"
-          }
+          },
+          "partner_name" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+            },
+            "la_name" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+              },
+              "deleted_date" : {
+                  "type" : "date",
+                  "format": "yyyy-MM-dd"
+                }
         }
     }
   },
