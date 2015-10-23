@@ -75,15 +75,18 @@ curl -XPUT 'localhost:9200/user_v1' -d '
           "partner_name" : {
               "type" : "string",
               "index" : "not_analyzed"
-            },
-            "la_name" : {
-                "type" : "string",
-                "index" : "not_analyzed"
-              },
-              "deleted_date" : {
-                  "type" : "date",
-                  "format": "yyyy-MM-dd"
-                }
+          },
+          "la_name" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+          "deleted_date" : {
+              "type" : "date",
+              "format": "yyyy-MM-dd"
+          },"entity" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+          }
         }
     }
   },
