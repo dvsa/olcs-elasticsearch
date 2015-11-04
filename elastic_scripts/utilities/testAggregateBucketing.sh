@@ -1,7 +1,8 @@
-curl -HGET 'http://scdv-db02.sc.npm:9200/_search?pretty' -d '{
+curl -HGET 'http://elasticsearch-dev.olcs.mgt.mtpdvsa:9200/licence/_search?pretty' -d '{
+  "version":"true",
   "query": {
     "term": {
-      "app_status_desc": "under"
+      "is_mlh": "no"
     }
   },
   "aggregations": {
@@ -19,7 +20,7 @@ curl -HGET 'http://scdv-db02.sc.npm:9200/_search?pretty' -d '{
     },
     "status": {
       "terms": {
-        "field": "app_status_desc"
+        "field": "lic_status_desc"
       }
     }
   }
