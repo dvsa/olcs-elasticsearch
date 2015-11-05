@@ -1,11 +1,12 @@
-curl -XPUT 'localhost:9200/busreg_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/busreg_v'$version -d '
 {
 	
-  "aliases" : {
-      "busreg" : {}
-  },
   "mappings": {
-    "busreg": {
+    "busreg_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",
