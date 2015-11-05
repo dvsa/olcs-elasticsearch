@@ -2,6 +2,7 @@ host=$1
 db=$2
 username=$3
 password=$4
+version=${5:-1}
 
 sql_script=$(<pi_hearing.sql)
 escaped_sql=${sql_script//\'/\\\"} 
@@ -15,7 +16,7 @@ curl -XPUT 'localhost:9200/_river/olcs_pi_hearing_river/_meta' -d '{
         "user": "'"$username"'", 
         "password": "'"$password"'", 
         "sql": [{"statement":"update elastic_update set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"pi_hearing\""},{"statement":"'"$final_sql"'"}],
-        "index": "pi_hearing_v1",
+        "index": "pi_hearing_v'"$version"'",
         "type": "pi_hearing"
     }  
 }'
