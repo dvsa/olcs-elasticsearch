@@ -51,7 +51,7 @@ FROM
         AND opp_case.closed_date IS NULL
         AND opp.deleted_date IS NULL)
         INNER JOIN
-    elastic_update eu ON eu.index_name = 'addresses'
+    elastic_update eu ON eu.index_name = 'address'
 WHERE
     (addr.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR com_app.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
@@ -97,7 +97,7 @@ FROM
         INNER JOIN
     organisation org ON lic.organisation_id = org.id
         INNER JOIN
-    elastic_update eu ON eu.index_name = 'addresses'
+    elastic_update eu ON eu.index_name = 'address'
 WHERE
     (addr.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

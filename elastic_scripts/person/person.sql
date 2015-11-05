@@ -51,7 +51,7 @@ FROM
         INNER JOIN
     ref_data rd_disqualified ON (rd_disqualified.id = tm.tm_status)
     INNER JOIN
-    elastic_update eu ON (eu.index_name = 'people')
+    elastic_update eu ON (eu.index_name = 'person')
 WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
@@ -109,7 +109,7 @@ FROM
     (organisation_type otype, ref_data rd_found_as) ON (otype.org_type_id = o.type
         AND rd_found_as.id = otype.org_person_type_id) 
     INNER JOIN
-    elastic_update eu ON (eu.index_name = 'people')
+    elastic_update eu ON (eu.index_name = 'person')
 WHERE
     (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)

@@ -47,7 +47,7 @@ FROM
         INNER JOIN
     ref_data rd1 ON p.pub_status = rd1.id
         INNER JOIN
-    elastic_update eu ON (eu.index_name = 'publications')
+    elastic_update eu ON (eu.index_name = 'publication')
         LEFT JOIN (licence l INNER JOIN organisation o) ON l.id = pl.licence_id AND l.organisation_id = o.id
     INNER join
     ref_data rd_lt ON (rd_lt.id = l.licence_type)
