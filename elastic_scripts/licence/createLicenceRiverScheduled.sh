@@ -2,6 +2,7 @@ host=$1
 db=$2
 username=$3
 password=$4
+version=${5:-1}
 
 sql_script=$(<licence.sql)
 escaped_sql=${sql_script//\'/\\\"} 
@@ -16,7 +17,7 @@ curl -XPUT 'localhost:9200/_river/olcs_licence_river/_meta' -d '{
         "password": "'"$password"'", 
         "schedule" : "0 8/10 0-23 ? * *",
         "sql": [{"statement":"update elastic_update set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"licence\""},{"statement":"'"$final_sql"'"}],
-        "index": "licence_v1",
+        "index": "licence_v'"$version"'",
         "type": "licence"
     }  
 }'
