@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/licence_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/licence_v'$version -d '
 {
-  "aliases" : {
-      "licence" : {}
-  },
   "mappings": {
-    "licence": {
+    "licence_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

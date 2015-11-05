@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/pi_hearing_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/pi_hearing_v'$version -d '
 {
-  "aliases" : {
-      "pi_hearing" : {}
-  },
   "mappings": {
-    "pi_hearing": {
+    "pi_hearing_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

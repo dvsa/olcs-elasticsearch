@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/psv_disc_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/psv_disc_v'$version -d '
 {
-  "aliases": {
-    "psv_disc": {}
-  },
   "mappings": {
-    "psv_disc": {
+    "psv_disc_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

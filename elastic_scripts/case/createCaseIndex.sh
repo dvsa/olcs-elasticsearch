@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/case_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/case_v'$version -d '
 {
-  "aliases" : {
-      "case" : {}
-  },
   "mappings": {
-    "case": {
+    "case_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

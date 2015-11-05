@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/irfo_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/irfo_v'$version -d '
 {
-  "aliases" : {
-      "irfo" : {}
-  },
   "mappings": {
-    "irfo": {
+    "irfo_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

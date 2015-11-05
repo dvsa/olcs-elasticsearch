@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/vehicle_removed_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/vehicle_removed_v'$version -d '
 {
-  "aliases": {
-    "vehicle_removed": {}
-  },
   "mappings": {
-    "vehicle": {
+    "vehicle_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

@@ -1,10 +1,11 @@
-curl -XPUT 'localhost:9200/operator_v1' -d '
+#!/bin/bash
+
+version=${1:-1}
+
+curl -XPUT 'localhost:9200/operator_v'$version -d '
 {
-  "aliases" : {
-      "operator" : {}
-  },
   "mappings": {
-    "operator": {
+    "operator_v'"$version"'": {
       "_all": {
         "type": "string",
         "null_value": "na",

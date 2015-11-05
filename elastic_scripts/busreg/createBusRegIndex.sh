@@ -4,7 +4,6 @@ version=${1:-1}
 
 curl -XPUT 'localhost:9200/busreg_v'$version -d '
 {
-	
   "mappings": {
     "busreg_v'"$version"'": {
       "_all": {
