@@ -1,3 +1,5 @@
+#!/bin/bash
+
 curl -HGET 'http://elasticsearch-dev.olcs.mgt.mtpdvsa:9200/licence/_search?pretty' -d '{
   "version":"true",
   "query": {

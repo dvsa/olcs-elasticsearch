@@ -1,3 +1,5 @@
+#!/bin/bash
+
 alias=$1
 index=$2
 version=$3
