@@ -4,6 +4,11 @@ username=$3
 password=$4
 version=${5:-1}
 
+if [ "$#" -lt 4 ]; then
+echo "Parameters must include <host> <db> <username> <pw> <optional - version>"
+exit 1
+fi
+
 sql_script=$(<licence.sql)
 escaped_sql=${sql_script//\'/\\\"} 
 final_sql=$(echo $escaped_sql | tr '\n' ' ')
