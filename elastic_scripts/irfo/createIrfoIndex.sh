@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/irfo_v'$version -d '
 {
   "mappings": {
-    "irfo_v'"$version"'": {
+    "irfo": {
       "_all": {
         "type": "string",
         "null_value": "na",

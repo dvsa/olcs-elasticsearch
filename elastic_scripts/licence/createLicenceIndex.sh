@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/licence_v'$version -d '
 {
   "mappings": {
-    "licence_v'"$version"'": {
+    "licence": {
       "_all": {
         "type": "string",
         "null_value": "na",

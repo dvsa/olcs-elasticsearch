@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/user_v'$version -d '
 {
   "mappings": {
-    "user_v'"$version"'": {
+    "user": {
       "_all": {
         "type": "string",
         "null_value": "na",

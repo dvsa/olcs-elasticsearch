@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/psv_disc_v'$version -d '
 {
   "mappings": {
-    "psv_disc_v'"$version"'": {
+    "psv_disc": {
       "_all": {
         "type": "string",
         "null_value": "na",

@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/operator_v'$version -d '
 {
   "mappings": {
-    "operator_v'"$version"'": {
+    "operator": {
       "_all": {
         "type": "string",
         "null_value": "na",

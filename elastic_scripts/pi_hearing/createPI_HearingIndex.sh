@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/pi_hearing_v'$version -d '
 {
   "mappings": {
-    "pi_hearing_v'"$version"'": {
+    "pi_hearing": {
       "_all": {
         "type": "string",
         "null_value": "na",

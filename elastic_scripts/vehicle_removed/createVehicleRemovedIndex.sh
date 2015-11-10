@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/vehicle_removed_v'$version -d '
 {
   "mappings": {
-    "vehicle_v'"$version"'": {
+    "vehicle_removed": {
       "_all": {
         "type": "string",
         "null_value": "na",

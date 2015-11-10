@@ -5,7 +5,7 @@ version=${1:-1}
 curl -XPUT 'localhost:9200/case_v'$version -d '
 {
   "mappings": {
-    "case_v'"$version"'": {
+    "case": {
       "_all": {
         "type": "string",
         "null_value": "na",
