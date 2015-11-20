@@ -1,78 +1,64 @@
 #!/bin/bash
 
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
 version=${1:-1}
 
-curl -XPUT 'localhost:9200/address_v'$version -d '
+curl -XPUT $ELASTIC_HOST':9200/user_v'$version -d '
 {
   "mappings": {
-    "address": {
+    "user": {
       "_all": {
         "type": "string",
         "null_value": "na",
         "index": "analyzed",
-        "analyzer": "address_ngram_analyzer"
+        "analyzer": "user_ngram_analyzer"
       },
       "properties" : {
-    	"addr_id" : {
+          "user_id" : {
             "type" : "long",
             "include_in_all" : false
           },
-        "org_id" : {
+          "role_id" : {
             "type" : "long",
             "include_in_all" : false
           },
-        "oc_id" : {
+          "org_id" : {
             "type" : "long",
             "include_in_all" : false
           },
-        "loc_id" : {
+          "con_det_id" : {
+            "type" : "long",
+            "include_in_all" : false
+        },
+          "identity_pid" : {
+            "type" : "string",
+            "include_in_all" : false
+          },
+        "team_id" : {
             "type" : "long",
             "include_in_all" : false
           },
-        "lic_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-        "lic_no" : {
+          "email_address" : {
             "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
+            "analyzer" : "user_ngram_analyzer"
           },
-          "lic_status_desc" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-          "address_type" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-        "paon_desc" : {
+          "forename" : {
             "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
+            "analyzer" : "user_ngram_analyzer"
           },
-        "saon_desc" : {
+        "family_name" : {
             "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
+            "analyzer" : "user_ngram_analyzer"
           },
-        "street" : {
+          "team_name" : {
             "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
+            "index" : "not_analyzed"
           },
-        "locality" : {
-            "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
-          },
-        "town" : {
-            "type" : "string",
-            "analyzer" : "address_ngram_analyzer"
-          },
-        "postcode" : {
-            "type" : "string",
-            "analyzer" : "address_edgengram_analyzer"
-          },
-          "country_code" : {
-            "type" : "string"
-          },
-        "org_name" : {
+          "org_name" : {
             "type" : "string",
             "index" : "not_analyzed"
           },
@@ -80,14 +66,33 @@ curl -XPUT 'localhost:9200/address_v'$version -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
-        "complaint_case_id" : {
-            "type" : "long",
-            "include_in_all" : false
+          "user_type" : {
+            "type" : "string",
+            "index" : "not_analyzed"
           },
-          "opposition_case_id" : {
-              "type" : "long",
-              "include_in_all" : false
-            }
+          "role" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+          "description" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+          },
+          "partner_name" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+          },
+          "la_name" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
+          "deleted_date" : {
+              "type" : "date",
+              "format": "yyyy-MM-dd"
+          },"entity" : {
+              "type" : "string",
+              "index" : "not_analyzed"
+          }
         }
     }
   },
@@ -98,21 +103,21 @@ curl -XPUT 'localhost:9200/address_v'$version -d '
           "type":"pattern_replace",
           "pattern":"\\s",
           "replacement":""
-        } 
+        }
       },
       "analyzer": {
-        "address_ngram_analyzer": {
-          "tokenizer": "address_ngram_tokenizer",
+        "user_ngram_analyzer": {
+          "tokenizer": "user_ngram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"]
         },
-        "address_edgengram_analyzer": {
-          "tokenizer": "address_edgengram_tokenizer",
+        "user_edgengram_analyzer": {
+          "tokenizer": "user_edgengram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"],
           "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {
-        "address_ngram_tokenizer": {
+        "user_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
           "max_gram": "10",
@@ -121,7 +126,7 @@ curl -XPUT 'localhost:9200/address_v'$version -d '
             "digit"
           ]
         },
-        "address_edgengram_tokenizer": {
+        "user_edgengram_tokenizer": {
           "type": "edgeNGram",
           "min_gram": "2",
           "max_gram": "10",

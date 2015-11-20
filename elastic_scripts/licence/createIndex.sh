@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
 version=${1:-1}
 
-curl -XPUT 'localhost:9200/licence_v'$version -d '
+curl -XPUT $ELASTIC_HOST':9200/licence_v'$version -d '
 {
   "mappings": {
     "licence": {
@@ -122,7 +127,7 @@ curl -XPUT 'localhost:9200/licence_v'$version -d '
           "type":"pattern_replace",
           "pattern":"\\s",
           "replacement":""
-        } 
+        }
       },
       "analyzer": {
         "licence_ngram_analyzer": {
