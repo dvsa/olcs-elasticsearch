@@ -11,7 +11,12 @@ if [ "$#" -lt 3 ]; then
     exit 1
 fi
 
-curl -XPOST localhost:9200/_aliases -d '
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
+curl -XPOST $ELASTIC_HOST:9200/_aliases -d '
 {
     "actions": [
         { "'"$action"'": {
