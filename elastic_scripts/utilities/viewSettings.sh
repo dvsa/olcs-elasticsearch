@@ -1,3 +1,8 @@
 #!/bin/bash
 
-curl -XGET "http://localhost:9200/_settings?pretty=1"
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
+curl -XGET "http://$ELASTIC_HOST:9200/_settings?pretty=1"

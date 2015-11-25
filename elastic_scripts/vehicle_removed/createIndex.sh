@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
 version=${1:-1}
 
-curl -XPUT 'localhost:9200/vehicle_removed_v'$version -d '
+curl -XPUT $ELASTIC_HOST':9200/vehicle_removed_v'$version -d '
 {
   "mappings": {
     "vehicle_removed": {
@@ -89,7 +94,7 @@ curl -XPUT 'localhost:9200/vehicle_removed_v'$version -d '
           "type":"pattern_replace",
           "pattern":"\\s",
           "replacement":""
-        } 
+        }
       },
       "analyzer": {
         "vehicle_removed_ngram_analyzer": {

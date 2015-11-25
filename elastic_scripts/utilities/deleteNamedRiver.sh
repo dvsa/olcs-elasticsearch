@@ -7,4 +7,14 @@ if [ "$#" -lt 1 ]; then
     exit 1
 fi
 
-curl -XDELETE 'localhost:9200/_river/olcs_'$river'_river'
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
+RESPONSE=$(curl -XDELETE -s $ELASTIC_HOST':9200/_river/olcs_'$river'_river')
+if [[ $RESPONSE != "{\"acknowledged\":true}" ]]; then
+    echo Error deleting river
+    echo $RESPONSE
+fi
+

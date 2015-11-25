@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
 version=${1:-1}
 
-curl -XPUT 'localhost:9200/case_v'$version -d '
+curl -XPUT $ELASTIC_HOST':9200/case_v'$version -d '
 {
   "mappings": {
     "case": {
@@ -95,7 +100,7 @@ curl -XPUT 'localhost:9200/case_v'$version -d '
           "type":"pattern_replace",
           "pattern":"\\s",
           "replacement":""
-        } 
+        }
       },
       "analyzer": {
         "case_ngram_analyzer": {
@@ -105,7 +110,7 @@ curl -XPUT 'localhost:9200/case_v'$version -d '
         "case_edgengram_analyzer": {
           "tokenizer": "case_edgengram_tokenizer",
           "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"] 
+          "char_filter" : ["spaces_removed_pattern"]
         }
       },
       "tokenizer": {

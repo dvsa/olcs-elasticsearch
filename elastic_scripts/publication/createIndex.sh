@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -z "$ELASTIC_HOST" ]
+then
+    ELASTIC_HOST="localhost"
+fi
+
 version=${1:-1}
 
-curl -XPUT 'localhost:9200/publication_v'$version -d '
+curl -XPUT $ELASTIC_HOST':9200/publication_v'$version -d '
 {
   "mappings": {
     "publication": {
@@ -12,7 +17,7 @@ curl -XPUT 'localhost:9200/publication_v'$version -d '
         "index": "analyzed",
         "analyzer": "publication_ngram_analyzer"
       },
-      "properties": {        
+      "properties": {
         "pub_link_id": {
           "type": "long",
           "include_in_all": false
@@ -92,7 +97,7 @@ curl -XPUT 'localhost:9200/publication_v'$version -d '
           "type":"pattern_replace",
           "pattern":"\\s",
           "replacement":""
-        } 
+        }
       },
       "analyzer": {
         "publication_ngram_analyzer": {
