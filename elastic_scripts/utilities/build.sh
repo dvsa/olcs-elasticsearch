@@ -4,6 +4,7 @@ usage() {
     echo;
     echo Usage: build.sh [options];
     echo;
+    echo "-c file PHP config file containined eg local.php";
     echo "-nX The new version of the index to create";
     echo "-p  Promote new index, assign it the alias and delete the old index";
     echo '-s  Runs non interactive, no prompts';
@@ -20,8 +21,11 @@ delay=600 # seconds
 reindex=15 # minutes
 INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
 
-while getopts ":n:d:r:m:psht" opt; do
+while getopts ":c:n:d:r:m:psht" opt; do
   case $opt in
+    c)
+        configFile=$OPTARG
+      ;;
     n)
         newVersion=$OPTARG
       ;;
@@ -63,20 +67,27 @@ then
     exit;
 fi
 
+if [ -z "$configFile" ]
+then
+    echo -c '$configFile' variable must be set
+    exit;
+fi
+
 
 echo ==================================================
 echo $(date)
 
 # parse db user and password out of php config
-DBUSER=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['user'];")
-DBPASSWORD=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['password'];")
-#DBNAME=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['dbname'];")
-DBHOST=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['host'];")
+DBUSER=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['user'];")
+DBPASSWORD=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['password'];")
+#DBNAME=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['dbname'];")
+DBHOST=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['host'];")
 
 echo DBHOST = $DBHOST
 echo DBNAME = $DBNAME
+echo configFile = $configFile
 
-ELASTIC_HOST=$(php -r "\$config=require('config/local.php'); echo \$config['elastic_search']['host'];")
+ELASTIC_HOST=$(php -r "\$config=require('$configFile'); echo \$config['elastic_search']['host'];")
 echo ELASTIC_HOST = $ELASTIC_HOST
 
 echo Working on indexes: ${INDEXES[@]}
