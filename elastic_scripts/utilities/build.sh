@@ -8,14 +8,16 @@ usage() {
     echo "-p  Promote new index, assign it the alias and delete the old index";
     echo '-s  Runs non interactive, no prompts';
     echo '-dX Number of seconds delay when checking if rivers are complete';
+    echo '-rX Number of miuntes between the indexes updating themselves';
     echo '-h  Display usage (this)';
     exit;
 }
 
 interactive=true
-delay=600
+delay=600 # seconds
+reindex=15 # minutes
 
-while getopts ":n:d:psh" opt; do
+while getopts ":n:d:r:psh" opt; do
   case $opt in
     n)
         newVersion=$OPTARG
@@ -28,6 +30,9 @@ while getopts ":n:d:psh" opt; do
       ;;
     d)
         delay=$OPTARG
+      ;;
+    r)
+        reindex=$OPTARG
       ;;
     h)
         usage;
@@ -57,10 +62,11 @@ ELASTIC_HOST=$(php -r "\$config=require('config/local.php'); echo \$config['elas
 echo ELASTIC_HOST = $ELASTIC_HOST
 
 INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
-#INDEXES=( "irfo" )
+INDEXES=( "irfo" )
 echo Working on indexes: ${INDEXES[@]}
 
 echo Delay = $delay seconds
+echo Reindex = $reindex miuntes
 
 
 
@@ -179,22 +185,18 @@ done
 
 
 
-# check index stats, ie are the record counts similar, Difficult to do this in bash
-
-
 
 
 
 echo ==================================================
 echo $(date)
 echo =========== CREATE SCHEDULED RIVERS ==============
-reindexEvery=15
 for index in "${INDEXES[@]}"
 do
-    startMinute=$(( ( RANDOM % $reindexEvery ) ))
+    startMinute=$(( ( RANDOM % $reindex ) ))
     echo $index
     cd ../$index
-    source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion $startMinute/$reindexEvery
+    source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion $startMinute/$reindex
 done
 
 
@@ -215,8 +217,11 @@ if [ "$promoteNewIndex" != "true" ]; then
     echo NOT promoting new index
     exit
 else
-    read -p "Press [Enter] key to promote new indexes..."
-    echo
+    if [ "$interactive" == "true" ]; then
+        echo
+        read -p "Press [Enter] key to promote new indexes..."
+        echo
+    fi
 fi
 
 
