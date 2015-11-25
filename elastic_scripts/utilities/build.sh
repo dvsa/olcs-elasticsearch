@@ -4,11 +4,14 @@ usage() {
     echo;
     echo Usage: build.sh [options];
     echo;
+    echo "-c file PHP config file containined eg local.php";
     echo "-nX The new version of the index to create";
     echo "-p  Promote new index, assign it the alias and delete the old index";
     echo '-s  Runs non interactive, no prompts';
     echo '-dX Number of seconds delay when checking if rivers are complete';
     echo '-rX Number of miuntes between the indexes updating themselves';
+    echo '-mX Database name'
+    echo '-t  Test mode, just use the irfo index'
     echo '-h  Display usage (this)';
     exit;
 }
@@ -16,9 +19,13 @@ usage() {
 interactive=true
 delay=600 # seconds
 reindex=15 # minutes
+INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
 
-while getopts ":n:d:r:psh" opt; do
+while getopts ":c:n:d:r:m:psht" opt; do
   case $opt in
+    c)
+        configFile=$OPTARG
+      ;;
     n)
         newVersion=$OPTARG
       ;;
@@ -34,6 +41,12 @@ while getopts ":n:d:r:psh" opt; do
     r)
         reindex=$OPTARG
       ;;
+    m)
+        DBNAME=$OPTARG
+      ;;
+    t)
+        INDEXES=( "irfo" )
+      ;;
     h)
         usage;
         ;;
@@ -48,21 +61,35 @@ while getopts ":n:d:r:psh" opt; do
   esac
 done
 
+if [ -z "$DBNAME" ]
+then
+    echo -m '$DBNAME' variable must be set
+    exit;
+fi
+
+if [ -z "$configFile" ]
+then
+    echo -c '$configFile' variable must be set
+    exit;
+fi
+
+
 echo ==================================================
 echo $(date)
 
 # parse db user and password out of php config
-DBUSER=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['user'];")
-DBPASSWORD=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['password'];")
-DBNAME=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['dbname'];")
-DBHOST=$(php -r "\$config=require('config/local.php'); echo \$config['doctrine']['connection']['orm_default']['params']['host'];")
-echo DBHOST = $DBHOST
+DBUSER=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['user'];")
+DBPASSWORD=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['password'];")
+#DBNAME=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['dbname'];")
+DBHOST=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['host'];")
 
-ELASTIC_HOST=$(php -r "\$config=require('config/local.php'); echo \$config['elastic_search']['host'];")
+echo DBHOST = $DBHOST
+echo DBNAME = $DBNAME
+echo configFile = $configFile
+
+ELASTIC_HOST=$(php -r "\$config=require('$configFile'); echo \$config['elastic_search']['host'];")
 echo ELASTIC_HOST = $ELASTIC_HOST
 
-INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
-INDEXES=( "irfo" )
 echo Working on indexes: ${INDEXES[@]}
 
 echo Delay = $delay seconds
@@ -206,7 +233,7 @@ echo ==================================================
 echo $(date)
 echo ================= INDEX STATS ====================
 cd ../utilities
-./viewIndexStats.sh | php viewIndexStats.php
+source viewIndexStats.sh | php viewIndexStats.php
 
 
 
