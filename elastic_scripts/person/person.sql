@@ -30,7 +30,7 @@ SELECT
     'TM' found_as,
     DATE_FORMAT(tml.created_on, '%Y-%m-%d') date_added,
     DATE_FORMAT(tml.deleted_date, '%Y-%m-%d') date_removed,
-    rd_disqualified.description disqualified
+    IF(tm_status = 'tm_s_dis', 'Y', NULL) disqualified
 FROM
     transport_manager tm
         INNER JOIN
@@ -48,8 +48,6 @@ FROM
         AND rd_org_type.id = o.type)
         INNER JOIN
     ref_data rd_tm_status ON (rd_tm_status.id = tm.tm_status)
-        INNER JOIN
-    ref_data rd_disqualified ON (rd_disqualified.id = tm.tm_status)
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
