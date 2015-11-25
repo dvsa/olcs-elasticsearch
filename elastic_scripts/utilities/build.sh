@@ -233,7 +233,7 @@ echo ==================================================
 echo $(date)
 echo ================= INDEX STATS ====================
 cd ../utilities
-./viewIndexStats.sh | php viewIndexStats.php
+source viewIndexStats.sh | php viewIndexStats.php
 
 
 
