@@ -2,18 +2,20 @@
 
 usage() {
     echo;
-    echo Usage: build.sh [options] -c file;
+    echo Usage: build.sh [options];
     echo;
     echo "-nX The new version of the index to create";
     echo "-p  Promote new index, assign it the alias and delete the old index";
     echo '-s  Runs non interactive, no prompts';
+    echo '-dX Number of seconds delay when checking if rivers are complete';
     echo '-h  Display usage (this)';
     exit;
 }
 
 interactive=true
+delay=600
 
-while getopts ":n:psh" opt; do
+while getopts ":n:d:psh" opt; do
   case $opt in
     n)
         newVersion=$OPTARG
@@ -23,6 +25,9 @@ while getopts ":n:psh" opt; do
       ;;
     s)
         interactive=false
+      ;;
+    d)
+        delay=$OPTARG
       ;;
     h)
         usage;
@@ -55,6 +60,7 @@ INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "p
 #INDEXES=( "irfo" )
 echo Working on indexes: ${INDEXES[@]}
 
+echo Delay = $delay seconds
 
 
 
@@ -142,7 +148,7 @@ echo $(date)
 echo ============== CHECK RIVERS COMPLETE =============
 while true; do
     # wait X seconds before checking
-    sleep 300
+    sleep $delay
 
     response=$(curl -XGET -s "http://$ELASTIC_HOST:9200/_river/jdbc/*/_state?pretty=1")
 
@@ -194,10 +200,23 @@ done
 
 
 
+echo ==================================================
+echo $(date)
+echo ================= INDEX STATS ====================
+cd ../utilities
+./viewIndexStats.sh | php viewIndexStats.php
 
+
+
+
+
+echo
 if [ "$promoteNewIndex" != "true" ]; then
     echo NOT promoting new index
-exit
+    exit
+else
+    read -p "Press [Enter] key to promote new indexes..."
+    echo
 fi
 
 
