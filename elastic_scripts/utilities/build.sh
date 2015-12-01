@@ -156,6 +156,7 @@ do
     echo $index
     cd ../$index
     source createIndex.sh $newVersion
+    echo
 done
 
 
@@ -164,33 +165,26 @@ done
 
 echo ==================================================
 echo $(date)
-echo ================ CREATE RIVERS ===================
+echo ============== POPULATE INDEXES ==================
 for index in "${INDEXES[@]}"
 do
     echo $index
     cd ../$index
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion
-done
+    echo
 
+    while true; do
+        # wait X seconds before checking
 
-
-
-
-echo ==================================================
-echo $(date)
-echo ============== CHECK RIVERS COMPLETE =============
-while true; do
-    # wait X seconds before checking
-    sleep $delay
-
-    response=$(curl -XGET -s "http://$ELASTIC_HOST:9200/_river/jdbc/*/_state?pretty=1")
-
-    if [[ "$response" == *"\"active\" : true"* ]]; then
-        number_of_occurrences=$(grep -o "\"active\" : true" <<< "$response" | wc -l)
-        echo $(date) $number_of_occurrences rivers active
-    else
-        break;
-    fi
+        sleep $delay
+        response=$(curl -XGET -s "http://$ELASTIC_HOST:9200/_river/jdbc/olcs_${index}_river/_state?pretty=1")
+        if [[ "$response" == *"\"active\" : true"* ]]; then
+            #number_of_occurrences=$(grep -o "\"active\" : true" <<< "$response" | wc -l)
+            echo $(date) Still active
+        else
+            break;
+        fi
+    done
 done
 echo $(date) All Rivers complete
 

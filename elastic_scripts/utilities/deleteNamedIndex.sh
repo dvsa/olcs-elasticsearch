@@ -16,5 +16,4 @@ fi
 response=$(curl -XDELETE -s $ELASTIC_HOST':9200/'$index'_v'$version'')
 if [ "$response" != "{\"acknowledged\":true}" ]; then
     echo $response
-    exit 1
 fi
