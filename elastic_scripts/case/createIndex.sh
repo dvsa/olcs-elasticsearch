@@ -23,7 +23,6 @@ curl -XPUT $ELASTIC_HOST':9200/case_v'$version -d '
       "type": "long"
     },
     "case_id": {
-      "include_in_all": "false",
       "type": "long"
     },
     "app_status_desc": {
