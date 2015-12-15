@@ -1,35 +1,51 @@
 #!/bin/bash
 
 usage() {
+    if [ -n "$1" ]; then
+        echo;
+        echo Error : $1
+    fi
+
     echo;
     echo Usage: build.sh [options];
     echo;
-    echo "-c file PHP config file containined eg local.php";
-    echo "-nX The new version of the index to create";
-    echo "-p  Promote new index, assign it the alias and delete the old index";
-    echo '-s  Runs non interactive, no prompts';
-    echo '-dX Number of seconds delay when checking if rivers are complete';
-    echo '-rX Number of miuntes between the indexes updating themselves';
-    echo '-mX Database name'
-    echo '-t  Test mode, just use the irfo index'
-    echo '-h  Display usage (this)';
+    echo "-e hostname   : Elasticsearch server hostname";
+    echo "-h dbname     : Database host";
+    echo "-u dbuser     : Database user";
+    echo "-p dbpassword : Database password";
+    echo '-m dbname     : Database name'
+    echo "-l            : Promote new index, assign it the alias and delete the old index";
+    echo '-s            : Runs non interactive, no prompts';
+    echo '-d seconds    : Number of seconds delay when checking if rivers are complete';
+    echo '-r minutes    : Number of minutes between the indexes updating themselves';
+    echo "-n version    : The new version of the index to create (TESTING ONLY)";
+    echo '-i n/a        : Index to use irfo (TESTING ONLY)'
     exit;
 }
 
 interactive=true
-delay=600 # seconds
-reindex=15 # minutes
+delay=60 # seconds
+reindex=60 # minutes
 INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
 
-while getopts ":c:n:d:r:m:psht" opt; do
+while getopts ":e:h:u:p:m:d:r:n:ils" opt; do
   case $opt in
-    c)
-        configFile=$OPTARG
+    e)
+        ELASTIC_HOST=$OPTARG
       ;;
-    n)
-        newVersion=$OPTARG
+    h)
+        DBHOST=$OPTARG
+      ;;
+    u)
+        DBUSER=$OPTARG
       ;;
     p)
+        DBPASSWORD=$OPTARG
+      ;;
+    m)
+        DBNAME=$OPTARG
+      ;;
+    l)
         promoteNewIndex=true
       ;;
     s)
@@ -41,57 +57,61 @@ while getopts ":c:n:d:r:m:psht" opt; do
     r)
         reindex=$OPTARG
       ;;
-    m)
-        DBNAME=$OPTARG
+    n)
+        newVersion=$OPTARG
       ;;
-    t)
+    i)
         INDEXES=( "irfo" )
       ;;
-    h)
-        usage;
-        ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
-      usage;
+      usage "Invalid option: -$OPTARG";
       ;;
     :)
-      echo "Option -$OPTARG requires an argument." >&2
-      usage;
+      usage "Option -$OPTARG requires an argument.";
       ;;
   esac
 done
 
-if [ -z "$DBNAME" ]
+if [ -z "$ELASTIC_HOST" ]
 then
-    echo -m '$DBNAME' variable must be set
+    usage "-e parameter must be set"
     exit;
 fi
 
-if [ -z "$configFile" ]
+if [ -z "$DBHOST" ]
 then
-    echo -c '$configFile' variable must be set
+    usage "-h parameter must be set"
     exit;
 fi
+
+if [ -z "$DBNAME" ]
+then
+    usage "-m parameter must be set"
+    exit;
+fi
+
+if [ -z "$DBUSER" ]
+then
+    usage "-u parameter must be set"
+    exit;
+fi
+
+if [ -z "$DBPASSWORD" ]
+then
+    usage "-p parameter must be set"
+    exit;
+fi
+
 
 
 echo ==================================================
 echo $(date)
 
-# parse db user and password out of php config
-DBUSER=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['user'];")
-DBPASSWORD=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['password'];")
-#DBNAME=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['dbname'];")
-DBHOST=$(php -r "\$config=require('$configFile'); echo \$config['doctrine']['connection']['orm_default']['params']['host'];")
 
+echo ELASTIC_HOST = $ELASTIC_HOST
 echo DBHOST = $DBHOST
 echo DBNAME = $DBNAME
-echo configFile = $configFile
-
-ELASTIC_HOST=$(php -r "\$config=require('$configFile'); echo \$config['elastic_search']['host'];")
-echo ELASTIC_HOST = $ELASTIC_HOST
-
 echo Working on indexes: ${INDEXES[@]}
-
 echo Delay = $delay seconds
 echo Reindex = $reindex miuntes
 
@@ -227,7 +247,12 @@ echo ==================================================
 echo $(date)
 echo ================= INDEX STATS ====================
 cd ../utilities
-source viewIndexStats.sh | php viewIndexStats.php
+source viewIndexStats.sh > temp.json
+python checkIndexes.py
+if [ $? -ne 0 ]; then
+    echo "Errors in indexes, therefore stopping"
+    exit 1;
+fi
 
 
 
