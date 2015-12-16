@@ -250,7 +250,6 @@ do
     response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
     {
         "actions" : [
-            { "remove" : { "index" : "'$index'_v'$oldVersion'", "alias" : "'$index'" } },
             { "add"    : { "index" : "'$index'_v'$newVersion'", "alias" : "'$index'" } }
         ]
     }')
