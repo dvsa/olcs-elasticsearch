@@ -240,11 +240,28 @@ fi
 
 
 
+echo ==================================================
+echo $(date)
+echo ============= REMOVE ALIAS FROM OLD INDEX ============
+for index in "${INDEXES[@]}"
+do
+    response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
+    {
+        "actions" : [
+            { "remove" : { "index" : "'$index'_v'$oldVersion'", "alias" : "'$index'" } }
+        ]
+    }')
+    if [[ $response != "{\"acknowledged\":true}" ]]; then
+        echo $response
+        exit 1
+    fi
+done
+
 
 
 echo ==================================================
 echo $(date)
-echo ============= MOVE ALIAS TO NEW INDEX ============
+echo ============= ADD ALIAS TO NEW INDEX ============
 for index in "${INDEXES[@]}"
 do
     response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
