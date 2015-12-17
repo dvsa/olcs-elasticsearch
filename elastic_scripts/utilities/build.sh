@@ -26,10 +26,14 @@ usage() {
 interactive=true
 delay=60 # seconds
 reindex=60 # minutes
-INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
+newVersion=$(date +%s) #timestamp
 
-while getopts ":e:h:u:p:m:d:r:n:ils" opt; do
+
+while getopts ":c:e:h:u:p:m:d:r:n:ils" opt; do
   case $opt in
+    c)
+        source $OPTARG
+      ;;
     e)
         ELASTIC_HOST=$OPTARG
       ;;
@@ -102,53 +106,48 @@ then
     exit;
 fi
 
+if [ -z "$INDEXES" ]
+then
+    INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
+fi
+
 
 
 echo ==================================================
 echo $(date)
-
-
+echo ==================================================
 echo ELASTIC_HOST = $ELASTIC_HOST
 echo DBHOST = $DBHOST
 echo DBNAME = $DBNAME
 echo Working on indexes: ${INDEXES[@]}
 echo Delay = $delay seconds
 echo Reindex = $reindex miuntes
+echo New version = $newVersion
+echo ==================================================
 
 
-
-
-echo ============== DETECT INDEX VERSION ==============
-
-if [ "$newVersion" == "" ]; then
-    response=$(curl -XGET -s "$ELASTIC_HOST:9200/_aliases?pretty=1")
-    number_of_v1=$(grep -o "_v1" <<< "$response" | wc -l)
-    number_of_v2=$(grep -o "_v2" <<< "$response" | wc -l)
-
-    if [ $number_of_v1 -eq 0 ]; then
-        newVersion=1
-    elif [ $number_of_v2 -eq 0 ]; then
-        newVersion=2
-    else
-        echo ERROR : Cannot detect which version to use
-        echo There are $number_of_v1 V1 indexes and $number_of_v2 V2 indexes.
-        exit 1
-    fi
-fi
-
-if [ "$newVersion" == "1" ]; then
-    oldVersion=2
-else
-    oldVersion=1
-fi
-
-echo New version is $newVersion, to replace old version $oldVersion
 
 if [ "$interactive" == "true" ]; then
     echo
     read -p "Press [Enter] key to start..."
     echo
 fi
+
+
+
+
+
+echo ==================================================
+echo $(date)
+echo ======= DELETE INDEXES WITHOUT AN ALIAS ==========
+cd ../utilities
+indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py ${INDEXES[@]})
+if [ ! -z $indexsWithoutAlias ]; then
+    echo Deleting Index without aliases : $indexsWithoutAlias
+    curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias
+fi
+
+
 
 
 
@@ -193,20 +192,25 @@ do
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion
     echo
 
+    lastNumberOfDocs=0
     while true; do
         # wait X seconds before checking
-
         sleep $delay
-        response=$(curl -XGET -s "http://$ELASTIC_HOST:9200/_river/jdbc/olcs_${index}_river/_state?pretty=1")
-        if [[ "$response" == *"\"active\" : true"* ]]; then
-            #number_of_occurrences=$(grep -o "\"active\" : true" <<< "$response" | wc -l)
-            echo $(date) Still active
-        else
+
+        numberOfDocs=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python ../utilities/py/getDocCount.py ${index}_v${newVersion})
+        echo Number of documents in ${index}_v${newVersion} = $numberOfDocs
+        if [ $numberOfDocs -eq 0 ]; then
+            continue
+        fi
+
+        if [ $lastNumberOfDocs -eq $numberOfDocs ]; then
+            echo Document count not changed, assuming river is complete
             break;
         fi
+
+        lastNumberOfDocs=$numberOfDocs
     done
 done
-echo $(date) All Rivers complete
 
 
 
@@ -225,6 +229,19 @@ done
 
 
 
+echo
+echo ==================================================
+echo $(date)
+echo ================= INDEX STATS ====================
+cd ../utilities
+source viewIndexStats.sh > temp.json
+python ./py/checkIndexes.py $newVersion ${INDEXES[@]}
+if [ $? -ne 0 ]; then
+    echo "Errors in indexes, therefore stopping"
+    exit 1;
+fi
+
+
 
 
 
@@ -239,20 +256,6 @@ do
     cd ../$index
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion $startMinute/$reindex
 done
-
-
-
-
-echo ==================================================
-echo $(date)
-echo ================= INDEX STATS ====================
-cd ../utilities
-source viewIndexStats.sh > temp.json
-python checkIndexes.py
-if [ $? -ne 0 ]; then
-    echo "Errors in indexes, therefore stopping"
-    exit 1;
-fi
 
 
 
@@ -277,34 +280,13 @@ fi
 echo ==================================================
 echo $(date)
 echo ============= MOVE ALIAS TO NEW INDEX ============
-for index in "${INDEXES[@]}"
-do
-    response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
-    {
-        "actions" : [
-            { "remove" : { "index" : "'$index'_v'$oldVersion'", "alias" : "'$index'" } },
-            { "add"    : { "index" : "'$index'_v'$newVersion'", "alias" : "'$index'" } }
-        ]
-    }')
-    if [[ $response != "{\"acknowledged\":true}" ]]; then
-        echo $response
-        exit 1
-    fi
-done
-
-
-
-
-
-echo ==================================================
-echo $(date)
-echo ============= DELETING OLD INDEXES ===============
 cd ../utilities
-for index in "${INDEXES[@]}"
-do
-    echo $index
-    source deleteNamedIndex.sh $index $oldVersion
-done
+modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python ./py/modifyAliases.py $newVersion ${INDEXES[@]})
+response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
+if [[ $response != "{\"acknowledged\":true}" ]]; then
+    echo $response
+    exit 1
+fi
 
 
 
