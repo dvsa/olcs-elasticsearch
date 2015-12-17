@@ -211,38 +211,6 @@ echo $(date) All Rivers complete
 
 
 
-
-echo ==================================================
-echo $(date)
-echo =============== DELETING RIVERS ==================
-cd ../utilities
-for index in "${INDEXES[@]}"
-do
-    echo $index
-    source deleteNamedRiver.sh $index
-done
-
-
-
-
-
-
-
-
-echo ==================================================
-echo $(date)
-echo =========== CREATE SCHEDULED RIVERS ==============
-for index in "${INDEXES[@]}"
-do
-    startMinute=$(( ( RANDOM % $reindex ) ))
-    echo $index
-    cd ../$index
-    source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion $startMinute/$reindex
-done
-
-
-
-
 echo ==================================================
 echo $(date)
 echo ================= INDEX STATS ====================
@@ -272,17 +240,33 @@ fi
 
 
 
-
-
 echo ==================================================
 echo $(date)
-echo ============= MOVE ALIAS TO NEW INDEX ============
+echo ============= REMOVE ALIAS FROM OLD INDEX ============
 for index in "${INDEXES[@]}"
 do
     response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
     {
         "actions" : [
-            { "remove" : { "index" : "'$index'_v'$oldVersion'", "alias" : "'$index'" } },
+            { "remove" : { "index" : "'$index'_v'$oldVersion'", "alias" : "'$index'" } }
+        ]
+    }')
+    if [[ $response != "{\"acknowledged\":true}" ]]; then
+        echo $response
+        exit 1
+    fi
+done
+
+
+
+echo ==================================================
+echo $(date)
+echo ============= ADD ALIAS TO NEW INDEX ============
+for index in "${INDEXES[@]}"
+do
+    response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d '
+    {
+        "actions" : [
             { "add"    : { "index" : "'$index'_v'$newVersion'", "alias" : "'$index'" } }
         ]
     }')
