@@ -253,7 +253,6 @@ do
     }')
     if [[ $response != "{\"acknowledged\":true}" ]]; then
         echo $response
-        exit 1
     fi
 done
 
