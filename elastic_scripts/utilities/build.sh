@@ -128,6 +128,17 @@ New version = $newVersion
 "
 
 
+log "DELETE SCHEDULED RIVERS"
+cd ../utilities
+for index in "${INDEXES[@]}"
+do
+    response=$(curl -XDELETE -s $ELASTIC_HOST:9200/_river/olcs_${index}_river)
+    #if [[ $response != "{\"acknowledged\":true}" ]]; then
+    #    log "$response"
+    #fi
+done
+
+
 log "DELETE INDEXES WITHOUT AN ALIAS"
 cd ../utilities
 indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py ${INDEXES[@]})
@@ -140,17 +151,6 @@ if [ ! -z $indexsWithoutAlias ]; then
         exit 1
     fi
 fi
-
-
-log "DELETE SCHEDULED RIVERS"
-cd ../utilities
-for index in "${INDEXES[@]}"
-do
-    response=$(curl -XDELETE -s $ELASTIC_HOST:9200/_river/olcs_${index}_river)
-    #if [[ $response != "{\"acknowledged\":true}" ]]; then
-    #    log "$response"
-    #fi
-done
 
 
 log "CREATE INDEXES"
