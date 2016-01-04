@@ -9,13 +9,13 @@ usage() {
     echo;
     echo Usage: build.sh [options];
     echo;
+    echo "-c file       : bash file containing config";
     echo "-e hostname   : Elasticsearch server hostname";
     echo "-h dbname     : Database host";
     echo "-u dbuser     : Database user";
     echo "-p dbpassword : Database password";
     echo '-m dbname     : Database name'
     echo "-l            : Promote new index, assign it the alias and delete the old index";
-    echo '-s            : Runs non interactive, no prompts';
     echo '-d seconds    : Number of seconds delay when checking if rivers are complete';
     echo '-r minutes    : Number of minutes between the indexes updating themselves';
     echo "-n version    : The new version of the index to create (TESTING ONLY)";
@@ -23,11 +23,19 @@ usage() {
     exit;
 }
 
-interactive=true
-delay=60 # seconds
+log() {
+    if [ "$logfile" == "" ]; then
+        echo -e $(date) $1
+    else
+        echo $(date) >> $logfile
+        echo -e $1 >> $logfile
+    fi
+}
+
+
+delay=180 # seconds
 reindex=60 # minutes
 newVersion=$(date +%s) #timestamp
-
 
 while getopts ":c:e:h:u:p:m:d:r:n:ils" opt; do
   case $opt in
@@ -51,9 +59,6 @@ while getopts ":c:e:h:u:p:m:d:r:n:ils" opt; do
       ;;
     l)
         promoteNewIndex=true
-      ;;
-    s)
-        interactive=false
       ;;
     d)
         delay=$OPTARG
@@ -112,85 +117,60 @@ then
 fi
 
 
-
-echo ==================================================
-echo $(date)
-echo ==================================================
-echo ELASTIC_HOST = $ELASTIC_HOST
-echo DBHOST = $DBHOST
-echo DBNAME = $DBNAME
-echo Working on indexes: ${INDEXES[@]}
-echo Delay = $delay seconds
-echo Reindex = $reindex miuntes
-echo New version = $newVersion
-echo ==================================================
+log "
+ELASTIC_HOST = $ELASTIC_HOST\n
+DBHOST = $DBHOST\n
+DBNAME = $DBNAME\n
+Working on indexes: ${INDEXES[*]}\n
+Delay = $delay seconds\n
+Reindex = $reindex miuntes\n
+New version = $newVersion
+"
 
 
-
-if [ "$interactive" == "true" ]; then
-    echo
-    read -p "Press [Enter] key to start..."
-    echo
-fi
-
-
-
-
-
-echo ==================================================
-echo $(date)
-echo ======= DELETE INDEXES WITHOUT AN ALIAS ==========
+log "DELETE INDEXES WITHOUT AN ALIAS"
 cd ../utilities
 indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py ${INDEXES[@]})
 if [ ! -z $indexsWithoutAlias ]; then
-    echo Deleting Index without aliases : $indexsWithoutAlias
-    curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias
+    log "Deleting Indexes without aliases : $indexsWithoutAlias"
+    response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
+    if [[ $response != "{\"acknowledged\":true}" ]]; then
+        log "$response"
+        echo "ERROR $response"
+        exit 1
+    fi
 fi
 
 
-
-
-
-
-
-echo ==================================================
-echo $(date)
-echo ========== DELETE SCHEDULED RIVERS ===============
+log "DELETE SCHEDULED RIVERS"
 cd ../utilities
 for index in "${INDEXES[@]}"
 do
-    echo $index
-    source deleteNamedRiver.sh $index
+    response=$(curl -XDELETE -s $ELASTIC_HOST:9200/_river/olcs_${index}_river)
+    #if [[ $response != "{\"acknowledged\":true}" ]]; then
+    #    log "$response"
+    #fi
 done
 
 
-
-
-
-echo ==================================================
-echo $(date)
-echo ================= CREATE INDEXES =================
+log "CREATE INDEXES"
 for index in "${INDEXES[@]}"
 do
-    echo $index
     cd ../$index
     source createIndex.sh $newVersion
-    echo
+    if [[ $response != "{\"acknowledged\":true}" ]]; then
+        log "$response"
+        echo "ERROR $response"
+        exit 1
+    fi
 done
 
 
-
-
-
-echo ==================================================
-echo $(date)
-echo ============== POPULATE INDEXES ==================
+log "POPULATE INDEXES"
 for index in "${INDEXES[@]}"
 do
-    echo $index
     cd ../$index
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion
-    echo
 
     lastNumberOfDocs=0
     while true; do
@@ -198,13 +178,13 @@ do
         sleep $delay
 
         numberOfDocs=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python ../utilities/py/getDocCount.py ${index}_v${newVersion})
-        echo Number of documents in ${index}_v${newVersion} = $numberOfDocs
+        log "Number of documents in ${index}_v${newVersion} = $numberOfDocs"
         if [ $numberOfDocs -eq 0 ]; then
             continue
         fi
 
         if [ $lastNumberOfDocs -eq $numberOfDocs ]; then
-            echo Document count not changed, assuming river is complete
+            log "Document count not changed, assuming river is complete"
             break;
         fi
 
@@ -213,84 +193,52 @@ do
 done
 
 
-
-
-
-echo ==================================================
-echo $(date)
-echo =============== DELETING RIVERS ==================
+log "DELETING RIVERS"
 cd ../utilities
 for index in "${INDEXES[@]}"
 do
-    echo $index
-    source deleteNamedRiver.sh $index
+    response=$(curl -XDELETE -s $ELASTIC_HOST:9200/_river/olcs_${index}_river)
+    if [[ $response != "{\"acknowledged\":true}" ]]; then
+        log "$response"
+    fi
 done
 
 
-
-
-echo
-echo ==================================================
-echo $(date)
-echo ================= INDEX STATS ====================
+log "INDEX STATS"
 cd ../utilities
 source viewIndexStats.sh > temp.json
 python ./py/checkIndexes.py $newVersion ${INDEXES[@]}
 if [ $? -ne 0 ]; then
-    echo "Errors in indexes, therefore stopping"
+    log "Errors in indexes doc counts, therefore stopping"
+    echo "ERROR Errors in indexes doc counts, therefore stopping"
     exit 1;
 fi
 
 
-
-
-
-
-echo ==================================================
-echo $(date)
-echo =========== CREATE SCHEDULED RIVERS ==============
+log "CREATE SCHEDULED RIVERS"
 for index in "${INDEXES[@]}"
 do
     startMinute=$(( ( RANDOM % $reindex ) ))
-    echo $index
     cd ../$index
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion $startMinute/$reindex
 done
 
 
-
-
-
-echo
 if [ "$promoteNewIndex" != "true" ]; then
-    echo NOT promoting new index
+    echo "Done NOT promoting new index"
     exit
-else
-    if [ "$interactive" == "true" ]; then
-        echo
-        read -p "Press [Enter] key to promote new indexes..."
-        echo
-    fi
 fi
 
 
-
-
-
-echo ==================================================
-echo $(date)
-echo ============= MOVE ALIAS TO NEW INDEX ============
+log "MOVE ALIAS TO NEW INDEX"
 cd ../utilities
 modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python ./py/modifyAliases.py $newVersion ${INDEXES[@]})
 response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
 if [[ $response != "{\"acknowledged\":true}" ]]; then
-    echo $response
+    log "$response"
+    echo "ERROR $response"
     exit 1
 fi
 
 
-
-
-
-echo ==================== DONE ========================
-echo $(date)
+echo "Done"

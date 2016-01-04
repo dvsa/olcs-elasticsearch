@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/operator_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/operator_v'$version -d '
 {
   "mappings": {
     "operator": {
@@ -113,3 +113,4 @@ curl -XPUT $ELASTIC_HOST':9200/operator_v'$version -d '
   }
 }
 '
+)
