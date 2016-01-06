@@ -27,19 +27,19 @@ for alias in aliases:
     oldCount = getOldCount(alias, data)
 
     if oldCount == None:
-        print "INFO : "+ alias +" no old version"
+        print "INFO : '{}' no old version found".format(alias)
         continue
 
-    diff = abs(oldCount - newCount)
-    if (diff > 0):
-        percentDiff = (diff * 100) / oldCount
+    diff = abs(newCount - oldCount)
+    if (diff <> 0):
+        percentDiff = float(diff * 100) / oldCount
         if (percentDiff > 10):
-            print "ERROR : "+ alias +" "+ str(percentDiff) +"% difference in record counts"
+            print "ERROR : '{}' old count = {:,}, new count = {:,}, {:.2f}% change".format(alias, oldCount, newCount, percentDiff)
             errorCount += 1
         else:
-            print "WARNING : "+ alias +" "+ str(percentDiff) +"% difference in record counts"
+            print "WARNING : '{}' old count = {:,}, new count = {:,}, {:.2f}% change".format(alias, oldCount, newCount, percentDiff)
     else:
-        print "INFO : "+ alias +" same"
+        print "INFO : '{0}' document count is the same".format(alias)
 
 if (errorCount > 0):
     sys.exit(1)
