@@ -34,10 +34,10 @@ for alias in aliases:
     if (diff <> 0):
         percentDiff = float(diff * 100) / oldCount
         if (percentDiff > 10):
-            print "ERROR : '{0}' old count = {1:,}, new count = {2:,}, {3:.2f}% change".format(alias, oldCount, newCount, percentDiff)
+            print "ERROR : '{0}' old count = {1}, new count = {2}, {3:.2f}% change".format(alias, oldCount, newCount, percentDiff)
             errorCount += 1
         else:
-            print "WARNING : '{0}' old count = {1:,}, new count = {2:,}, {3:.2f}% change".format(alias, oldCount, newCount, percentDiff)
+            print "WARNING : '{0}' old count = {1}, new count = {2}, {3:.2f}% change".format(alias, oldCount, newCount, percentDiff)
     else:
         print "INFO : '{0}' document count is the same".format(alias)
 
