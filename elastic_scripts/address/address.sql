@@ -1,4 +1,4 @@
- SELECT 
+ SELECT
     CONCAT_WS('_',
             IFNULL(addr.id, 'none'),
             IFNULL(org.id, 'none'),
@@ -23,7 +23,9 @@
     org.name org_name,
     LOWER(org.name) org_name_wildcard,
     com_case.id complaint_case_id,
-    opp_case.id opposition_case_id
+    opp_case.id opposition_case_id,
+    IF(com_case.id IS NULL, 'No', 'Yes') complaint,
+    IF(opp_case.id IS NULL, 'No', 'Yes') opposition
 FROM
     address addr
         INNER JOIN
@@ -59,8 +61,8 @@ WHERE
         OR oc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR loc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
         OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-  union all     
-        SELECT 
+  union all
+        SELECT
     CONCAT_WS('_',
             IFNULL(addr.id, 'none'),
             IFNULL(org.id, 'none'),
@@ -85,7 +87,9 @@ WHERE
     org.name org_name,
     LOWER(org.name) org_name_wildcard,
     null complaint_case_id,
-    null opposition_case_id
+    null opposition_case_id,
+    'No' complaint,
+    'No' opposition
 FROM
     address addr
       INNER JOIN contact_details cd
