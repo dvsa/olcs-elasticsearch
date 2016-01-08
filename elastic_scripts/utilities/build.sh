@@ -172,23 +172,23 @@ do
     cd ../$index
     source ../utilities/createIndexRiver.sh $DBHOST $DBNAME $DBUSER $DBPASSWORD $index $newVersion
 
-    lastNumberOfDocs=0
+    lastSize=0
     while true; do
         # wait X seconds before checking
         sleep $delay
 
-        numberOfDocs=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python ../utilities/py/getDocCount.py ${index}_v${newVersion})
-        log "Number of documents in ${index}_v${newVersion} = $numberOfDocs"
-        if [ $numberOfDocs -eq 0 ]; then
+        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python ../utilities/py/getIndexSize.py ${index}_v${newVersion})
+        log "${index}_v${newVersion} size = $size"
+        if [ "$size" -lt 1000 ]; then
             continue
         fi
 
-        if [ $lastNumberOfDocs -eq $numberOfDocs ]; then
-            log "Document count not changed, assuming river is complete"
+        if [ "$lastSize" == "$size" ]; then
+            log "Index size not changed, assuming river is complete"
             break;
         fi
 
-        lastNumberOfDocs=$numberOfDocs
+        lastSize=$size
     done
 done
 
