@@ -37,7 +37,7 @@ delay=180 # seconds
 reindex=60 # minutes
 newVersion=$(date +%s) #timestamp
 
-while getopts ":c:e:h:u:p:m:d:r:n:ils" opt; do
+while getopts ":c:e:h:u:p:m:d:r:n:il" opt; do
   case $opt in
     c)
         source $OPTARG
