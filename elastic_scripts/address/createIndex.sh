@@ -89,11 +89,21 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
             "type" : "long",
             "include_in_all" : false
           },
-          "opposition_case_id" : {
-              "type" : "long",
-              "include_in_all" : false
-            }
+        "opposition_case_id" : {
+          "type" : "long",
+          "include_in_all" : false
+        },
+        "complaint" : {
+          "type" : "string",
+          "index" : "not_analyzed",
+          "include_in_all" : false
+        },
+        "opposition" : {
+          "type" : "string",
+          "index" : "not_analyzed",
+          "include_in_all" : false
         }
+      }
     }
   },
   "settings": {
