@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/vehicle_removed_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/vehicle_removed_v'$version -d '
 {
   "mappings": {
     "vehicle_removed": {
@@ -135,3 +135,4 @@ curl -XPUT $ELASTIC_HOST':9200/vehicle_removed_v'$version -d '
   }
 }
 '
+)

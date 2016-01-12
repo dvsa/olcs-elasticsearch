@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/psv_disc_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/psv_disc_v'$version -d '
 {
   "mappings": {
     "psv_disc": {
@@ -83,3 +83,4 @@ curl -XPUT $ELASTIC_HOST':9200/psv_disc_v'$version -d '
   }
 }
 '
+)

@@ -28,7 +28,7 @@ final_sql=$(echo $escaped_sql | tr '\n' ' ')
 if [ -z $schedule ]
 then
 
-curl -XPUT $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
     "type": "jdbc",
     "jdbc": {
         "driver": "com.mysql.jdbc.Driver",
@@ -39,11 +39,11 @@ curl -XPUT $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
         "index": "'"$index"'_v'"$version"'",
         "type": "'"$index"'"
     }
-}'
+}')
 
 else
 
-curl -XPUT $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
     "type": "jdbc",
     "jdbc": {
         "driver": "com.mysql.jdbc.Driver",
@@ -55,6 +55,6 @@ curl -XPUT $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta' -d '{
         "index": "'"$index"'_v'"$version"'",
         "type": "'"$index"'"
     }
-}'
+}')
 
 fi

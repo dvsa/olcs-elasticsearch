@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/case_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/case_v'$version -d '
 {
   "mappings": {
     "case": {
@@ -136,3 +136,4 @@ curl -XPUT $ELASTIC_HOST':9200/case_v'$version -d '
   }
 }
 '
+)

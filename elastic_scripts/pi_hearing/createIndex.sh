@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/pi_hearing_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/pi_hearing_v'$version -d '
 {
   "mappings": {
     "pi_hearing": {
@@ -103,3 +103,4 @@ curl -XPUT $ELASTIC_HOST':9200/pi_hearing_v'$version -d '
   }
 }
 '
+)
