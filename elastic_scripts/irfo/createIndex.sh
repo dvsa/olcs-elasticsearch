@@ -7,7 +7,7 @@ fi
 
 version=${1:-1}
 
-curl -XPUT $ELASTIC_HOST':9200/irfo_v'$version -d '
+response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
 {
   "mappings": {
     "irfo": {
@@ -105,3 +105,4 @@ curl -XPUT $ELASTIC_HOST':9200/irfo_v'$version -d '
   }
 }
 '
+)
