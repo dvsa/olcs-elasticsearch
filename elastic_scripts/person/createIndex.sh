@@ -127,8 +127,12 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/person_v'$version -d '
         "disqualified" : {
               "type" : "string",
               "index" : "not_analyzed"
+        },
+    	"case_id" : {
+            "type" : "long",
+            "include_in_all" : false
         }
-        }
+      }
     }
   },
   "settings": {
