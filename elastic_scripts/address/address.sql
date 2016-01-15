@@ -42,7 +42,8 @@ FROM
     (oc_complaint occ, complaint com, cases com_case) ON (occ.operating_centre_id = oc.id
         AND com.id = occ.complaint_id
         AND com_case.id = com.case_id
-        AND com.closed_date IS NULL)
+        AND com.closed_date IS NULL
+        AND com_case.licence_id = lic.id)
         LEFT JOIN
     application com_app ON (com_app.id = com_case.application_id
         AND com_app.status NOT IN ('apsts_granted' , 'apsts_withdrawn'))
@@ -51,7 +52,8 @@ FROM
         AND oco.opposition_id = opp.id
         AND opp.case_id = opp_case.id
         AND opp_case.closed_date IS NULL
-        AND opp.deleted_date IS NULL)
+        AND opp.deleted_date IS NULL
+        AND opp_case.licence_id = lic.id)
         INNER JOIN
     elastic_update eu ON eu.index_name = 'address'
 WHERE
