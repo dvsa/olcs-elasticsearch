@@ -209,9 +209,7 @@ cd ../utilities
 source viewIndexStats.sh > temp.json
 python ./py/checkIndexes.py $newVersion ${INDEXES[@]}
 if [ $? -ne 0 ]; then
-    log "Errors in indexes doc counts, therefore stopping"
-    echo "ERROR Errors in indexes doc counts, therefore stopping"
-    exit 1;
+    log "Major differences in some index document counts need investigation."
 fi
 
 

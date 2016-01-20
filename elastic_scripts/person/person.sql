@@ -30,7 +30,8 @@ SELECT
     'TM' found_as,
     DATE_FORMAT(tml.created_on, '%Y-%m-%d') date_added,
     DATE_FORMAT(tml.deleted_date, '%Y-%m-%d') date_removed,
-    IF(tm_status = 'tm_s_dis', 'Y', NULL) disqualified
+    IF(tm_status = 'tm_s_dis', 'Y', NULL) disqualified,
+	NULL case_id
 FROM
     transport_manager tm
         INNER JOIN
@@ -86,7 +87,8 @@ UNION ALL SELECT
     rd_found_as.description,
     DATE_FORMAT(op.created_on, '%Y-%m-%d') date_added,
     DATE_FORMAT(op.deleted_date, '%Y-%m-%d') date_removed,
-    NULL
+    NULL,
+	NULL
 FROM
     person p
         INNER JOIN
@@ -106,6 +108,131 @@ FROM
         INNER JOIN
     (organisation_type otype, ref_data rd_found_as) ON (otype.org_type_id = o.type
         AND rd_found_as.id = otype.org_person_type_id) 
+    INNER JOIN
+    elastic_update eu ON (eu.index_name = 'person')
+WHERE
+    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
+        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
+        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+UNION ALL SELECT 
+    CONCAT_WS('_',
+            IFNULL(p.id, 'none'),
+            IFNULL(o.id, 'none'),
+            IFNULL(l.id, 'none')) AS _id,
+    p.id person_id,
+    o.id org_id,
+    l.id lic_id,
+    'ct_complainant' AS contact_type,
+    p.forename AS person_forename,
+    LOWER(p.forename) AS person_forename_wildcard,
+    p.family_name AS person_family_name,
+    LOWER(p.family_name) AS person_family_name_wildcard,
+    DATE_FORMAT(p.birth_date, '%Y-%m-%d'),
+    p.other_name person_other_name,
+    p.birth_place person_birth_place,
+    p.title person_title,
+    DATE_FORMAT(p.deleted_date, '%Y-%m-%d'),
+    DATE_FORMAT(p.created_on, '%Y-%m-%d'),
+    o.name org_name,
+    LOWER(o.name) AS org_name_wildcard,
+    rd_org_type.description AS org_type,
+    l.lic_no lic_no,
+    rd_lic_type.description lic_type_desc,
+    rd_lic_status.description lic_status_desc,
+    NULL tm_id,
+    NULL tm_status_desc,
+    ta.name traffic_area,
+    l.traffic_area_id,
+    IF(com.is_compliance, 'Compliance Complainant', 'Environmantal Complainant'),
+    DATE_FORMAT(com.complaint_date, '%Y-%m-%d') date_added,
+    DATE_FORMAT(com.closed_date, '%Y-%m-%d') date_removed,
+    NULL,
+    c.id
+FROM
+    person p
+        INNER JOIN
+    contact_details cd ON (cd.person_id = p.id)
+        INNER JOIN
+    complaint com ON com.complainant_contact_details_id = cd.id 
+        INNER JOIN 
+	cases c ON c.id = com.case_id
+        INNER JOIN
+	licence l ON l.id = c.licence_id
+        INNER JOIN 
+	organisation o ON (l.organisation_id = o.id)
+        INNER JOIN
+    ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
+        INNER JOIN
+    ref_data rd_lic_status ON (rd_lic_status.id = l.status)
+        INNER JOIN
+    ref_data rd_org_type ON (rd_org_type.id = o.type)
+        INNER JOIN
+    traffic_area ta ON (ta.id = l.traffic_area_id)
+    INNER JOIN
+    elastic_update eu ON (eu.index_name = 'person')
+WHERE
+    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
+        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
+        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+UNION ALL 
+SELECT 
+    CONCAT_WS('_',
+            IFNULL(p.id, 'none'),
+            IFNULL(o.id, 'none'),
+            IFNULL(l.id, 'none')) AS _id,
+    p.id person_id,
+    o.id org_id,
+    l.id lic_id,
+    'ct_obj' AS contact_type,
+    p.forename AS person_forename,
+    LOWER(p.forename) AS person_forename_wildcard,
+    p.family_name AS person_family_name,
+    LOWER(p.family_name) AS person_family_name_wildcard,
+    DATE_FORMAT(p.birth_date, '%Y-%m-%d'),
+    p.other_name person_other_name,
+    p.birth_place person_birth_place,
+    p.title person_title,
+    DATE_FORMAT(p.deleted_date, '%Y-%m-%d'),
+    DATE_FORMAT(p.created_on, '%Y-%m-%d'),
+    o.name org_name,
+    LOWER(o.name) AS org_name_wildcard,
+    rd_org_type.description AS org_type,
+    l.lic_no lic_no,
+    rd_lic_type.description lic_type_desc,
+    rd_lic_status.description lic_status_desc,
+    NULL tm_id,
+    NULL tm_status_desc,
+    ta.name traffic_area,
+    l.traffic_area_id,
+    rd_opp_type.description,
+    DATE_FORMAT(opn.raised_date, '%Y-%m-%d') date_added,
+    DATE_FORMAT(c.closed_date, '%Y-%m-%d') date_removed,
+    NULL,
+    c.id
+FROM
+    person p
+        INNER JOIN
+    contact_details cd ON (cd.person_id = p.id)
+        INNER JOIN
+    opposer opp ON opp.contact_details_id = cd.id
+        INNER JOIN
+	opposition opn ON opn.opposer_id = opp.id
+        INNER JOIN 
+	ref_data rd_opp_type ON rd_opp_type.id = opn.opposition_type
+        INNER JOIN 
+	cases c ON c.id = opn.case_id
+        INNER JOIN
+	licence l ON l.id = c.licence_id
+        INNER JOIN 
+	organisation o ON (l.organisation_id = o.id)
+        INNER JOIN
+    ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
+        INNER JOIN
+    ref_data rd_lic_status ON (rd_lic_status.id = l.status)
+        INNER JOIN
+    ref_data rd_org_type ON (rd_org_type.id = o.type)
+        INNER JOIN
+    traffic_area ta ON (ta.id = l.traffic_area_id)
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
