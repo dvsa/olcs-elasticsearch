@@ -52,9 +52,14 @@ FROM
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
-    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(p.last_modified_on, p.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND p.deleted_date IS NULL
+    AND o.deleted_date IS NULL
+    AND l.deleted_date IS NULL
 UNION ALL SELECT 
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
@@ -111,9 +116,14 @@ FROM
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
-    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(p.last_modified_on, p.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND p.deleted_date IS NULL
+    AND o.deleted_date IS NULL
+    AND l.deleted_date IS NULL
 UNION ALL SELECT 
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
@@ -171,9 +181,14 @@ FROM
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
-    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(p.last_modified_on, p.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND p.deleted_date IS NULL
+    AND o.deleted_date IS NULL
+    AND l.deleted_date IS NULL
 UNION ALL 
 SELECT 
     CONCAT_WS('_',
@@ -236,6 +251,11 @@ FROM
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
-    (p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(p.last_modified_on, p.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND p.deleted_date IS NULL
+    AND o.deleted_date IS NULL
+    AND l.deleted_date IS NULL

@@ -57,11 +57,14 @@ FROM
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'case')
 WHERE
-    (c.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR cd_lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR a_lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR tm.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR p_tm.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(c.last_modified_on, c.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(a.last_modified_on, a.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(cd_lic.last_modified_on, cd_lic.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(a_lic.last_modified_on, a_lic.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(tm.last_modified_on, tm.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(p_tm.last_modified_on, p_tm.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND c.deleted_date IS NULL

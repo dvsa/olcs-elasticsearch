@@ -21,7 +21,8 @@ FROM
     ref_data rd_ipa_status ON (ipa.status = rd_ipa_status.id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'irfo')
-    
-    AND
-    (o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-      OR ipa.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+
+    AND (
+        COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(ipa.last_modified_on, ipa.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
