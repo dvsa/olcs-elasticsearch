@@ -65,16 +65,25 @@ FROM
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'busreg')
 WHERE
-    br1.variation_no = COALESCE((SELECT 
-                    MAX(variation_no)
-                FROM
-                    bus_reg br2
-                WHERE
-                    (br2.reg_no = br1.reg_no
-                        AND br2.status NOT IN ('breg_s_refused' , 'breg_s_withdrawn')
-                        AND (br2.end_date IS NULL
-                        OR br2.end_date > NOW()))),
-            0)
-        AND (br1.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    br1.variation_no = COALESCE(
+        (SELECT
+            MAX(variation_no)
+        FROM
+            bus_reg br2
+        WHERE
+            (
+                br2.reg_no = br1.reg_no
+                AND br2.status NOT IN ('breg_s_refused' , 'breg_s_withdrawn')
+                AND (br2.end_date IS NULL
+                OR br2.end_date > NOW()
+            )
+        )
+    ), 0)
+    AND (
+        COALESCE(br1.last_modified_on, br1.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(lic.last_modified_on, lic.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(org.last_modified_on, org.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND br1.deleted_date IS NULL
+    AND lic.deleted_date IS NULL
+    AND org.deleted_date IS NULL

@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     CONCAT_WS('_',
             IFNULL(pl.id, 'none'),
             IFNULL(p.id, 'none'),
@@ -19,11 +19,11 @@ SELECT
     ps.id AS pub_sec_id,
     p.publication_no AS pub_no,
     p.pub_type AS pub_type,
-    CASE 
-       WHEN isnull(p.pub_date) 
-       THEN null 
-       ELSE 
-           DATE_FORMAT(p.pub_date, '%Y-%m-%d') 
+    CASE
+       WHEN ISNULL(p.pub_date)
+       THEN NULL
+       ELSE
+           DATE_FORMAT(p.pub_date, '%Y-%m-%d')
        END pub_date,
     p.pub_status AS pub_status,
     rd1.description AS pub_status_desc,
@@ -49,10 +49,12 @@ FROM
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'publication')
         LEFT JOIN (licence l INNER JOIN organisation o) ON l.id = pl.licence_id AND l.organisation_id = o.id
-    INNER join
+    INNER JOIN
     ref_data rd_lt ON (rd_lt.id = l.licence_type)
-WHERE
-    (pl.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR p.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR ta.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR ps.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+WHERE (
+    COALESCE(pl.last_modified_on, pl.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(p.last_modified_on, p.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(ta.last_modified_on, ta.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(ps.last_modified_on, ps.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+)
+AND pl.deleted_date IS NULL

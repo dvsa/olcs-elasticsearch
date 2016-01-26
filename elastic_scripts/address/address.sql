@@ -57,12 +57,18 @@ FROM
         INNER JOIN
     elastic_update eu ON eu.index_name = 'address'
 WHERE
-    (addr.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR com_app.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR oc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR loc.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(addr.last_modified_on, addr.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(com_app.last_modified_on, com_app.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(org.last_modified_on, org.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(oc.last_modified_on, oc.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(loc.last_modified_on, loc.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(lic.last_modified_on, lic.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND com_app.deleted_date IS NULL
+    AND org.deleted_date IS NULL
+    AND loc.deleted_date IS NULL
+    AND lic.deleted_date IS NULL
   union all
         SELECT
     CONCAT_WS('_',
@@ -105,6 +111,10 @@ FROM
         INNER JOIN
     elastic_update eu ON eu.index_name = 'address'
 WHERE
-    (addr.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR lic.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(addr.last_modified_on, addr.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(org.last_modified_on, org.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(lic.last_modified_on, lic.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND org.deleted_date IS NULL
+    AND lic.deleted_date IS NULL
