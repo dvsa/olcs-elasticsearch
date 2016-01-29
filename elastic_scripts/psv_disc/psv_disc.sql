@@ -27,8 +27,10 @@ FROM
     psv_disc psv ON (l.id = psv.licence_id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'psv_disc')
-WHERE
-    (o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR psv.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-        
+WHERE (
+    COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(psv.last_modified_on, psv.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+)
+AND o.deleted_date IS NULL
+AND l.deleted_date IS NULL

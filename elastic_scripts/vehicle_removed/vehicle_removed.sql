@@ -50,11 +50,17 @@ FROM
     goods_disc gd ON (lv.id = gd.licence_vehicle_id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'vehicle_removed')
-WHERE
-    ((v.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR lv.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR gd.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-        AND lv.removal_date IS NOT NULL)
-        
+WHERE (
+    (
+        COALESCE(v.last_modified_on, v.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(lv.last_modified_on, lv.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(gd.last_modified_on, gd.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND lv.removal_date IS NOT NULL
+    AND v.deleted_date IS NULL
+    AND l.deleted_date IS NULL
+    AND lv.deleted_date IS NULL
+    AND o.deleted_date IS NULL
+)

@@ -29,7 +29,9 @@ FROM
     (contact_details cd_org, address a_org) ON (cd_org.id = o.contact_details_id AND a_org.id = cd_org.address_id)
         LEFT JOIN
     (contact_details cd_irfo, address a_irfo) ON (cd_irfo.id = o.irfo_contact_details_id and a_irfo.id = cd_irfo.address_id)
-WHERE
-   (    o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime) OR
-        a_org.last_modified_on > FROM_UNIXTIME(eu.previous_runtime) OR
-        a_irfo.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+WHERE (
+    COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(a_org.last_modified_on, a_org.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(a_irfo.last_modified_on, a_irfo.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+)
+AND o.deleted_date IS NULL

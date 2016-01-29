@@ -71,9 +71,11 @@ FROM
     traffic_area ta2 ON (o.lead_tc_area_id = ta2.id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'licence')
-WHERE
-    (o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR ta1.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
-        
+WHERE (
+    COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(a.last_modified_on, a.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    OR COALESCE(ta1.last_modified_on, ta1.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+)
+AND o.deleted_date IS NULL
+AND l.deleted_date IS NULL

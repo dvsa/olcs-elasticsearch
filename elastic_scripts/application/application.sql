@@ -41,7 +41,12 @@ FROM
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'application')
 WHERE
-    (ad.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR a.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR l.last_modified_on > FROM_UNIXTIME(eu.previous_runtime)
-        OR o.last_modified_on > FROM_UNIXTIME(eu.previous_runtime))
+    (
+        COALESCE(ad.last_modified_on, ad.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(a.last_modified_on, a.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+        OR COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
+    )
+    AND a.deleted_date IS NULL
+    AND l.deleted_date IS NULL
+    AND o.deleted_date IS NULL
