@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -60,7 +60,7 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-UNION ALL SELECT 
+UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -112,7 +112,7 @@ FROM
     traffic_area ta ON (ta.id = l.traffic_area_id)
         INNER JOIN
     (organisation_type otype, ref_data rd_found_as) ON (otype.org_type_id = o.type
-        AND rd_found_as.id = otype.org_person_type_id) 
+        AND rd_found_as.id = otype.org_person_type_id)
     INNER JOIN
     elastic_update eu ON (eu.index_name = 'person')
 WHERE
@@ -124,7 +124,7 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-UNION ALL SELECT 
+UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -163,12 +163,12 @@ FROM
         INNER JOIN
     contact_details cd ON (cd.person_id = p.id)
         INNER JOIN
-    complaint com ON com.complainant_contact_details_id = cd.id 
-        INNER JOIN 
+    complaint com ON com.complainant_contact_details_id = cd.id
+        INNER JOIN
 	cases c ON c.id = com.case_id
         INNER JOIN
 	licence l ON l.id = c.licence_id
-        INNER JOIN 
+        INNER JOIN
 	organisation o ON (l.organisation_id = o.id)
         INNER JOIN
     ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
@@ -189,8 +189,8 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-UNION ALL 
-SELECT 
+UNION ALL
+SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -232,13 +232,13 @@ FROM
     opposer opp ON opp.contact_details_id = cd.id
         INNER JOIN
 	opposition opn ON opn.opposer_id = opp.id
-        INNER JOIN 
+        INNER JOIN
 	ref_data rd_opp_type ON rd_opp_type.id = opn.opposition_type
-        INNER JOIN 
+        INNER JOIN
 	cases c ON c.id = opn.case_id
         INNER JOIN
 	licence l ON l.id = c.licence_id
-        INNER JOIN 
+        INNER JOIN
 	organisation o ON (l.organisation_id = o.id)
         INNER JOIN
     ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
@@ -259,3 +259,41 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
+UNION
+SELECT
+    CONCAT_WS('_', 'person', 'htm', htm.historic_id, htm.lic_no) AS _id,
+	NULL person_id,
+	NULL org_id,
+	NULL lic_id,
+	NULL contact_type,
+	htm.`forename` person_forename,
+	LOWER(htm.`forename`) person_forename_wildcard,
+	htm.`family_name` person_family_name,
+	LOWER(htm.`family_name`) person_family_name_wildcard,
+	DATE_FORMAT(htm.birth_date, '%Y-%m-%d') person_birth_date,
+	NULL person_other_name,
+	NULL person_birth_place,
+	NULL person_title,
+	NULL person_deleted,
+	NULL person_created_on,
+    NULL org_name,
+    NULL org_name_wildcard,
+    NULL org_type,
+    htm.`lic_no` lic_no,
+    NULL lic_type_desc,
+    NULL lic_status_desc,
+    htm.`historic_id` tm_id,
+    NULL tm_status_desc,
+    NULL traffic_area,
+    NULL ta_code,
+    'Historical TM' found_as,
+    DATE_FORMAT(htm.date_added, '%Y-%m-%d') date_added,
+    DATE_FORMAT(htm.date_removed, '%Y-%m-%d') date_removed,
+    NULL disqualified,
+    NULL case_id
+FROM
+	`historic_tm` htm
+    INNER JOIN
+    elastic_update eu ON (eu.index_name = 'person')
+WHERE eu.`previous_runtime` = 0
+GROUP BY htm.`historic_id`, htm.`lic_no`
