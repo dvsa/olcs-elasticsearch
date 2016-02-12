@@ -33,7 +33,7 @@ FROM
         AND cd.Contact_Type = 'ct_corr'
         AND cd.address_id = ad.id)
         INNER JOIN
-    ref_data rd_lt ON (rd_lt.id = l.licence_type)
+    ref_data rd_lt ON (rd_lt.id = a.licence_type)
         INNER JOIN
     ref_data rd_ls ON (rd_ls.id = l.status)
         INNER JOIN
