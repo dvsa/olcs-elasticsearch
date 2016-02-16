@@ -153,7 +153,7 @@ UNION ALL SELECT
     NULL tm_status_desc,
     ta.name traffic_area,
     l.traffic_area_id,
-    IF(com.is_compliance, 'Compliance Complainant', 'Environmantal Complainant'),
+    IF(com.is_compliance, 'Compliance Complainant', 'Environmental Complainant'),
     DATE_FORMAT(com.complaint_date, '%Y-%m-%d') date_added,
     DATE_FORMAT(com.closed_date, '%Y-%m-%d') date_removed,
     NULL,
