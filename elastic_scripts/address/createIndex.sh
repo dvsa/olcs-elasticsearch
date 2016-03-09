@@ -38,6 +38,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
             "type" : "long",
             "include_in_all" : false
           },
+        "app_id" : {
+            "type" : "long",
+            "include_in_all" : false
+          },
         "lic_no" : {
             "type" : "string",
             "analyzer" : "address_ngram_analyzer"

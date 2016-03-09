@@ -19,13 +19,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
       },
       "properties" : {
           "org_id" : {
-            "type" : "long",
-            "include_in_all" : false
+            "type" : "long"
           },
-          "ipa_id" : {
-              "type" : "long",
-              "include_in_all" : false
-            },
           "org_name" : {
             "type" : "string",
             "index" : "not_analyzed"
@@ -34,31 +29,11 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
-            "org_type_desc" : {
-                "type" : "string",
-                "index" : "not_analyzed"
-              },
-              "service_route_from" : {
-                  "type" : "string",
-                  "analyzer": "irfo_ngram_analyzer"
-                },
-                "service_route_to" : {
-                    "type" : "string",
-                    "analyzer": "irfo_ngram_analyzer"
-                  },
-              "related_lic_num" : {
-                  "type" : "string",
-                  "analyzer": "irfo_ngram_analyzer"
-                },
-          "irfo_status" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-    	 "irfo_status_desc" : {
+          "org_type_desc" : {
             "type" : "string",
             "index" : "not_analyzed"
           }
-        }
+      }
     }
   },
   "settings": {
