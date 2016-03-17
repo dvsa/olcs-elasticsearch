@@ -21,7 +21,7 @@ FROM
         LEFT JOIN
     venue pv ON (ph.venue_id = pv.id)
         INNER JOIN
-    PI ON ph.pi_id = pi.id
+    `pi` ON ph.pi_id = pi.id
         INNER JOIN
     cases c ON pi.case_id = c.id
         INNER JOIN
