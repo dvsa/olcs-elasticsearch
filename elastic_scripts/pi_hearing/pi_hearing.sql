@@ -13,15 +13,15 @@ CONCAT_WS('_',
     ph.id ph_id,
     o.id org_id,
     ph.hearing_date AS hearing_date_time,
-    COALESCE(ph.pi_venue_other, pv.name) venue,
+    COALESCE(ph.venue_other, pv.name) venue,
     l.lic_no lic_no,
     o.name org_name
 FROM
     pi_hearing ph
         LEFT JOIN
-    pi_venue pv ON (ph.pi_venue_id = pv.id)
+    venue pv ON (ph.venue_id = pv.id)
         INNER JOIN
-    pi ON ph.pi_id = pi.id
+    `pi` ON ph.pi_id = pi.id
         INNER JOIN
     cases c ON pi.case_id = c.id
         INNER JOIN
