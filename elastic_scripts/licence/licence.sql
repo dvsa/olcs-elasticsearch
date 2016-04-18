@@ -2,7 +2,6 @@ SELECT
     CONCAT_WS('_',
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none'),
-            IFNULL(a.id, 'none'),
             IFNULL(r1.id, 'none'),
             IFNULL(ta1.id, 'none')) AS _id,
     l.lic_no,
@@ -43,7 +42,6 @@ SELECT
     ta2.name lead_tc,
     o.id org_id,
     l.id lic_id,
-    a.id addr_id,
     r1.id ref_data_id,
     ta1.id ta_id
 FROM
@@ -66,7 +64,6 @@ FROM
     elastic_update eu ON (eu.index_name = 'licence')
 WHERE (
     COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
-    OR COALESCE(a.last_modified_on, a.created_on) > FROM_UNIXTIME(eu.previous_runtime)
     OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
     OR COALESCE(ta1.last_modified_on, ta1.created_on) > FROM_UNIXTIME(eu.previous_runtime)
 )
