@@ -32,10 +32,7 @@ SELECT
     rd_lt.description lic_type_desc_whole,
     rd_ls.description lic_status_desc,
     rd_ls.description lic_status_desc_whole,
-    a.postcode correspondence_postcode,
-    a.saon_desc,
-    a.town,
-    (SELECT 
+    (SELECT
             COUNT(*)
         FROM
             cases
@@ -57,10 +54,6 @@ FROM
     ref_data rd_lt ON (rd_lt.id = l.licence_type)
         INNER JOIN
     ref_data rd_ls ON (rd_ls.id = l.status)
-        LEFT JOIN
-    (contact_details cd, address a) ON (cd.id = l.correspondence_cd_id
-        AND cd.contact_type = 'ct_corr'
-        AND cd.address_id = a.id)
         LEFT JOIN
     ref_data r1 ON (o.type = r1.id)
         LEFT JOIN
