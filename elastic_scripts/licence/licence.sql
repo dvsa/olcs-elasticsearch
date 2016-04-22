@@ -55,7 +55,10 @@ FROM
         LEFT JOIN
     ref_data r1 ON (o.type = r1.id)
         LEFT JOIN
-    trading_name tn ON (l.id = tn.licence_id)
+    trading_name tn ON (
+        l.id = tn.licence_id
+        AND tn.deleted_date IS NULL
+    )
         INNER JOIN
     traffic_area ta1 ON (l.traffic_area_id = ta1.id)
         LEFT JOIN
