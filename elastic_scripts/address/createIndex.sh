@@ -122,7 +122,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
       "analyzer": {
         "address_ngram_analyzer": {
           "tokenizer": "address_ngram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"]
         },
         "address_edgengram_analyzer": {
           "tokenizer": "address_edgengram_tokenizer",
