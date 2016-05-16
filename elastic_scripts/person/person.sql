@@ -5,6 +5,7 @@ SELECT
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
     o.id org_id,
+    o.name as  org_name,
     l.id lic_id,
     cd.contact_type AS contact_type,
     p.forename AS person_forename,
@@ -58,13 +59,19 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-UNION ALL SELECT
+
+
+UNION ALL
+
+
+SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
     o.id org_id,
+    o.name as  org_name,
     l.id lic_id,
     NULL AS contact_type,
     p.forename AS person_forename,
@@ -120,13 +127,19 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-UNION ALL SELECT
+
+
+UNION ALL
+
+
+SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
     o.id org_id,
+    o.name as  org_name,
     l.id lic_id,
     'ct_complainant' AS contact_type,
     p.forename AS person_forename,
@@ -183,7 +196,11 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
+
+
 UNION ALL
+
+
 SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
@@ -191,6 +208,7 @@ SELECT
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
     o.id org_id,
+    o.name as  org_name,
     l.id lic_id,
     'ct_obj' AS contact_type,
     p.forename AS person_forename,
@@ -251,11 +269,16 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
+
+
 UNION
+
+
 SELECT
     CONCAT_WS('_', 'person', 'htm', htm.historic_id, htm.lic_no) AS _id,
 	NULL person_id,
 	NULL org_id,
+	NULL org_name,
 	NULL lic_id,
 	NULL contact_type,
 	htm.`forename` person_forename,

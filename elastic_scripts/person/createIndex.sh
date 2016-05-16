@@ -24,6 +24,9 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/person_v'$version -d '
         "org_id" : {
             "type" : "long"
           },
+        "org_name" : {
+            "type" : "string"
+        },
         "lic_id" : {
             "type" : "long"
           },
