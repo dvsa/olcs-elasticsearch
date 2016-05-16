@@ -27,7 +27,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
     	},
     	"reg_no" : {
     		"type" : "string",
-    		"analyzer" : "busreg_edgengram_analyzer"
+    		"index" : "not_analyzed"
     	},
     	"lic_id" : {
     		"type" : "long",
@@ -63,7 +63,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
 		},
 		"date_1st_reg" : {
 			"type": "date",
-                        "format": "yyyy-MM-dd"
+            "format": "yyyy-MM-dd"
 		},
 		"bus_reg_status" : {
 			"type" : "string",
@@ -110,7 +110,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
         "busreg_ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "4",
-          "max_gram": "14",
+          "max_gram": "10",
           "token_chars": [
             "letter",
             "digit"
@@ -119,7 +119,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
         "busreg_edgengram_tokenizer": {
           "type": "edgeNGram",
           "min_gram": "2",
-          "max_gram": "10",
+          "max_gram": "14",
           "token_chars": [
             "letter",
             "digit"
