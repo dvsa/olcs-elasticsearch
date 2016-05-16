@@ -119,7 +119,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
         "busreg_edgengram_tokenizer": {
           "type": "edgeNGram",
           "min_gram": "2",
-          "max_gram": "14",
+          "max_gram": "10",
           "token_chars": [
             "letter",
             "digit"
