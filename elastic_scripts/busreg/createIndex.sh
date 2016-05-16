@@ -63,7 +63,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
 		},
 		"date_1st_reg" : {
 			"type": "date",
-            "format": "yyyy-MM-dd"
+			"format": "yyyy-MM-dd"
 		},
 		"bus_reg_status" : {
 			"type" : "string",
