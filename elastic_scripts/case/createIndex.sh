@@ -23,7 +23,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/case_v'$version -d '
       "type": "long"
     },
     "case_id": {
-      "type": "long"
+      "type": "long",
+      "index" : "not_analyzed"
     },
     "app_status_desc": {
       "type": "string",
