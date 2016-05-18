@@ -23,6 +23,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/case_v'$version -d '
       "type": "long"
     },
     "case_id": {
+      "include_in_all": "false",
       "type": "long",
       "index" : "not_analyzed"
     },
