@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     CONCAT_WS('_',
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none'),
@@ -9,14 +9,14 @@ SELECT
     o.name org_name,
     LOWER(o.name) org_name_wildcard,
     o.company_or_llp_no,
-    (SELECT 
+    (SELECT
             COUNT(lic.id)
         FROM
             licence lic
         WHERE
             lic.organisation_id = o.id
                 AND lic.status = 'lsts_valid') no_of_licences_held,
-    IF((SELECT 
+    IF((SELECT
                 COUNT(lic.id)
             FROM
                 licence lic
@@ -36,8 +36,14 @@ SELECT
         FROM
             cases
         WHERE
-            licence_id = l.id) case_count,
-    tn.name trading_name,
+            licence_id = l.id
+    ) case_count,
+  (
+    SELECT GROUP_CONCAT(DISTINCT name ORDER BY tn.id ASC SEPARATOR '|')
+    FROM trading_name tn
+    WHERE tn.licence_id = l.id AND tn.deleted_date IS NULL
+    GROUP BY tn.licence_id
+  ) as licence_trading_names,
     ta1.name licence_traffic_area,
     ta2.name lead_tc,
     o.id org_id,
@@ -54,11 +60,6 @@ FROM
     ref_data rd_ls ON (rd_ls.id = l.status)
         LEFT JOIN
     ref_data r1 ON (o.type = r1.id)
-        LEFT JOIN
-    trading_name tn ON (
-        l.id = tn.licence_id
-        AND tn.deleted_date IS NULL
-    )
         INNER JOIN
     traffic_area ta1 ON (l.traffic_area_id = ta1.id)
         LEFT JOIN
