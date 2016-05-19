@@ -38,12 +38,12 @@ SELECT
         WHERE
             licence_id = l.id
     ) case_count,
-  (
-    SELECT GROUP_CONCAT(DISTINCT name ORDER BY tn.id ASC SEPARATOR '|')
-    FROM trading_name tn
-    WHERE tn.licence_id = l.id AND tn.deleted_date IS NULL
-    GROUP BY tn.licence_id
-  ) as licence_trading_names,
+    (
+      SELECT GROUP_CONCAT(DISTINCT name ORDER BY tn.id ASC SEPARATOR '|')
+      FROM trading_name tn
+      WHERE tn.licence_id = l.id AND tn.deleted_date IS NULL
+      GROUP BY tn.licence_id
+    ) as licence_trading_names,
     ta1.name licence_traffic_area,
     ta2.name lead_tc,
     o.id org_id,
