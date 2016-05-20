@@ -27,7 +27,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
     	},
     	"reg_no" : {
     		"type" : "string",
-    		"analyzer" : "busreg_edgengram_analyzer"
+    		"index" : "not_analyzed"
     	},
     	"lic_id" : {
     		"type" : "long",
@@ -63,7 +63,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
 		},
 		"date_1st_reg" : {
 			"type": "date",
-                        "format": "yyyy-MM-dd"
+			"format": "yyyy-MM-dd"
 		},
 		"bus_reg_status" : {
 			"type" : "string",
