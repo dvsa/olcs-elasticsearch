@@ -58,6 +58,7 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
+    AND tm.tm_status != 'tm_s_rem'
 UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
