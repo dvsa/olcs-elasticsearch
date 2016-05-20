@@ -59,12 +59,8 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-
-
-UNION ALL
-
-
-SELECT
+    AND tm.tm_status != 'tm_s_rem'
+UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -127,12 +123,7 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-
-
-UNION ALL
-
-
-SELECT
+UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
             IFNULL(o.id, 'none'),
@@ -196,11 +187,7 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-
-
 UNION ALL
-
-
 SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
@@ -269,16 +256,12 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-
-
 UNION
-
-
 SELECT
     CONCAT_WS('_', 'person', 'htm', htm.historic_id, htm.lic_no) AS _id,
 	NULL person_id,
 	NULL org_id,
-	NULL org_name,
+  NULL org_name,
 	NULL lic_id,
 	NULL contact_type,
 	htm.`forename` person_forename,
