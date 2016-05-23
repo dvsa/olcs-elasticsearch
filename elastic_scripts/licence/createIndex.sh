@@ -26,10 +26,6 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
             "type" : "long",
             "include_in_all" : false
           },
-          "correspondence_postcode" : {
-            "type" : "string",
-            "analyzer" : "licence_edgengram_analyzer"
-          },
          "no_of_licences_held" : {
             "type" : "long",
             "include_in_all" : false
@@ -101,17 +97,9 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
             "type" : "string",
             "include_in_all" : false
           },
-          "saon_desc" : {
-            "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
-          },
           "ta_id" : {
             "type" : "string",
             "include_in_all" : false
-          },
-          "town" : {
-            "type" : "string",
-            "analyzer" : "licence_ngram_analyzer"
           },
           "trading_name" : {
             "type" : "string",

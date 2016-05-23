@@ -83,11 +83,13 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
           },
         "org_name" : {
             "type" : "string",
-            "index" : "not_analyzed"
+            "index" : "not_analyzed",
+            "include_in_all" : false
           },
           "org_name_wildcard" : {
             "type" : "string",
-            "index" : "not_analyzed"
+            "index" : "not_analyzed",
+            "include_in_all" : false
           },
         "complaint_case_id" : {
             "type" : "long",
@@ -122,7 +124,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
       "analyzer": {
         "address_ngram_analyzer": {
           "tokenizer": "address_ngram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+          "filter" : ["standard", "lowercase", "stop"],
+          "char_filter" : ["spaces_removed_pattern"]
         },
         "address_edgengram_analyzer": {
           "tokenizer": "address_edgengram_tokenizer",
@@ -133,7 +136,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
       "tokenizer": {
         "address_ngram_tokenizer": {
           "type": "nGram",
-          "min_gram": "4",
+          "min_gram": "3",
           "max_gram": "10",
           "token_chars": [
             "letter",

@@ -76,14 +76,6 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/person_v'$version -d '
                 "type": "date",
                 "format": "yyyy-MM-dd"
          },
-           "org_name" : {
-             "type" : "string",
-             "index" : "not_analyzed"
-         },
-         "org_name_wildcard" : {
-             "type" : "string",
-             "index" : "not_analyzed"
-         },
          "org_type" : {
              "type" : "string",
              "index" : "not_analyzed"
