@@ -23,6 +23,7 @@ SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     tm.id tm_id,
+    tm_status tm_status_id,
     rd_tm_status.description tm_status_desc,
     ta.name,
     l.traffic_area_id ta_code,
@@ -59,7 +60,6 @@ WHERE
     AND p.deleted_date IS NULL
     AND o.deleted_date IS NULL
     AND l.deleted_date IS NULL
-    AND tm.tm_status != 'tm_s_rem'
 UNION ALL SELECT
     CONCAT_WS('_',
             IFNULL(p.id, 'none'),
@@ -85,6 +85,7 @@ UNION ALL SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     NULL tm_id,
+    NULL tm_status_id,
     NULL tm_status_desc,
     ta.name traffic_area,
     l.traffic_area_id,
@@ -148,6 +149,7 @@ UNION ALL SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     NULL tm_id,
+    NULL tm_status_id,
     NULL tm_status_desc,
     ta.name traffic_area,
     l.traffic_area_id,
@@ -213,6 +215,7 @@ SELECT
     rd_lic_type.description lic_type_desc,
     rd_lic_status.description lic_status_desc,
     NULL tm_id,
+    NULL tm_status_id,
     NULL tm_status_desc,
     ta.name traffic_area,
     l.traffic_area_id,
@@ -279,6 +282,7 @@ SELECT
     NULL lic_type_desc,
     NULL lic_status_desc,
     htm.`historic_id` tm_id,
+    NULL tm_status_id,
     NULL tm_status_desc,
     NULL traffic_area,
     NULL ta_code,
