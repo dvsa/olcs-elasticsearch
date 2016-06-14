@@ -66,10 +66,21 @@ FROM
     traffic_area ta2 ON (o.lead_tc_area_id = ta2.id)
         INNER JOIN
     elastic_update eu ON (eu.index_name = 'licence')
-WHERE (
+WHERE
+  (
     COALESCE(o.last_modified_on, o.created_on) > FROM_UNIXTIME(eu.previous_runtime)
     OR COALESCE(l.last_modified_on, l.created_on) > FROM_UNIXTIME(eu.previous_runtime)
     OR COALESCE(ta1.last_modified_on, ta1.created_on) > FROM_UNIXTIME(eu.previous_runtime)
-)
-AND o.deleted_date IS NULL
-AND l.deleted_date IS NULL
+  )
+
+  AND o.deleted_date IS NULL
+  AND l.deleted_date IS NULL
+
+  AND l.status NOT IN (
+    'lsts_not_submitted',
+    'lsts_consideration',
+    'lsts_granted',
+    'lsts_withdrawn',
+    'lsts_refused',
+    'lsts_ntu'
+  )

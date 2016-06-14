@@ -51,12 +51,3 @@ WHERE
     AND a.deleted_date IS NULL
     AND l.deleted_date IS NULL
     AND o.deleted_date IS NULL
-
-    AND l.status NOT IN (
-        'lsts_not_submitted',
-        'lsts_consideration',
-        'lsts_granted',
-        'lsts_withdrawn',
-        'lsts_refused',
-        'lsts_ntu'
-    )
