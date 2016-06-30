@@ -4,7 +4,6 @@ SELECT
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
-    u.login_id,
     o.id org_id,
     o.name as  org_name,
     l.id lic_id,
@@ -40,8 +39,6 @@ FROM
         INNER JOIN
     person p ON cd.person_id = p.id
         LEFT JOIN
-    `user` u ON (u.transport_manager_id = tm.id)
-        LEFT JOIN
     transport_manager_licence tml ON (tml.transport_manager_id = tm.id)
         LEFT JOIN
     (licence l, organisation o, ref_data rd_lic_type, ref_data rd_lic_status, traffic_area ta, ref_data rd_org_type) ON (o.id = l.organisation_id
@@ -69,7 +66,6 @@ UNION ALL SELECT
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
-    u.login_id,
     o.id org_id,
     o.name as  org_name,
     l.id lic_id,
@@ -102,10 +98,6 @@ FROM
     person p
         INNER JOIN
     organisation_person op ON (op.person_id = p.id)
-        LEFT JOIN
-    contact_details cd ON (cd.person_id = p.id)
-        LEFT JOIN
-    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     organisation o ON (o.id = op.organisation_id)
         LEFT JOIN
@@ -138,7 +130,6 @@ UNION ALL SELECT
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
-    u.login_id,
     o.id org_id,
     o.name as  org_name,
     l.id lic_id,
@@ -171,16 +162,14 @@ FROM
     person p
         INNER JOIN
     contact_details cd ON (cd.person_id = p.id)
-        LEFT JOIN
-    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     complaint com ON com.complainant_contact_details_id = cd.id
         INNER JOIN
-    cases c ON c.id = com.case_id
+	cases c ON c.id = com.case_id
         INNER JOIN
-    licence l ON l.id = c.licence_id
+	licence l ON l.id = c.licence_id
         INNER JOIN
-    organisation o ON (l.organisation_id = o.id)
+	organisation o ON (l.organisation_id = o.id)
         INNER JOIN
     ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
         INNER JOIN
@@ -207,7 +196,6 @@ SELECT
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none')) AS _id,
     p.id person_id,
-    u.login_id,
     o.id org_id,
     o.name as  org_name,
     l.id lic_id,
@@ -240,20 +228,18 @@ FROM
     person p
         INNER JOIN
     contact_details cd ON (cd.person_id = p.id)
-        LEFT JOIN
-    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     opposer opp ON opp.contact_details_id = cd.id
         INNER JOIN
-    opposition opn ON opn.opposer_id = opp.id
+	opposition opn ON opn.opposer_id = opp.id
         INNER JOIN
-    ref_data rd_opp_type ON rd_opp_type.id = opn.opposition_type
+	ref_data rd_opp_type ON rd_opp_type.id = opn.opposition_type
         INNER JOIN
-    cases c ON c.id = opn.case_id
+	cases c ON c.id = opn.case_id
         INNER JOIN
-    licence l ON l.id = c.licence_id
+	licence l ON l.id = c.licence_id
         INNER JOIN
-    organisation o ON (l.organisation_id = o.id)
+	organisation o ON (l.organisation_id = o.id)
         INNER JOIN
     ref_data rd_lic_type ON (rd_lic_type.id = l.licence_type)
         INNER JOIN
@@ -277,7 +263,6 @@ UNION
 SELECT
     CONCAT_WS('_', 'person', 'htm', htm.historic_id, htm.lic_no) AS _id,
 	NULL person_id,
-  NULL login_id,
 	NULL org_id,
   NULL org_name,
 	NULL lic_id,
