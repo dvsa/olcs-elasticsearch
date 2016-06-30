@@ -40,7 +40,7 @@ FROM
         INNER JOIN
     person p ON cd.person_id = p.id
         LEFT JOIN
-    user u ON (tm.id = u.transport_manager_id)
+    `user` u ON (u.transport_manager_id = tm.id)
         LEFT JOIN
     transport_manager_licence tml ON (tml.transport_manager_id = tm.id)
         LEFT JOIN
@@ -103,9 +103,9 @@ FROM
         INNER JOIN
     organisation_person op ON (op.person_id = p.id)
         LEFT JOIN
-    contact_details cd ON (p.id = cd.person_id)
+    contact_details cd ON (cd.person_id = p.id)
         LEFT JOIN
-    user u ON (cd.id = u.contact_details_id OR cd.id = u.partner_contact_details_id)
+    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     organisation o ON (o.id = op.organisation_id)
         LEFT JOIN
@@ -172,7 +172,7 @@ FROM
         INNER JOIN
     contact_details cd ON (cd.person_id = p.id)
         LEFT JOIN
-    user u ON (cd.id = u.contact_details_id OR cd.id = u.partner_contact_details_id)
+    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     complaint com ON com.complainant_contact_details_id = cd.id
         INNER JOIN
@@ -241,7 +241,7 @@ FROM
         INNER JOIN
     contact_details cd ON (cd.person_id = p.id)
         LEFT JOIN
-    user u ON (cd.id = u.contact_details_id OR cd.id = u.partner_contact_details_id)
+    `user` u ON (u.contact_details_id = cd.id)
         INNER JOIN
     opposer opp ON opp.contact_details_id = cd.id
         INNER JOIN
