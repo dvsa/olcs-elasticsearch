@@ -30,6 +30,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/person_v'$version -d '
         "tm_id" : {
             "type" : "long"
           },
+        "login_id" : {
+            "type" : "string",
+            "index" : "not_analyzed"
+          },
         "contact_type" : {
             "type" : "string"
           },
