@@ -70,6 +70,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/user_v'$version -d '
             "type" : "string",
             "index" : "not_analyzed"
           },
+         "lic_nos" : {
+            "type" : "string",
+            "analyzer" : "user_ngram_analyzer"
+         },
           "user_type" : {
             "type" : "string",
             "index" : "not_analyzed"
