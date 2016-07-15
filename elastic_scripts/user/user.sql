@@ -45,7 +45,7 @@ FROM
         LEFT JOIN
     organisation_user ou ON (ou.user_id = u.id)
         LEFT JOIN
-    licence l ON (l.organisation_id = ou.id)
+    licence l ON (l.organisation_id = ou.organisation_id)
         LEFT JOIN
     organisation o ON (o.id = ou.organisation_id)
         INNER JOIN
