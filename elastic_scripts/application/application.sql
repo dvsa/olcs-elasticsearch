@@ -2,8 +2,8 @@ SELECT
     CONCAT_WS('_',
             IFNULL(o.id, 'none'),
             IFNULL(l.id, 'none'),
-            IFNULL(a.id, 'none'),
-            IFNULL(ad.id, 'none')) AS _id,
+            IFNULL(a.id, 'none')
+            ) AS _id,
     a.id app_id,
     l.id lic_id,
     l.lic_no,
