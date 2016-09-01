@@ -24,9 +24,9 @@ SELECT
     r.description user_type,
     r.role,
     t.name description,
-    concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name) partner_name,
+    cd_partner.description partner_name,
     la.description la_name,
-    coalesce(la.description,concat(CASE WHEN partner.forename IS NOT NULL THEN concat(partner.forename, ' ') ELSE NULL END, partner.family_name), o.name, t.name) entity,
+    coalesce(la.description,cd_partner.description, o.name, t.name) entity,
 
     CASE
        WHEN isnull(u.deleted_date)
