@@ -1,0 +1,20 @@
+<project name="OLCS ElasticSearch" default="tar">
+
+    <property name="version-file" value="version"/>
+    <property name="tar-file" value="olcs-elasticsearch"/>
+
+    <target name="tar" description="Create tar.gz file" depends="write-info">
+        <exec executable="tar" failonerror="true">
+            <arg value="-czf${tar-file}.tar.gz"/>
+            <arg line="version elastic_scripts"/>
+        </exec>
+    </target>
+
+    <target name="write-info" description="Write build info to a file" if="version-file">
+        <exec executable="git" output="${version-file}" failonerror="true">
+            <arg line="describe"/>
+        </exec>
+        <exec executable="date" output="${version-file}" append="true" failonerror="true"/>
+    </target>
+
+</project>
