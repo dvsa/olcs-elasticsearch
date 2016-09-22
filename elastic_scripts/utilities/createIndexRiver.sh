@@ -35,7 +35,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta'
         "url": "jdbc:mysql://'"$host"':3306/'"$db"'",
         "user": "'"$username"'",
         "password": "'"$password"'",
-        "sql":[{"statement":"update elastic_update set previous_runtime=0, runtime=unix_timestamp(now()) where index_name = \"'"$index"'\""},{"statement":"'"$final_sql"'"}],
+        "sql":[{"statement":"update elastic_update set previous_runtime=0, runtime=unix_timestamp(now()) where index_name = \"'"$index"'\""},{"statement":"'"$final_sql"'","callable":true}],
         "index": "'"$index"'_v'"$version"'",
         "type": "'"$index"'"
     }
@@ -51,7 +51,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta'
         "user": "'"$username"'",
         "password": "'"$password"'",
         "schedule" : "0 '"$schedule"' 0-23 ? * *",
-        "sql":[{"statement":"update elastic_update set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"'"$index"'\""},{"statement":"'"$final_sql"'"}],
+        "sql":[{"statement":"update elastic_update set previous_runtime=runtime, runtime=unix_timestamp(now()) where index_name = \"'"$index"'\""},{"statement":"'"$final_sql"'","callable":true}],
         "index": "'"$index"'_v'"$version"'",
         "type": "'"$index"'"
     }
