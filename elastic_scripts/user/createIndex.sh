@@ -12,136 +12,183 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/user_v'$version -d '
   "mappings": {
     "user": {
       "_all": {
-        "type": "string",
-        "null_value": "na",
-        "index": "analyzed",
-        "analyzer": "user_ngram_analyzer"
+        "enabled": false
       },
-      "properties" : {
-          "user_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "role_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "org_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "login_id" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "con_det_id" : {
-            "type" : "long",
-            "include_in_all" : false
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "index": "not_analyzed"
         },
-          "identity_pid" : {
-            "type" : "string",
-            "include_in_all" : false
-          },
-        "team_id" : {
-            "type" : "long",
-            "include_in_all" : false
-          },
-          "email_address" : {
-            "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
-          },
-          "forename" : {
-            "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
-          },
-        "family_name" : {
-            "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
-          },
-          "team_name" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "org_name" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "org_name_wildcard" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-         "lic_nos" : {
-            "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
-         },
-          "user_type" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "role" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "description" : {
-            "type" : "string",
-            "analyzer" : "user_ngram_analyzer"
-          },
-          "partner_name" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-          },
-          "la_name" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "deleted_date" : {
-              "type" : "date",
-              "format": "yyyy-MM-dd"
-          },"entity" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-          }
+        "role_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "login_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "con_det_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "identity_pid": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "team_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "email_address": {
+          "type": "string",
+          "analyzer": "urls-links-emails"
+        },
+        "forename": {
+          "type": "string"
+        },
+        "family_name": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "team_name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_name_wildcard": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "lic_nos": {
+          "type": "string",
+              "analyzer" : "comma_sep"
+        },
+        "user_type": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "role": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "description": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "partner_name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "la_name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "deleted_date": {
+          "type": "date",
+          "format": "yyyy-MM-dd"
+        },
+        "entity": {
+          "type": "string",
+          "analyzer": "companies"
         }
+      }
     }
   },
   "settings": {
     "analysis": {
-      "char_filter" : {
-        "spaces_removed_pattern":{
-          "type":"pattern_replace",
-          "pattern":"\\s",
-          "replacement":""
+      "char_filter": {
+        "spaces_removed_pattern": {
+          "type": "pattern_replace",
+          "pattern": "\\s",
+          "replacement": ""
         }
       },
       "analyzer": {
-        "user_ngram_analyzer": {
-          "tokenizer": "user_ngram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+        "companies": {
+          "type": "standard",
+          "stopwords": [
+            "a",
+            "an",
+            "and",
+            "&",
+            "are",
+            "as",
+            "at",
+            "be",
+            "but",
+            "by",
+            "for",
+            "if",
+            "in",
+            "into",
+            "is",
+            "it",
+            "no",
+            "not",
+            "of",
+            "on",
+            "or",
+            "such",
+            "that",
+            "the",
+            "their",
+            "then",
+            "there",
+            "these",
+            "they",
+            "this",
+            "to",
+            "was",
+            "will",
+            "with",
+            "limited",
+            "ltd",
+            "plc",
+            "inc",
+            "incorporated",
+            "llp"
+          ]
         },
-        "user_edgengram_analyzer": {
-          "tokenizer": "user_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"]
+        "names": {
+          "tokenizer": "standard",
+          "filter": [
+            "standard",
+            "lowercase"
+          ]
+        },
+        "urls-links-emails": {
+          "type": "custom",
+          "tokenizer": "uax_url_email",
+          "filter" : [ "lowercase" ]
+        },
+        "lowercase": {
+          "type": "custom",
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "comma_sep": {
+          "type": "custom",
+          "tokenizer": "comma",
+          "filter": [
+            "lowercase"
+          ]
         }
       },
       "tokenizer": {
-        "user_ngram_tokenizer": {
-          "type": "nGram",
-          "min_gram": "4",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
-        },
-        "user_edgengram_tokenizer": {
-          "type": "edgeNGram",
-          "min_gram": "2",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
+        "comma": {
+          "type": "pattern",
+          "pattern": ", "
         }
       }
     }

@@ -12,122 +12,156 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/busreg_v'$version -d '
   "mappings": {
     "busreg": {
       "_all": {
-        "type": "string",
-        "null_value": "na",
-        "index": "analyzed",
-        "analyzer": "busreg_ngram_analyzer"
+        "enabled": false
       },
-      "properties" : {
-    	"busreg_id" : {
-    		"type": "long",
-    		"include_in_all" : false
-    	},
-    	"service_no" : {
-    		"type" : "string"
-    	},
-    	"reg_no" : {
-    		"type" : "string",
-    		"index" : "not_analyzed"
-    	},
-    	"lic_id" : {
-    		"type" : "long",
-    		"include_in_all" : false
-    	},
-    	"lic_no" : {
-    		"type" : "string",
-    		"analyzer" : "busreg_edgengram_analyzer"
-    	},
-    	"lic_status" : {
-    		"type" : "string",
-            "index" : "not_analyzed"
-    	},
-    	"org_name" : {
-            "type" : "string",
-            "index" : "not_analyzed"
+      "properties": {
+        "busreg_id": {
+          "type": "string",
+          "index": "not_analyzed"
         },
-        "org_id" : {
-            "type" : "long",
-            "include_in_all" : false
+        "service_no": {
+          "type": "string",
+          "index": "not_analyzed"
         },
-        "org_name_wildcard" : {
-            "type" : "string",
-            "index" : "not_analyzed"
+        "service_no_analysed": {
+          "type": "string",
+          "analyzer": "pipe_sep"
         },
-		"start_point" : {
-			"type" : "string",
-			"include_in_all" : false
-		},
-		"finish_point" : {
-			"type" : "string",
-			"include_in_all" : false
-		},
-		"date_1st_reg" : {
-			"type": "date",
-			"format": "yyyy-MM-dd"
-		},
-		"bus_reg_status" : {
-			"type" : "string",
-            "index" : "not_analyzed"
-		},
-		"traffic_area" : {
-            "type" : "string",
-            "index" : "not_analyzed"
+        "reg_no": {
+          "type": "string"
         },
-        "ta_code" : {
-            "type" : "string",
-            "index" : "not_analyzed"
+        "lic_id": {
+          "type": "string",
+          "index": "not_analyzed"
         },
-		"route_no" : {
-			"type" : "integer"
-		},
-		"variation_no" : {
-			"type" : "integer"
-		}
-       }
+        "lic_no": {
+          "type": "string"
+        },
+        "lic_status": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_name": {
+          "type": "string",
+          "analyzer": "companies"
+        },
+        "org_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_name_wildcard": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "start_point": {
+          "type": "string"
+        },
+        "finish_point": {
+          "type": "string"
+        },
+        "date_1st_reg": {
+          "type": "date",
+          "format": "yyyy-MM-dd",
+          "index": "not_analyzed"
+        },
+        "bus_reg_status": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "traffic_area": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "ta_code": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "route_no": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "variation_no": {
+          "type": "string",
+          "index": "not_analyzed"
+        }
+      }
     }
   },
   "settings": {
     "analysis": {
-      "char_filter" : {
-        "spaces_removed_pattern":{
-          "type":"pattern_replace",
-          "pattern":"\\s",
-          "replacement":""
+      "char_filter": {
+        "spaces_removed_pattern": {
+          "type": "pattern_replace",
+          "pattern": "\\s",
+          "replacement": ""
         }
       },
       "analyzer": {
-        "busreg_ngram_analyzer": {
-          "tokenizer": "busreg_ngram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+        "companies": {
+          "type": "standard",
+          "stopwords": [
+            "a",
+            "an",
+            "and",
+            "&",
+            "are",
+            "as",
+            "at",
+            "be",
+            "but",
+            "by",
+            "for",
+            "if",
+            "in",
+            "into",
+            "is",
+            "it",
+            "no",
+            "not",
+            "of",
+            "on",
+            "or",
+            "such",
+            "that",
+            "the",
+            "their",
+            "then",
+            "there",
+            "these",
+            "they",
+            "this",
+            "to",
+            "was",
+            "will",
+            "with",
+            "limited",
+            "ltd",
+            "plc",
+            "inc",
+            "incorporated",
+            "llp"
+          ]
         },
-        "busreg_edgengram_analyzer": {
-          "tokenizer": "busreg_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"]
+        "lowercase": {
+          "type": "custom",
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "pipe_sep": {
+          "type" : "custom",
+          "tokenizer" : "pipe",
+          "filter": ["lowercase"]
         }
       },
       "tokenizer": {
-        "busreg_ngram_tokenizer": {
-          "type": "nGram",
-          "min_gram": "4",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
-        },
-        "busreg_edgengram_tokenizer": {
-          "type": "edgeNGram",
-          "min_gram": "2",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
+        "pipe" : {
+            "type" : "pattern",
+            "pattern" : "\\|"
         }
       }
     }
-
   }
 }
 '

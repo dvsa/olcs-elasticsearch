@@ -12,18 +12,16 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
   "mappings": {
     "irfo": {
       "_all": {
-        "type": "string",
-        "null_value": "na",
-        "index": "analyzed",
-        "analyzer": "irfo_ngram_analyzer"
+        "enabled": false
       },
       "properties" : {
           "org_id" : {
-            "type" : "long"
+            "type" : "string",
+            "index" : "not_analyzed"
           },
           "org_name" : {
             "type" : "string",
-            "index" : "not_analyzed"
+            "analyzer" : "companies"
           },
           "org_name_wildcard" : {
             "type" : "string",
@@ -31,7 +29,13 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
           },
           "org_type_desc" : {
             "type" : "string",
-            "index" : "not_analyzed"
+          "index": "not_analyzed"
+          },
+          "organisation_trading_names" : {
+            "type" : "string",
+             "analyzer" : "companies",
+              "analyzer" : "pipe_sep"
+
           }
       }
     }
@@ -46,34 +50,68 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/irfo_v'$version -d '
         }
       },
       "analyzer": {
-        "irfo_ngram_analyzer": {
-          "tokenizer": "irfo_ngram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"]
+        "companies": {
+          "type": "standard",
+          "stopwords": [
+            "a",
+            "an",
+            "and",
+            "&",
+            "are",
+            "as",
+            "at",
+            "be",
+            "but",
+            "by",
+            "for",
+            "if",
+            "in",
+            "into",
+            "is",
+            "it",
+            "no",
+            "not",
+            "of",
+            "on",
+            "or",
+            "such",
+            "that",
+            "the",
+            "their",
+            "then",
+            "there",
+            "these",
+            "they",
+            "this",
+            "to",
+            "was",
+            "will",
+            "with",
+            "limited",
+            "ltd",
+            "plc",
+            "inc",
+            "incorporated",
+            "llp"
+          ]
         },
-        "irfo_edgengram_analyzer": {
-          "tokenizer": "irfo_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"]
+        "lowercase": {
+          "type": "custom",
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "pipe_sep": {
+          "type" : "custom",
+          "tokenizer" : "pipe",
+          "filter": ["lowercase"]
         }
       },
       "tokenizer": {
-        "irfo_ngram_tokenizer": {
-          "type": "nGram",
-          "min_gram": "4",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
-        },
-        "irfo_edgengram_tokenizer": {
-          "type": "edgeNGram",
-          "min_gram": "2",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
+        "pipe" : {
+            "type" : "pattern",
+            "pattern" : "|"
         }
       }
     }
