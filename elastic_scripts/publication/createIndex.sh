@@ -12,125 +12,148 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/publication_v'$version -d '
   "mappings": {
     "publication": {
       "_all": {
-        "type": "string",
-        "null_value": "na",
-        "index": "analyzed",
-        "analyzer": "publication_ngram_analyzer"
+        "enabled": false
       },
       "properties": {
         "pub_link_id": {
-          "type": "long",
-          "include_in_all": false
+          "type": "string",
+          "index": "not_analyzed"
         },
         "pub_id": {
-          "type": "long",
-          "include_in_all": false
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_id": {
-            "type": "long",
-            "include_in_all": false
-          },
-          "org_id": {
-              "type": "long",
-              "include_in_all": false
-            },
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
         "ta_id": {
           "type": "string",
-          "include_in_all": false
+          "index": "not_analyzed"
         },
         "pub_sec_id": {
-          "type": "long",
-          "include_in_all": false
+          "type": "string",
+          "index": "not_analyzed"
         },
         "pub_no": {
-          "type": "long",
-          "include_in_all": false
+          "type": "string",
+          "index": "not_analyzed"
         },
         "pub_type": {
           "type": "string",
-          "index" : "not_analyzed"
+          "index": "not_analyzed"
         },
         "pub_date": {
           "type": "date",
-          "format": "yyyy-MM-dd",
-          "include_in_all": false
+          "format": "yyyy-MM-dd"
         },
         "pub_status": {
           "type": "string",
-          "index" : "not_analyzed"
+          "index": "not_analyzed"
         },
         "pub_status_desc": {
           "type": "string",
-          "index" : "not_analyzed"
+          "index": "not_analyzed"
         },
-        "lic_no" : {
-            "type" : "string",
-            "analyzer" : "publication_ngram_analyzer"
-          },
-          "lic_type_desc" : {
-            "type" : "string",
-            "index" : "not_analyzed"
-          },
-          "org_name" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-            "org_name_wildcard" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
+        "lic_no": {
+          "type": "string"
+        },
+        "lic_type_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "org_name": {
+          "type": "string",
+          "analyzer": "companies"
+        },
+        "org_name_wildcard": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
         "traffic_area": {
           "type": "string",
-          "index" : "not_analyzed"
+          "index": "not_analyzed"
         },
         "pub_sec_desc": {
           "type": "string",
-          "index" : "not_analyzed"
+          "index": "not_analyzed"
+        },
+        "text1": {
+          "type": "string",
+          "analyzer": "companies"
+        },
+        "text2": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "text3": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "text_all": {
+          "type": "string",
+          "analyzer": "companies"
         }
       }
     }
   },
   "settings": {
     "analysis": {
-      "char_filter" : {
-        "spaces_removed_pattern":{
-          "type":"pattern_replace",
-          "pattern":"\\s",
-          "replacement":""
+      "char_filter": {
+        "spaces_removed_pattern": {
+          "type": "pattern_replace",
+          "pattern": "\\s",
+          "replacement": ""
         }
       },
       "analyzer": {
-        "publication_ngram_analyzer": {
-          "tokenizer": "publication_ngram_tokenizer",
-          "filter": [
-            "standard",
-            "lowercase",
-            "stop"
-          ]
-        },
-        "publication_edgengram_analyzer": {
-          "tokenizer": "publication_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"]
-        }
-      },
-      "tokenizer": {
-        "publication_ngram_tokenizer": {
-          "type": "nGram",
-          "min_gram": "4",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
-        },
-      "publication_edgengram_tokenizer": {
-          "type": "edgeNGram",
-          "min_gram": "2",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
+        "companies": {
+          "type": "standard",
+          "stopwords": [
+            "a",
+            "an",
+            "and",
+            "&",
+            "are",
+            "as",
+            "at",
+            "be",
+            "but",
+            "by",
+            "for",
+            "if",
+            "in",
+            "into",
+            "is",
+            "it",
+            "no",
+            "not",
+            "of",
+            "on",
+            "or",
+            "such",
+            "that",
+            "the",
+            "their",
+            "then",
+            "there",
+            "these",
+            "they",
+            "this",
+            "to",
+            "was",
+            "will",
+            "with",
+            "limited",
+            "ltd",
+            "plc",
+            "inc",
+            "incorporated",
+            "llp"
           ]
         }
       }

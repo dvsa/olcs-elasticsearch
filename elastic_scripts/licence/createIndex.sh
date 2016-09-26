@@ -29,7 +29,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
           "type": "string"
         },
         "org_type_desc": {
-          "type": "string"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "no_of_licences_held": {
           "type": "string"
@@ -38,7 +39,8 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
           "type": "string"
         },
         "licence_traffic_area": {
-          "type": "string"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_name_wildcard": {
           "type": "string"
@@ -62,8 +64,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
           "type": "string"
         },
         "lic_no": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "string"
         },
         "lic_status_desc_whole": {
           "type": "string"
@@ -76,13 +77,16 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
           "type": "string"
         },
         "lic_type_desc": {
-          "type": "string"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_type_desc_whole": {
-          "type": "string"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_status_desc": {
-          "type": "string"
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }
