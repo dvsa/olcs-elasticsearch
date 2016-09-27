@@ -32,7 +32,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta'
     "type": "jdbc",
     "jdbc": {
         "driver": "com.mysql.jdbc.Driver",
-        "url": "jdbc:mysql://'"$host"':3306/'"$db"'",
+        "url": "jdbc:mysql://'"$host"':3306/'"$db"'?noAccessToProcedureBodies=true",
         "user": "'"$username"'",
         "password": "'"$password"'",
         "sql":[{"statement":"update elastic_update set previous_runtime=0, runtime=unix_timestamp(now()) where index_name = \"'"$index"'\""},{"statement":"'"$final_sql"'","callable":true}],
@@ -47,7 +47,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/_river/olcs_'"$index"'_river/_meta'
     "type": "jdbc",
     "jdbc": {
         "driver": "com.mysql.jdbc.Driver",
-        "url": "jdbc:mysql://'"$host"':3306/'"$db"'",
+        "url": "jdbc:mysql://'"$host"':3306/'"$db"'?noAccessToProcedureBodies=true",
         "user": "'"$username"'",
         "password": "'"$password"'",
         "schedule" : "0 '"$schedule"' 0-23 ? * *",
