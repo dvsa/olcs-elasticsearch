@@ -116,8 +116,14 @@ then
     INDEXES=( "address" "application" "busreg" "case" "irfo" "licence" "operator" "person" "pi_hearing" "psv_disc" "publication" "recipient" "user" "vehicle_current" "vehicle_removed" )
 fi
 
+LOCKFILE=$(readlink -m build.lock)
+if [ -f $LOCKFILE ]; then
+  log "It appears this script is already running, if you believe this is incorrect you can manually delete the lock file '$LOCKFILE'"
+  exit;
+fi
+touch $LOCKFILE
 
-log "
+log "Config:\n
 ELASTIC_HOST = $ELASTIC_HOST\n
 DBHOST = $DBHOST\n
 DBNAME = $DBNAME\n
@@ -148,6 +154,7 @@ if [ ! -z $indexsWithoutAlias ]; then
     if [[ $response != "{\"acknowledged\":true}" ]]; then
         log "$response"
         echo "ERROR $response"
+        rm -f $LOCKFILE
         exit 1
     fi
 fi
@@ -161,6 +168,7 @@ do
     if [[ $response != "{\"acknowledged\":true}" ]]; then
         log "$response"
         echo "ERROR $response"
+        rm -f $LOCKFILE
         exit 1
     fi
 done
@@ -224,6 +232,7 @@ done
 
 if [ "$promoteNewIndex" != "true" ]; then
     echo "Done NOT promoting new index"
+    rm -f $LOCKFILE
     exit
 fi
 
@@ -235,8 +244,9 @@ response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
 if [[ $response != "{\"acknowledged\":true}" ]]; then
     log "$response"
     echo "ERROR $response"
+    rm -f $LOCKFILE
     exit 1
 fi
 
-
+rm -f $LOCKFILE
 echo "Done"
