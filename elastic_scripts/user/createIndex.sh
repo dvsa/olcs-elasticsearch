@@ -28,8 +28,7 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/user_v'$version -d '
           "index": "not_analyzed"
         },
         "login_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "string"
         },
         "con_det_id": {
           "type": "string",
