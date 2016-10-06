@@ -87,6 +87,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/licence_v'$version -d '
         "lic_status_desc": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "lic_status": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }
