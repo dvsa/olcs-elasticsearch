@@ -81,6 +81,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/vehicle_removed_v'$version -d '
         "section_26": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "goods_or_psv_desc": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }

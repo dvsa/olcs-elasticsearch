@@ -97,6 +97,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/publication_v'$version -d '
         "text_all": {
           "type": "string",
           "analyzer": "companies"
+        },
+        "goods_or_psv_desc": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }
