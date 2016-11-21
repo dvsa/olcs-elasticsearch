@@ -105,12 +105,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
         },
         "deleted_date": {
           "type": "date",
-          "format": "yyyy-MM-dd",
           "index": "not_analyzed"
         },
         "created_on": {
           "type": "date",
-          "format": "yyyy-MM-dd",
           "index": "not_analyzed"
         },
         "goods_or_psv_desc": {
