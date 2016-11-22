@@ -133,6 +133,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/person_v'$version -d '
         "case_id": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "goods_or_psv_desc": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }

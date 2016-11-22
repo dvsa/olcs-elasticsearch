@@ -102,6 +102,18 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
         "opposition": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "deleted_date": {
+          "type": "date",
+          "index": "not_analyzed"
+        },
+        "created_on": {
+          "type": "date",
+          "index": "not_analyzed"
+        },
+        "goods_or_psv_desc": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }
