@@ -50,6 +50,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
           "type": "string",
           "index": "not_analyzed"
         },
+        "app_status_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
         "address_type": {
           "type": "string",
           "index": "not_analyzed"
