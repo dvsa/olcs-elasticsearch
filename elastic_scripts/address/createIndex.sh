@@ -118,6 +118,10 @@ response=$(curl -XPUT -s $ELASTIC_HOST':9200/address_v'$version -d '
         "goods_or_psv_desc": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "conditions": {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
     }
