@@ -1,1 +1,1 @@
-CALL sp_elastic_user();
+CALL sp_elastic_user('legacyMode');

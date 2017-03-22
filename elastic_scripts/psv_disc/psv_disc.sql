@@ -1,1 +1,1 @@
-CALL sp_elastic_psv_disc();
+CALL sp_elastic_psv_disc('legacyMode');
