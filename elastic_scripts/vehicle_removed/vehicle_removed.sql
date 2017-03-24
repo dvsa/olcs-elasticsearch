@@ -1,1 +1,1 @@
-CALL sp_elastic_vehicle_removed();
+CALL sp_elastic_vehicle_removed('legacyMode');

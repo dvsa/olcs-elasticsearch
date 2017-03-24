@@ -1,1 +1,1 @@
-CALL sp_elastic_irfo();
+CALL sp_elastic_irfo('legacyMode');

@@ -1,1 +1,1 @@
-CALL sp_elastic_operator();
+CALL sp_elastic_operator('legacyMode');

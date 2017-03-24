@@ -1,1 +1,1 @@
-CALL sp_elastic_application();
+CALL sp_elastic_application('legacyMode');

@@ -1,1 +1,1 @@
-CALL sp_elastic_busreg();
+CALL sp_elastic_busreg('legacyMode');

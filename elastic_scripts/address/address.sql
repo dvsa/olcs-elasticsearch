@@ -1,1 +1,1 @@
-CALL sp_elastic_address();
+CALL sp_elastic_address('legacyMode');

@@ -1,1 +1,1 @@
-CALL sp_elastic_publication();
+CALL sp_elastic_publication('legacyMode');

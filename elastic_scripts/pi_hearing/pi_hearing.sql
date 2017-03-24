@@ -1,1 +1,1 @@
-CALL sp_elastic_pi_hearing();
+CALL sp_elastic_pi_hearing('legacyMode');

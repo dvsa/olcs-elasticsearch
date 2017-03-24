@@ -1,1 +1,1 @@
-CALL sp_elastic_person();
+CALL sp_elastic_person('legacyMode');

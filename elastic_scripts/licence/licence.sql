@@ -1,1 +1,1 @@
-CALL sp_elastic_licence();
+CALL sp_elastic_licence('legacyMode');

@@ -1,1 +1,1 @@
-CALL sp_elastic_recipient();
+CALL sp_elastic_recipient('legacyMode');

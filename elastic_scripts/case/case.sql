@@ -1,1 +1,1 @@
-CALL sp_elastic_case();
+CALL sp_elastic_case('legacyMode');
