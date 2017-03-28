@@ -1,0 +1,9 @@
+# Logstash.yml - Managed by puppet
+
+path.data: /var/lib/logstash
+pipeline.workers: 2
+pipeline.output.workers: 2
+pipeline.batch.size: 1024
+path.config: /etc/logstash/
+log.level: info
+path.logs: /var/log/logstash
