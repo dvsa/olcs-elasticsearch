@@ -2,13 +2,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "CALL sp_elastic_address(:sql_last_value)"
         type => "address"
-        last_run_metadata_path => "/etc/logstash/lastrun/address.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/address.lastrun"
     }
 }
 
@@ -16,13 +16,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_application(:sql_last_value)"
         type => "application"
-        last_run_metadata_path => "/etc/logstash/lastrun/application.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/application.lastrun"
     }
 }
 
@@ -30,13 +30,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_busreg(:sql_last_value)"
         type => "busreg"
-        last_run_metadata_path => "/etc/logstash/lastrun/busreg.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/busreg.lastrun"
     }
 }
 
@@ -44,13 +44,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_case(:sql_last_value)"
         type => "case"
-        last_run_metadata_path => "/etc/logstash/lastrun/case.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/case.lastrun"
     }
 }
 
@@ -58,26 +58,26 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_irfo(:sql_last_value)"
         type => "irfo"
-        last_run_metadata_path => "/etc/logstash/lastrun/irfo.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/irfo.lastrun"
     }
 }
 input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_licence(:sql_last_value)"
         type => "licence"
-        last_run_metadata_path => "/etc/logstash/lastrun/licence.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/licence.lastrun"
     }
 }
 
@@ -85,13 +85,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_person(:sql_last_value)"
         type => "person"
-        last_run_metadata_path => "/etc/logstash/lastrun/person.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/person.lastrun"
     }
 }
 
@@ -99,13 +99,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_psv_disc(:sql_last_value)"
         type => "psv_disc"
-        last_run_metadata_path => "/etc/logstash/lastrun/psv_disc.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/psv_disc.lastrun"
     }
 }
 
@@ -113,26 +113,26 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_publication(:sql_last_value)"
         type => "publication"
-        last_run_metadata_path => "/etc/logstash/lastrun/publication.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/publication.lastrun"
     }
 }
 input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_user(:sql_last_value)"
         type => "user"
-        last_run_metadata_path => "/etc/logstash/lastrun/user.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/user.lastrun"
     }
 }
 
@@ -140,13 +140,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/3 * * * *"
         statement => "call sp_elastic_vehicle_current(:sql_last_value)"
         type => "vehicle_current"
-        last_run_metadata_path => "/etc/logstash/lastrun/vehicle_current.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/vehicle_current.lastrun"
     }
 }
 
@@ -154,13 +154,13 @@ input {
     jdbc {
         jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
         jdbc_driver_class => "com.mysql.jdbc.Driver"
-        jdbc_connection_string => "jdbc:mysql://olcsdb-rds.olcs.reg.nonprod.dvsa.aws:3306/OLCS_RDS_OLCSDB"
-        jdbc_user => "olcsapi"
-        jdbc_password => "somevariable"
-        schedule => "* * * * *"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "*/5 * * * *"
         statement => "call sp_elastic_vehicle_removed(:sql_last_value)"
         type => "vehicle_removed"
-        last_run_metadata_path => "/etc/logstash/lastrun/vehicle_removed.lastrun"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/vehicle_removed.lastrun"
     }
 }
 
@@ -175,11 +175,11 @@ filter {
 output {
     if [type] == "address" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "address"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "address_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "address"
-            template => "/etc/logstash/templates/address.json"
+            template => "<BASEDIR>/templates/address.json"
             manage_template => true
             template_overwrite => true
             template_name => "address"
@@ -188,11 +188,11 @@ output {
 
     if [type] == "application" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "application"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "application_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "application"
-            template => "/etc/logstash/templates/application.json"
+            template => "<BASEDIR>/templates/application.json"
             manage_template => true
             template_overwrite => true
             template_name => "application"
@@ -201,11 +201,11 @@ output {
 
     if [type] == "busreg" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "busreg"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "busreg_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "busreg"
-            template => "/etc/logstash/templates/busreg.json"
+            template => "<BASEDIR>/templates/busreg.json"
             manage_template => true
             template_overwrite => true
             template_name => "busreg"
@@ -214,11 +214,11 @@ output {
 
     if [type] == "case" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "case"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "case_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "case"
-            template => "/etc/logstash/templates/case.json"
+            template => "<BASEDIR>/templates/case.json"
             manage_template => true
             template_overwrite => true
             template_name => "case"
@@ -227,11 +227,11 @@ output {
 
     if [type] == "irfo" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "irfo"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "irfo_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "irfo"
-            template => "/etc/logstash/templates/irfo.json"
+            template => "<BASEDIR>/templates/irfo.json"
             manage_template => true
             template_overwrite => true
             template_name => "irfo"
@@ -240,11 +240,11 @@ output {
 
     if [type] == "licence" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "licence"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "licence_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "licence"
-            template => "/etc/logstash/templates/licence.json"
+            template => "<BASEDIR>/templates/licence.json"
             manage_template => true
             template_overwrite => true
             template_name => "licence"
@@ -253,11 +253,11 @@ output {
 
     if [type] == "person" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "person"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "person_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "person"
-            template => "/etc/logstash/templates/person.json"
+            template => "<BASEDIR>/templates/person.json"
             manage_template => true
             template_overwrite => true
             template_name => "person"
@@ -266,11 +266,11 @@ output {
 
     if [type] == "psv_disc" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "psv_disc"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "psv_disc_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "psv_disc"
-            template => "/etc/logstash/templates/psv_disc.json"
+            template => "<BASEDIR>/templates/psv_disc.json"
             manage_template => true
             template_overwrite => true
             template_name => "psv_disc"
@@ -279,11 +279,11 @@ output {
 
     if [type] == "publication" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "publication"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "publication_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "publication"
-            template => "/etc/logstash/templates/publication.json"
+            template => "<BASEDIR>/templates/publication.json"
             manage_template => true
             template_overwrite => true
             template_name => "publication"
@@ -292,11 +292,11 @@ output {
 
     if [type] == "user" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "user"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "user_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "user"
-            template => "/etc/logstash/templates/user.json"
+            template => "<BASEDIR>/templates/user.json"
             manage_template => true
             template_overwrite => true
             template_name => "user"
@@ -305,11 +305,11 @@ output {
 
     if [type] == "vehicle_current" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "vehicle_current"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "vehicle_current_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "%{type}"
-            template => "/etc/logstash/templates/vehicle_current.json"
+            template => "<BASEDIR>/templates/vehicle_current.json"
             manage_template => true
             template_overwrite => true
             template_name => "vehicle_current"
@@ -318,11 +318,11 @@ output {
 
     if [type] == "vehicle_removed" {
         elasticsearch {
-            hosts => ["http://search.olcs.reg.nonprod.dvsa.aws:9200"]
-            index => "vehicle_removed"
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "vehicle_removed_v<INDEX_VERSION>"
             document_id => "%{doc_id}"
             document_type => "vehicle_removed"
-            template => "/etc/logstash/templates/vehicle_removed.json"
+            template => "<BASEDIR>/templates/vehicle_removed.json"
             manage_template => true
             template_overwrite => true
             template_name => "vehicle_removed"

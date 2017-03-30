@@ -6,7 +6,7 @@
     <target name="tar" description="Create tar.gz file" depends="write-info">
         <exec executable="tar" failonerror="true">
             <arg value="-czf${tar-file}.tar.gz"/>
-            <arg line="version elastic_scripts"/>
+            <arg line="version elastic_scripts logstash"/>
         </exec>
     </target>
 
