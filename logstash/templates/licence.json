@@ -92,6 +92,12 @@
   },
   "settings": {
     "analysis": {
+      "possessive_filter" : {
+            "remove_possessive" : {
+                "type" : "stemmer",
+                "name" : "possessive_english"
+            }
+        },
       "char_filter": {
         "spaces_removed_pattern": {
           "type": "pattern_replace",
@@ -102,6 +108,7 @@
       "analyzer": {
         "companies": {
           "type": "standard",
+          "filter":["possessive_filter"],
           "stopwords": [
             "a",
             "an",
