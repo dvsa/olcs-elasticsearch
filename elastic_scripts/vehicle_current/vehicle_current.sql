@@ -1,1 +1,0 @@
-CALL sp_elastic_vehicle_current('legacyMode')
