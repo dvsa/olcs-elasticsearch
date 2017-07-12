@@ -12,7 +12,8 @@
         },
         "org_name": {
           "type": "string",
-          "analyzer": "companies"
+          "analyzer": "companies",
+          "filter":"my_word_delimiter"
         },
         "org_name_wildcard": {
           "type": "keyword",
@@ -113,7 +114,13 @@
             "asciifolding"
           ]
         }
-      }
+      },
+      "filter" : {
+            "my_word_delimiter" : {
+                "type" : "word_delimiter",
+                "preserve_original": "true"
+            }
+        }
     }
   }
 }
