@@ -12,8 +12,7 @@
         },
         "org_name": {
           "type": "string",
-          "analyzer": "companies",
-          "filter":"my_word_delimiter"
+          "analyzer": "companies"
         },
         "org_name_wildcard": {
           "type": "keyword",
@@ -42,6 +41,7 @@
       "analyzer": {
         "companies": {
           "type": "standard",
+          "filter":"my_word_delimiter",
           "stopwords": [
             "a",
             "an",
