@@ -1,5 +1,5 @@
-{
-  "template": "irfo*",
+{   
+"template": "irfo*",
   "mappings": {
     "irfo": {
       "_all": {
@@ -37,13 +37,12 @@
           "pattern": "\\s",
           "replacement": ""
         }
-      },
+    },
       "analyzer": {
         "companies": {
-          "type": "custom",
           "tokenizer":"standard",
-          "filter":["lowercase","my_stopwords","my_word_delimiter"]
-        },
+          "filter":["my_stopwords","word_delimiter","lowercase"]       
+          },
         "lowercase": {
           "type": "custom",
           "tokenizer": "keyword",
@@ -75,11 +74,10 @@
         }
       },
       "filter" : {
-            "my_word_delimiter" : {
+            "word_delimiter" : {
                 "type" : "word_delimiter",
                 "preserve_original": "true"
-            }
-        },
+            },
             "my_stopwords":{
                 "type":"stop",
                 "stopwords": [
@@ -125,6 +123,7 @@
             "llp"
           ]
             }
+        }
     }
   }
 }
