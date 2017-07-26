@@ -90,26 +90,16 @@
       }
     }
   },
-  "settings": {
+"settings": {
     "analysis": {
-      "possessive_filter" : {
-            "remove_possessive" : {
-                "type" : "stemmer",
-                "name" : "possessive_english"
-            }
-        },
-      "char_filter": {
-        "spaces_removed_pattern": {
-          "type": "pattern_replace",
-          "pattern": "\\s",
-          "replacement": ""
-        }
-      },
-      "analyzer": {
-        "companies": {
-          "type": "standard",
-          "filter":["possessive_filter"],
-          "stopwords": [
+        "filter" : {
+            "my_word_delimiter" : {
+                "type" : "word_delimiter",
+                "preserve_original": "true"
+            },
+            "my_stopwords":{
+                "type":"stop",
+                "stopwords": [
             "a",
             "an",
             "and",
@@ -151,8 +141,29 @@
             "incorporated",
             "llp"
           ]
+            }
+        },
+        "char_filter": {
+        "spaces_removed_pattern": {
+          "type": "pattern_replace",
+          "pattern": "\\s",
+          "replacement": ""
         }
-      }
-    }
+      },
+        "analyzer": {
+            "lowercase": {
+              "filter": [
+                "lowercase"
+              ],
+              "type": "custom",
+              "tokenizer": "keyword"
+           },
+            "companies": {
+              "tokenizer":"standard",
+              "filter":["my_stopwords","my_word_delimiter","lowercase"]       
+              }
+            }
+      
   }
+}
 }
