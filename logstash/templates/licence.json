@@ -10,7 +10,7 @@
           "type": "string"
         },
         "licence_trading_names": {
-          "type": "string",
+          "type": "text",
           "analyzer": "companies"
         },
         "fabs_reference": {
@@ -61,7 +61,7 @@
           "type": "string"
         },
         "org_name": {
-          "type": "string",
+          "type": "text",
           "analyzer": "companies"
         },
         "ta_id": {
@@ -90,13 +90,19 @@
       }
     }
   },
-"settings": {
+  "settings": {
     "analysis": {
         "filter" : {
-            "my_word_delimiter" : {
-                "type" : "word_delimiter",
-                "preserve_original": "true"
-            },
+            "my_tokenizer": {
+          "type": "ngram",
+          "min_gram": 4,
+          "max_gram": 4,
+          "token_chars": [
+            "letter",
+            "digit",
+            "punctuation"
+          ]
+        },
             "my_stopwords":{
                 "type":"stop",
                 "stopwords": [
@@ -160,10 +166,9 @@
            },
             "companies": {
               "tokenizer":"standard",
-              "filter":["my_stopwords","my_word_delimiter","lowercase"]       
+              "filter":["lowercase","my_stopwords","my_tokenizer"]       
               }
             }
-      
   }
 }
 }
