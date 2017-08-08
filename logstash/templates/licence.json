@@ -154,6 +154,11 @@
           "type": "pattern_replace",
           "pattern": "\\s",
           "replacement": ""
+        },
+         "remove_apostrophe": {
+          "type": "pattern_replace",
+          "pattern": "'",
+          "replacement": ""
         }
       },
         "analyzer": {
@@ -166,7 +171,7 @@
            },
             "companies": {
               "tokenizer":"standard",
-              "filter":["lowercase","my_stopwords","my_tokenizer"]       
+              "filter":["lowercase","my_stopwords","remove_apostrophe"]       
               }
             }
   }
