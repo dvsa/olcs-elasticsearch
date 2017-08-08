@@ -19,7 +19,7 @@
           "analyzer": "pipe_sep"
         },
         "reg_no": {
-          "type": "string"
+          "type": "keyword"
         },
         "lic_id": {
           "type": "string",
