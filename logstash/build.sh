@@ -28,7 +28,7 @@ log() {
 }
 
 
-delay=180 # seconds
+delay=70 # seconds
 reindex=60 # minutes
 newVersion=$(date +%s) #timestamp
 CONF_FILE=populate_indices.conf
@@ -130,12 +130,12 @@ do
 
         size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_stats" | python ./py/getIndexSize.py)
         log "${index}_v${newVersion} size = $size"
-        if [ "$size" -lt 1000 ]; then
+        if [ "$size" -lt 10 ]; then
             continue
         fi
 
         if [ "$lastSize" == "$size" ]; then
-            log "Index size not changed, assuming index is fully populated"
+            log "Index document count not changed, assuming index is fully populated"
             break;
         fi
 
@@ -164,6 +164,9 @@ if [[ $response != "{\"acknowledged\":true}" ]]; then
     rm -f $LOCKFILE
     exit 1
 fi
+
+log "Enable replicas"
+curl -s -XPUT "http://$ELASTIC_HOST:9200/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}'
 
 rm -f $LOCKFILE
 echo "Done"
