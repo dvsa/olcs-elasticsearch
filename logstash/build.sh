@@ -25,6 +25,7 @@ log() {
         echo $(date) >> $logfile
         echo -e $1 >> $logfile
     fi
+    logger $1
 }
 
 
