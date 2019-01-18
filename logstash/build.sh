@@ -175,12 +175,9 @@ singleline
 logInfo "INDEX STATS BEFORE" ${syslogEnabled}
 blankline
 
-for index in "${INDEXES[@]}"; do curl -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
-#curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort  
-
+for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
 if [ "${syslogEnabled}" == "true" ]; then
     for index in "${INDEXES[@]}"; do curl -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
-#    curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
 fi
 
 blankline
@@ -418,10 +415,10 @@ singleline
 logInfo "INDEX STATS AFTER" ${syslogEnabled}
 blankline
 
-curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort  
+for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
 
 if [ "${syslogEnabled}" == "true" ]; then
-    curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+    for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
 fi
 
 blankline
