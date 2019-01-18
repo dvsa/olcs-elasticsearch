@@ -95,6 +95,16 @@ processInParallel=false
 syslogEnabled=true
 promoteNewIndex=false
 
+#
+# Determine if this is the first run after the SEARCHDATA instance start, 
+# in which case, no lastrun files will be present in /etc/logstash/lastrun
+#
+
+lastrunCount=$(ls /etc/logstash/lastrun | grep ".*\.lastrun" | wc -l )
+if [[ "$lastrunCount" == "0" ]]; then
+        processInParallel=true
+fi
+
 while getopts "c:f:d:n:i:lps" opt; do
   case $opt in
     c)
