@@ -6,7 +6,7 @@ let errorcount=0
 usage() {
     if [ -n "$1" ]; then
         echo;
-        echo "Error : $1"
+        echo "Error: $1"
     fi
 
     echo;
@@ -16,17 +16,18 @@ usage() {
     echo "        -f <file>     : File to generate eg /etc/logstash/populate_indices.conf"
     echo "        -l            : Promote new index, assign it the alias and delete the old index"
     echo "        -d <seconds>  : Number of seconds delay when checking if rivers are complete"
-    echo "        -i <index>    : Only rebuild one index"
+    echo "        -i <index>    : Rebuild named index - multiple '-i <name>' clauses may be specified"
     echo "        -p            : Rebuild indexes in parallel rather than sequentially"
+    echo "        -s            : Suppress syslog output."
     echo
     exit;
 }
 
 blankline() {
     if [ "$logfile" == "" ]; then
-        echo -e "\n"
+        echo -e ""
     else
-        echo -e "\n" >> $logfile
+        echo -e "" >> $logfile
     fi
 }
 
@@ -46,25 +47,55 @@ doubleline() {
     fi
 }
 
-log() {
+logInfo() {
     if [ "$logfile" == "" ]; then
-        echo -e $(date) $1
+        echo -e $(date) "INFO:   " $1
     else
-        echo $(date) >> $logfile
+        echo $(date) "INFO:   " >> $logfile
         echo -e $1 >> $logfile
     fi
-	
-	logger $1
+
+    if [ "$2" == "true" ]; then
+         logger -i -p user.info -t ESbuild -- "INFO:   $1"
+    fi
+}
+
+logError() {
+    if [ "$logfile" == "" ]; then
+        echo -e $(date) "ERROR:  " $1
+    else
+        echo $(date) "ERROR:  " >> $logfile
+        echo -e $1 >> $logfile
+    fi
+    
+    if [ "$2" == "true" ]; then
+        logger -i -p user.notice -t ESbuild -- "ERROR:  $1"
+    fi
+}
+
+logWarning() {
+    if [ "$logfile" == "" ]; then
+        echo -e $(date) "WARNING:" $1
+    else
+        echo $(date) "WARNING:" >> $logfile
+        echo -e $1 >> $logfile
+    fi
+    
+    if [ "$2" == "true" ]; then
+        logger -i -p user.warning -t ESbuild -- "WARNING:$1"
+    fi
 }
 
 
+
 delay=70 # seconds
-reindex=60 # minutes
 newVersion=$(date +%Y%m%d%H%M%S) #timestamp
 CONF_FILE=populate_indices.conf
 processInParallel=false
+syslogEnabled=true
+promoteNewIndex=false
 
-while getopts "c:f:d:n:i:lp" opt; do
+while getopts "c:f:d:n:i:lps" opt; do
   case $opt in
     c)
         if [ ! -f $OPTARG ]; then
@@ -84,6 +115,9 @@ while getopts "c:f:d:n:i:lp" opt; do
     p)
         processInParallel=true
       ;;
+    s)
+        syslogEnabled=false
+      ;;
     d)
         delay=$OPTARG
       ;;
@@ -91,7 +125,7 @@ while getopts "c:f:d:n:i:lp" opt; do
         newVersion=$OPTARG
       ;;
     i)
-        INDEXES=( "$OPTARG" )
+        INDEXES=(${INDEXES[@]} "${OPTARG}")
       ;;
     \?)
       usage "Invalid option: -$OPTARG";
@@ -118,83 +152,126 @@ fi
 LOCKFILE=$(readlink -m build.lock)
 if [ -f $LOCKFILE ]; then
     doubleline
-    log "WARNING:It appears this script is already running, if you believe this is incorrect you "
-    log "        can manually delete the lock file '$LOCKFILE'"
+    logWarning "This script may already be running, if this is incorrect delete the lock file ${LOCKFILE}." ${syslogEnabled}
     doubleline
     exit;
 fi
 touch $LOCKFILE
 
 doubleline
-log "INFO:   RUN CONFIGURATION"
+logInfo "ES REBUILD WITH THE FOLLOWING CONFIGURATION" ${syslogEnabled}
 blankline
-log "INFO:   Config File:           $CONF_FILE"
-log "INFO:   Working on indexes:    ${INDEXES[*]}"
-log "INFO:   Delay:                 $delay seconds"
-log "INFO:   Reindex:               $reindex minutes"
-log "INFO:   New version:           $newVersion"
+logInfo "ES Rebuild Config File:     ${CONF_FILE}" ${syslogEnabled}
+logInfo "ES Rebuild Target indexes:  ${INDEXES[*]}" ${syslogEnabled}
+logInfo "ES Rebuild Delay:           ${delay}" ${syslogEnabled}
+logInfo "ES Rebuild New version:     ${newVersion}" ${syslogEnabled}
+logInfo "ES Rebuild Syslog Enabled:  ${syslogEnabled}" ${syslogEnabled}
+logInfo "ES Rebuild Promote Index:   ${promoteNewIndex}" ${syslogEnabled}
+logInfo "ES Rebuild Paralellised:    ${processInParallel}" ${syslogEnabled}
+
 blankline
 
 singleline
-log "INFO:   INDEX STATS BEFORE"
+logInfo "INDEX STATS BEFORE" ${syslogEnabled}
 blankline
-curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort
+
+for index in "${INDEXES[@]}"; do curl -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
+#curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort  
+
+if [ "${syslogEnabled}" == "true" ]; then
+    for index in "${INDEXES[@]}"; do curl -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+#    curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+fi
 
 blankline
 
 #BUILD ALL IN PARALLEL
 if [ $processInParallel = true ]; then 
     # BEGINNING  OF OPERATIONS SPECIFIC TO THE BUILD IN PARALLEL OPTION
-	
+    
+    logInfo "DELETING MATCHING INDEXES WITHOUT AN ALIAS." ${syslogEnabled}
+    blankline
+
     for index in "${INDEXES[@]}"
     do
         singleline
-        log "INFO:   DELETING MATCHING INDEXES WITHOUT AN ALIAS"
-        blankline
+        logInfo "Deleting indexes matching [${index}] which have no alias." ${syslogEnabled}
      
         indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py $index })
      
         if [ ! -z $indexsWithoutAlias ]; then
-            log "INFO:   Indexes without aliases : $indexsWithoutAlias"
+            logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
             response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
     
             if [[ "$response" != "{\"acknowledged\":true}" ]]; then
-                log "ERROR:  Matching indexes without aliases were not deleted: [${indexsWithoutAlias}] - error code [${response}]."
-                let $errorcount = $errorcount + 1
+                logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
+                let errorcount = $errorcount + 1
             else
-                log "INFO:   Matching indexes without aliases were deleted - $indexsWithoutAlias"
+                logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
             fi
         else
-            log "INFO:   No matching indexes found without aliases"
+            logInfo "No indexes matching [${index}] were found without aliases" ${syslogEnabled}
         fi
     done
-	
-	log "INFO:   CREATING NEW INDEXES"
+    
     singleline
-    log "INFO:   Stopping logstash"
-    /etc/init.d/logstash stop
+    logInfo "CREATING NEW INDEXES" ${syslogEnabled}
+    blankline
 
-    # IMPROVEMENT REQD: The outcome of the logstash service stop command should be checked and reported
+    logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
+    response=$(/etc/init.d/logstash stop)
+    ret=$?
+    if [[ $ret != 0 ]]; then
+        let errorcount = $errorcount + 1
+        logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+        logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+        blankline
+        doubleline
+        exit $errorcount
+    else
+        logInfo "[${response}]." ${syslogEnabled}
+        logInfo "Successfully stopped the Logstash service." ${syslogEnabled}
+        logInfo "Successfully stopped the Logstash service [${response}]." ${syslogEnabled}
+    fi
 
     for index in "${INDEXES[@]}"
     do
     
-        log "INFO:   Updating config file for index $index and new version - ${index}_v${newVersion}"
+        logInfo "Updating config file for [${index}] index and new version [${index}_v${newVersion}]." ${syslogEnabled}
 
         sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $CONF_FILE
 
-        log "INFO:   Removing last run file - /etc/logstash/lastrun/${index}.lastrun"
-        rm -f /etc/logstash/lastrun/${index}.lastrun
-		
-        # IMPROVEMENT REQD: The outcome of the rm command should be checked and reported
-		# Note that the lastrun file may not be present
+        logInfo "Removing last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
+        # Note that the lastrun file may not be present
+        response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
+        ret=$?
+        if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
+            let errorcount = $errorcount + 1
+            logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
+            logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+            blankline
+            doubleline
+            exit $errorcount
+        else
+            logInfo "Successfully removed last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
+        fi
     done
-	
-    log "INFO:   Starting logstash"
-    /etc/init.d/logstash start
+    
+    logInfo "Starting logstash" ${syslogEnabled}
+    logInfo "Starting Logstash service." ${syslogEnabled}
+    response=$(/etc/init.d/logstash start)
+    ret=$?
+    if [[ $ret != 0 ]]; then
+        let errorcount = $errorcount + 1
+        logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+        logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+        blankline
+        doubleline
+        exit $errorcount
+    else
+        logInfo "Successfully started the Logstash service [${response}]." ${syslogEnabled}
+    fi
 
-    # IMPROVEMENT REQD: The outcome of the logstash service start command should be checked and reported
-		
     # END OF OPERATIONS SPECIFIC TO THE BUILD IN PARALLEL OPTION
 fi
 
@@ -203,46 +280,81 @@ do
     if [ $processInParallel != true ]; then 
         # BEGINNING OF OPERATIONS SPECIFIC TO THE BUILD SEQUENTIALLY OPTION
         singleline
-        log "INFO:   DELETING MATCHING INDEXES WITHOUT AN ALIAS"
+        logInfo "DELETING MATCHING INDEXES WITHOUT AN ALIAS" ${syslogEnabled}
         blankline
      
         indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py $index })
      
         if [ ! -z $indexsWithoutAlias ]; then
-            log "INFO:   Indexes without aliases : $indexsWithoutAlias"
+            logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
             response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
     
             if [[ "$response" != "{\"acknowledged\":true}" ]]; then
-                log "ERROR:  Matching indexes without aliases were not deleted: [${indexsWithoutAlias}] - error code [${response}]."
-                let $errorcount = $errorcount + 1
+                logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
+                let errorcount = $errorcount + 1
             else
-                log "INFO:   Matching indexes without aliases were deleted - $indexsWithoutAlias"
+                logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
             fi
         else
-            log "INFO:   No matching indexes found without aliases"
+            logInfo "No indexes matching [${index}] were found without aliases" ${syslogEnabled}
         fi
 
+        blankline
         singleline
-        log "INFO:   CREATING NEW INDEX : $index"
-        log "INFO:   Updating config file for index $index and new version - ${index}_v${newVersion}"
-        log "INFO:   Stopping logstash"
-        /etc/init.d/logstash stop
+        logInfo "CREATING NEW INDEX [${index}]" ${syslogEnabled}
+        blankline
+        logInfo "Updating config file for [${index}] index and new version [${index}_v${newVersion}]." ${syslogEnabled}
+        logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
+        response=$(/etc/init.d/logstash stop)
+        ret=$?
+        if [[ $ret != 0 ]]; then
+            let errorcount = $errorcount + 1
+            logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+            logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+            blankline
+            doubleline
+            exit $errorcount
+        else
+            logInfo "[${response}]." ${syslogEnabled}
+            logInfo "Successfully stopped the Logstash service." ${syslogEnabled}
+            logInfo "Successfully stopped the Logstash service [${response}]." ${syslogEnabled}
+        fi
 
         sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $CONF_FILE
 
-        log "INFO:   Removing last run file - /etc/logstash/lastrun/${index}.lastrun"
-        rm -f /etc/logstash/lastrun/${index}.lastrun
+        logInfo "Removing last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
+        # Note that the lastrun file may not be present
+        response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
+        ret=$?
+        if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
+            let errorcount = $errorcount + 1
+            logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
+            logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+            blankline
+            doubleline
+            exit $errorcount
+        else
+            logInfo "Successfully removed last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
+        fi
 
-        # IMPROVEMENT REQD: The outcome of the rm command should be checked and reported
-		# Note that the lastrun file may not be present
+        logInfo "Starting Logstash service." ${syslogEnabled}
+        response=$(/etc/init.d/logstash start)
+        ret=$?
+        if [[ $ret != 0 ]]; then
+            let errorcount = $errorcount + 1
+            logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+            logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
+            blankline
+            doubleline
+            exit $errorcount
+        else
+            logInfo "Successfully started the Logstash service [${response}]." ${syslogEnabled}
+        fi
     
-        log "INFO:   Starting logstash"
-        /etc/init.d/logstash start
-    
-	    # END OF OPERATIONS SPECIFIC TO THE BUILD SEQUENTIALLY OPTION
+        # END OF OPERATIONS SPECIFIC TO THE BUILD SEQUENTIALLY OPTION
     fi
 
-    log "INFO:   Populate Index $index"
+    logInfo "Populate Index [${index}]." ${syslogEnabled}
 
     lastSize=0
     while true; do
@@ -250,77 +362,90 @@ do
         sleep $delay
 
         size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_stats" | python ./py/getIndexSize.py)
-        log "INFO:   ${index}_v${newVersion} size = $size"
+        logInfo "Loading data to [${index}_v${newVersion}] document count is $size" ${syslogEnabled}
         if [ "$size" -lt 10 ]; then
             continue
         fi
 
         if [ "$lastSize" == "$size" ]; then
-            log "INFO:   Document count of [${index}] index has not changed in the last ${delay} secs, it may be fully populated."
+            logInfo "Document count of [${index}_v${newVersion}] index has not changed in the last ${delay} secs, it may be fully populated." ${syslogEnabled}
             if [ -f /etc/logstash/lastrun/${index}.lastrun ]; then
-				log "INFO:   Lastrun file exists, so assuming index is fully populated - $index"
-            	break;
-			fi
+                logInfo "Lastrun file exists, so assuming [${index}_v${newVersion}] is fully populated." ${syslogEnabled}
+                break;
+            fi
         fi
 
         lastSize=$size
     done
 
     if [ "$promoteNewIndex" != "true" ]; then
-        log "INFO:   Alias is not being moved to the new index - $index"
+        logInfo "Alias [${index}] is not being moved to the new index [${index}_v${newVersion}]." ${syslogEnabled}
     else
-        log "INFO:   Moving the alias to the new index - $index"
+        logInfo "Moving the alias [${index}] to the new index [${index}_v${newVersion}]." ${syslogEnabled}
         modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python ./py/modifyAliases.py $newVersion $index)
         response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
-        if [[ $response != "{\"acknowledged\":true}" ]]; then
-            log "ERROR:  Alias not moved for $index index - error code is [${response}]."
-            let $errorcount = $errorcount + 1
+        if [[ "${response}" != "{\"acknowledged\":true}" ]]; then
+            logError "Alias [${index}] not moved to [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
+            let errorcount = $errorcount + 1
         else
-            log "INFO:   Successfully moved the alias to the new index - $index"
+            logInfo "Successfully moved alias [${index}] to the new index [${index}_v${newVersion}]." ${syslogEnabled}
         fi
     fi
-	
-	log "INFO:   Enable replicas for [${index}] index."
-    curl -s -XPUT "http://$ELASTIC_HOST:9200/${index}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}'
-
-    # IMPROVEMENT REQD: The outcome of the curl command should be checked and reported
-
+    
+    logInfo "Enable replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
+    response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
+    if [[ ${response} != "{\"acknowledged\":true}" ]]; then
+        logError "Failed to enable replicas for [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
+        let errorcount = $errorcount + 1
+    else
+        logInfo "Successfully configured replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
+    fi
 
     blankline
 done
 
-log "INFO:   Enable ALL replicas"
-curl -s -XPUT "http://$ELASTIC_HOST:9200/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}'
-# IMPROVEMENT REQD: The outcome of the curl command should be checked and reported
+logInfo "Enable ALL replicas" ${syslogEnabled}
+response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
+if [[ $response != "{\"acknowledged\":true}" ]]; then
+    logError "Failed to configure replicas for all indexes - error code is [${response}]." ${syslogEnabled}
+    let errorcount = $errorcount + 1
+else
+    logInfo "Successfully configured replicas for all indexes." ${syslogEnabled}
+fi
 
+blankline
 singleline
-log "INFO:   INDEX STATS AFTER"
+logInfo "INDEX STATS AFTER" ${syslogEnabled}
 blankline
 
-curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort
-blankline
+curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort  
 
-log "INFO:   Removing lock file $LOCKFILE"
+if [ "${syslogEnabled}" == "true" ]; then
+    curl -XGET -s "http://$ELASTIC_HOST:9200/_cat/indices" | sort | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+fi
+
 blankline
+logInfo "Removing lock file [${LOCKFILE}]." ${syslogEnabled}
 
 rm -f $LOCKFILE
 ret=$?
 if [[ $ret != 0 ]]; then
-            log "ERROR:  Failed to remove the Process Lock File: [${LOCKFILE}] - error code ]${ret}]."
-            let $errorcount = $errorcount + 1
+    logError "Failed to remove the Process Lock File: [${LOCKFILE}] - error code [${ret}]." ${syslogEnabled}
+    let errorcount = $errorcount + 1
 else
-            log "INFO:   Process Lock File: [${LOCKFILE}] has been removed."
+    logInfo "Lock File: [${LOCKFILE}] has been removed." ${syslogEnabled}
 fi
 
 if [[ $errorcount != 0 ]]; then
-    log "ERROR:  All processing completed but [$errorcount] errors were detected - please check logs"
+    logError "All processing completed but [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
     blankline
     doubleline
     exit $errorcount
 else
-    log "INFO:   All processing completed with no errors"
+    logInfo "All processing completed with no errors." ${syslogEnabled}
     blankline
     doubleline
     exit 0
 fi
+
 
