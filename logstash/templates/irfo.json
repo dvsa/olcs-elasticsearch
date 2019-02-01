@@ -1,4 +1,4 @@
-{   
+{
 "template": "irfo*",
   "mappings": {
     "irfo": {
@@ -30,6 +30,9 @@
     }
   },
   "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 0,
+    "refresh_interval": "30s",
     "analysis": {
       "char_filter": {
         "spaces_removed_pattern": {
@@ -41,7 +44,7 @@
       "analyzer": {
         "companies": {
           "tokenizer":"standard",
-          "filter":["my_stopwords","word_delimiter","lowercase"]       
+          "filter":["my_stopwords","word_delimiter","lowercase"]
           },
         "lowercase": {
           "type": "custom",
