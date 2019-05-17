@@ -204,7 +204,7 @@ if [ $processInParallel = true ]; then
         singleline
         logInfo "Deleting indexes matching [${index}] which have no alias." ${syslogEnabled}
      
-        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py $index })
+        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python2.7 ./py/indexWithoutAlias.py $index })
      
         if [ ! -z $indexsWithoutAlias ]; then
             logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
@@ -290,7 +290,7 @@ do
         logInfo "DELETING MATCHING INDEXES WITHOUT AN ALIAS" ${syslogEnabled}
         blankline
      
-        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py $index })
+        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python2.7 ./py/indexWithoutAlias.py $index })
      
         if [ ! -z $indexsWithoutAlias ]; then
             logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
@@ -368,7 +368,7 @@ do
         # wait X seconds before checking
         sleep $delay
 
-        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_stats" | python ./py/getIndexSize.py)
+        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_stats" | python2.7 ./py/getIndexSize.py)
         logInfo "Loading data to [${index}_v${newVersion}] document count is $size" ${syslogEnabled}
         if [ "$size" -lt 10 ]; then
             continue
@@ -389,7 +389,7 @@ do
         logInfo "Alias [${index}] is not being moved to the new index [${index}_v${newVersion}]." ${syslogEnabled}
     else
         logInfo "Moving the alias [${index}] to the new index [${index}_v${newVersion}]." ${syslogEnabled}
-        modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python ./py/modifyAliases.py $newVersion $index)
+        modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python2.7 ./py/modifyAliases.py $newVersion $index)
         response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
         if [[ "${response}" != "{\"acknowledged\":true}" ]]; then
             logError "Alias [${index}] not moved to [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
