@@ -147,7 +147,7 @@ done
 
 log "DELETE INDEXES WITHOUT AN ALIAS"
 cd ../utilities
-indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python ./py/indexWithoutAlias.py ${INDEXES[@]})
+indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python2.7 ./py/indexWithoutAlias.py ${INDEXES[@]})
 if [ ! -z $indexsWithoutAlias ]; then
     log "Deleting Indexes without aliases : $indexsWithoutAlias"
     response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
@@ -185,7 +185,7 @@ do
         # wait X seconds before checking
         sleep $delay
 
-        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python ../utilities/py/getIndexSize.py ${index}_v${newVersion})
+        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_status?pretty=1" | python2.7 ../utilities/py/getIndexSize.py ${index}_v${newVersion})
         log "${index}_v${newVersion} size = $size"
         if [ "$size" -lt 1000 ]; then
             continue
@@ -215,7 +215,7 @@ done
 log "INDEX STATS"
 cd ../utilities
 source viewIndexStats.sh > temp.json
-python ./py/checkIndexes.py $newVersion ${INDEXES[@]}
+python2.7 ./py/checkIndexes.py $newVersion ${INDEXES[@]}
 if [ $? -ne 0 ]; then
     log "Major differences in some index document counts need investigation."
 fi
@@ -239,7 +239,7 @@ fi
 
 log "MOVE ALIAS TO NEW INDEX"
 cd ../utilities
-modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python ./py/modifyAliases.py $newVersion ${INDEXES[@]})
+modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python2.7 ./py/modifyAliases.py $newVersion ${INDEXES[@]})
 response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
 if [[ $response != "{\"acknowledged\":true}" ]]; then
     log "$response"
