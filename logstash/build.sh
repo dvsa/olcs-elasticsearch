@@ -212,7 +212,7 @@ if [ $processInParallel = true ]; then
     
             if [[ "$response" != "{\"acknowledged\":true}" ]]; then
                 logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
-                let errorcount = $errorcount + 1
+                let errorcount=$((errorcount + 1))
             else
                 logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
             fi
@@ -226,10 +226,10 @@ if [ $processInParallel = true ]; then
     blankline
 
     logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
-    response=$(/etc/init.d/logstash stop)
+    response=$(/usr/bin/systemctl stop logstash)
     ret=$?
     if [[ $ret != 0 ]]; then
-        let errorcount = $errorcount + 1
+        let errorcount=$((errorcount + 1))
         logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
         logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
         blankline
@@ -253,7 +253,7 @@ if [ $processInParallel = true ]; then
         response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
         ret=$?
         if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
-            let errorcount = $errorcount + 1
+            let errorcount=$((errorcount + 1))
             logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
@@ -266,10 +266,10 @@ if [ $processInParallel = true ]; then
     
     logInfo "Starting logstash" ${syslogEnabled}
     logInfo "Starting Logstash service." ${syslogEnabled}
-    response=$(/etc/init.d/logstash start)
+    response=$(/usr/bin/systemctl start logstash)
     ret=$?
     if [[ $ret != 0 ]]; then
-        let errorcount = $errorcount + 1
+        let errorcount=$((errorcount + 1))
         logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
         logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
         blankline
@@ -298,7 +298,7 @@ do
     
             if [[ "$response" != "{\"acknowledged\":true}" ]]; then
                 logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
-                let errorcount = $errorcount + 1
+                let errorcount=$((errorcount + 1))
             else
                 logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
             fi
@@ -312,10 +312,10 @@ do
         blankline
         logInfo "Updating config file for [${index}] index and new version [${index}_v${newVersion}]." ${syslogEnabled}
         logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
-        response=$(/etc/init.d/logstash stop)
+        response=$(/usr/bin/systemctl stop logstash)
         ret=$?
         if [[ $ret != 0 ]]; then
-            let errorcount = $errorcount + 1
+            let errorcount=$((errorcount + 1))
             logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
@@ -334,7 +334,7 @@ do
         response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
         ret=$?
         if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
-            let errorcount = $errorcount + 1
+            let errorcount=$((errorcount + 1))
             logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
@@ -345,10 +345,10 @@ do
         fi
 
         logInfo "Starting Logstash service." ${syslogEnabled}
-        response=$(/etc/init.d/logstash start)
+        response=$(/usr/bin/systemctl start logstash)
         ret=$?
         if [[ $ret != 0 ]]; then
-            let errorcount = $errorcount + 1
+            let errorcount=$((errorcount + 1))
             logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
@@ -393,7 +393,7 @@ do
         response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
         if [[ "${response}" != "{\"acknowledged\":true}" ]]; then
             logError "Alias [${index}] not moved to [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
-            let errorcount = $errorcount + 1
+            let errorcount=$((errorcount + 1))
         else
             logInfo "Successfully moved alias [${index}] to the new index [${index}_v${newVersion}]." ${syslogEnabled}
         fi
@@ -403,7 +403,7 @@ do
     response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
     if [[ ${response} != "{\"acknowledged\":true}" ]]; then
         logError "Failed to enable replicas for [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
-        let errorcount = $errorcount + 1
+        let errorcount=$((errorcount + 1))
     else
         logInfo "Successfully configured replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
     fi
@@ -415,7 +415,7 @@ logInfo "Enable ALL replicas" ${syslogEnabled}
 response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
 if [[ $response != "{\"acknowledged\":true}" ]]; then
     logError "Failed to configure replicas for all indexes - error code is [${response}]." ${syslogEnabled}
-    let errorcount = $errorcount + 1
+    let errorcount=$((errorcount + 1))
 else
     logInfo "Successfully configured replicas for all indexes." ${syslogEnabled}
 fi
@@ -438,7 +438,7 @@ rm -f $LOCKFILE
 ret=$?
 if [[ $ret != 0 ]]; then
     logError "Failed to remove the Process Lock File: [${LOCKFILE}] - error code [${ret}]." ${syslogEnabled}
-    let errorcount = $errorcount + 1
+    let errorcount=$((errorcount + 1))
 else
     logInfo "Lock File: [${LOCKFILE}] has been removed." ${syslogEnabled}
 fi
