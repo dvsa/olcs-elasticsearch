@@ -89,6 +89,9 @@
         "entity": {
           "type": "string",
           "analyzer": "companies"
+        },
+        "ta_id": {
+          "type": "string"
         }
       }
     }

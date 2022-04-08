@@ -132,6 +132,9 @@
         "found_type": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "ta_id": {
+          "type": "string"
         }
       }
     }
