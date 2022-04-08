@@ -74,6 +74,9 @@
         "variation_no": {
           "type": "string",
           "index": "not_analyzed"
+        },
+        "ta_id": {
+          "type": "string"
         }
       }
     }
