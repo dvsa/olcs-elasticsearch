@@ -61,6 +61,9 @@
         },
         "ta_id": {
           "type": "string"
+        },
+        "ni_flag": {
+          "type": "string"
         }
       }
     }
