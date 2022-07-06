@@ -1,0 +1,332 @@
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "CALL sp_elastic_address(:sql_last_value)"
+        type => "address"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/address.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_application(:sql_last_value)"
+        type => "application"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/application.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_busreg(:sql_last_value)"
+        type => "busreg"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/busreg.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_case(:sql_last_value)"
+        type => "case"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/case.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_irfo(:sql_last_value)"
+        type => "irfo"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/irfo.lastrun"
+    }
+}
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_licence(:sql_last_value)"
+        type => "licence"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/licence.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_person(:sql_last_value)"
+        type => "person"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/person.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_psv_disc(:sql_last_value)"
+        type => "psv_disc"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/psv_disc.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_publication(:sql_last_value)"
+        type => "publication"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/publication.lastrun"
+    }
+}
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_user(:sql_last_value)"
+        type => "user"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/user.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_vehicle_current(:sql_last_value)"
+        type => "vehicle_current"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/vehicle_current.lastrun"
+    }
+}
+
+input {
+    jdbc {
+        jdbc_driver_library => "/opt/dvsa/olcs/mysql-connector-java-5.1.41-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://<DB_HOST>:3306/<DB_NAME>"
+        jdbc_user => "<DB_USER>"
+        jdbc_password => "<DB_PASSWORD>"
+        schedule => "* * * * *"
+        statement => "call sp_elastic_vehicle_removed(:sql_last_value)"
+        type => "vehicle_removed"
+        last_run_metadata_path => "<LOGSTASH_PATH>/lastrun/vehicle_removed.lastrun"
+    }
+}
+
+filter {
+    mutate {
+        rename => {
+            "_id" => "doc_id"
+        }
+    }
+}
+
+output {
+    if [type] == "address" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "address_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "address"
+            template => "<BASEDIR>/templates/address.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "address"
+        }
+    }
+
+    if [type] == "application" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "application_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "application"
+            template => "<BASEDIR>/templates/application.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "application"
+        }
+    }
+
+    if [type] == "busreg" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "busreg_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "busreg"
+            template => "<BASEDIR>/templates/busreg.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "busreg"
+        }
+    }
+
+    if [type] == "case" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "case_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "case"
+            template => "<BASEDIR>/templates/case.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "case"
+        }
+    }
+
+    if [type] == "irfo" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "irfo_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "irfo"
+            template => "<BASEDIR>/templates/irfo.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "irfo"
+        }
+    }
+
+    if [type] == "licence" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "licence_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "licence"
+            template => "<BASEDIR>/templates/licence.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "licence"
+        }
+    }
+
+    if [type] == "person" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "person_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "person"
+            template => "<BASEDIR>/templates/person.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "person"
+        }
+    }
+
+    if [type] == "psv_disc" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "psv_disc_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "psv_disc"
+            template => "<BASEDIR>/templates/psv_disc.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "psv_disc"
+        }
+    }
+
+    if [type] == "publication" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "publication_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "publication"
+            template => "<BASEDIR>/templates/publication.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "publication"
+        }
+    }
+
+    if [type] == "user" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "user_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "user"
+            template => "<BASEDIR>/templates/user.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "user"
+        }
+    }
+
+    if [type] == "vehicle_current" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "vehicle_current_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "%{type}"
+            template => "<BASEDIR>/templates/vehicle_current.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "vehicle_current"
+        }
+    }
+
+    if [type] == "vehicle_removed" {
+        elasticsearch {
+            hosts => ["http://<ES_HOST>:9200"]
+            index => "vehicle_removed_v<INDEX_VERSION>"
+            document_id => "%{doc_id}"
+            document_type => "vehicle_removed"
+            template => "<BASEDIR>/templates/vehicle_removed.json"
+            manage_template => true
+            template_overwrite => true
+            template_name => "vehicle_removed"
+        }
+    }
+
+}

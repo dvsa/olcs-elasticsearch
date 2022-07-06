@@ -5,7 +5,7 @@ import sys
 data = json.load(sys.stdin)
 
 try:
-    index = data['indices'].keys()[0]
-    print(data['indices'][index]['primaries']['docs']['count'])
+    index = list(data['indices'].keys())[0]
+    print((data['indices'][index]['primaries']['docs']['count']))
 except Exception as e:
-    print 0
+    print(0)

@@ -1,85 +1,63 @@
 {
-"template": "case*",
+  "template": "case*",
   "mappings": {
     "case": {
-      "_all": {
-        "enabled": false
-      },
       "properties": {
         "app_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "case_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "app_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "case_type_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "case_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "case_desc": {
-          "type": "string"
+          "type": "text"
         },
         "correspondence_postcode": {
-          "type": "string"
+          "type": "text"
         },
         "lic_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_no": {
-          "type": "string"
+          "type": "text"
         },
         "open_date": {
           "type": "date",
           "format": "yyyy-MM-dd"
         },
         "org_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "org_name": {
-          "type": "string",
+          "type": "text",
           "analyzer": "companies"
         },
         "org_name_wildcard": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "tm_family_name": {
-          "type": "string"
-
+          "type": "text"
         },
         "tm_forename": {
-          "type": "string"
-
+          "type": "text"
         },
         "tm_name": {
-          "type": "string"
-
+          "type": "text"
         },
         "tm_id": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "ta_id": {
-          "type": "string"
-        },
-        "ni_flag": {
-          "type": "string"
+          "type": "keyword"
         }
       }
     }
@@ -143,7 +121,6 @@
             "llp"
           ]
         }
-
       }
     }
   }

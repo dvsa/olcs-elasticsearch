@@ -1,96 +1,124 @@
 {
-  "template": "address*",
+"template": "address*",
   "mappings": {
     "address": {
+      "_all": {
+        "enabled": false
+      },
       "properties": {
         "addr_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "oc_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "loc_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "app_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_no": {
-          "type": "text"
+          "type": "string"
         },
         "lic_status": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_status_desc": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "app_status_desc": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "address_type": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "paon_desc": {
-          "type": "text"
+          "type": "string"
         },
         "saon_desc": {
-          "type": "text"
+          "type": "string"
         },
         "street": {
-          "type": "text"
+          "type": "string"
         },
         "locality": {
-          "type": "text"
+          "type": "string"
         },
         "town": {
-          "type": "text"
+          "type": "string"
         },
         "postcode": {
-          "type": "text",
-          "analyzer": "address_edgengram_analyzer"
+          "type": "string",
+          "analyzer" : "address_edgengram_analyzer"
         },
         "full_address": {
-          "type": "text"
+          "type": "string"
         },
         "country_code": {
-          "type": "text"
+          "type": "string"
         },
         "org_name": {
-          "type": "text",
+          "type": "string",
           "analyzer": "companies"
         },
         "org_name_wildcard": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "complaint_case_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "opposition_case_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "complaint": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "opposition": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "deleted_date": {
-          "type": "date"
+          "type": "date",
+          "index": "not_analyzed"
         },
         "created_on": {
-          "type": "date"
+          "type": "date",
+          "index": "not_analyzed"
         },
         "goods_or_psv_desc": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "conditions": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "ta_id": {
+          "type": "string"
+        },
+        "ni_flag": {
+          "type": "string"
         }
       }
     }

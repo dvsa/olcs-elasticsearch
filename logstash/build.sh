@@ -13,7 +13,6 @@ usage() {
     echo "Usage:  build.sh [options]"
     echo;
     echo "        -c <file>     : bash file containing config"
-    echo "        -f <file>     : File to generate eg /etc/logstash/populate_indices.conf"
     echo "        -l            : Promote new index, assign it the alias and delete the old index"
     echo "        -d <seconds>  : Number of seconds delay when checking if rivers are complete"
     echo "        -i <index>    : Rebuild named index - multiple '-i <name>' clauses may be specified"
@@ -86,14 +85,222 @@ logWarning() {
     fi
 }
 
+function stopService()
+{
+    typeset -i retryCount=0
+    typeset -i sleepTime=20
+    typeset -i retryLimit=6
+
+    serviceName="$1"
+
+    if [[ $2 =~ ^[0-9]+$ ]] ; then
+        let sleepTime=$((10#$2))
+    fi
+
+    if [[ $3 =~ ^[0-9]+$ ]] ; then
+        let retryLimit=$((10#$3))
+    fi
+
+    while true
+    do
+        response=$(/usr/bin/systemctl --quiet status ${serviceName})
+        ret=$?
+
+        if [[ $ret == 3 ]]; then
+            logInfo "The [${serviceName}] service is already stopped." ${syslogEnabled}
+            return 0
+        else
+            logInfo "Stopping [${serviceName}] service." ${syslogEnabled}
+            response=$(/usr/bin/systemctl --quiet --job-mode=fail stop ${serviceName})
+            ret=$?
+
+            if [[ $ret != 0 ]]; then
+                let retryCount=$((retryCount + 1))
+                logInfo "Failed to stop the [${serviceName}] service on attempt [${retryCount}] - error code [${ret}]." ${syslogEnabled}
+
+                if (( ${retryCount} < ${retryLimit} )); then
+                    logInfo "Backing off for [${sleepTime}] seconds." ${syslogEnabled}
+                    sleep ${sleepTime}
+                else
+                    logError "Failed to stop the [${serviceName}] service after [${retryCount}] attempts." ${syslogEnabled}
+                    return 1
+                fi
+            else
+                logInfo "Successfully stopped the [${serviceName}] service." ${syslogEnabled}
+                return 0
+            fi
+        fi
+        blankline
+    done
+}
+
+function startService()
+{
+    typeset -i retryCount=0
+    typeset -i sleepTime=20
+    typeset -i retryLimit=6
+    
+    serviceName="$1"
+
+    if [[ $2 =~ ^[0-9]+$ ]] ; then
+        let sleepTime=$((10#$2))
+    fi
+
+    if [[ $3 =~ ^[0-9]+$ ]] ; then
+        let retryLimit=$((10#$3))
+    fi
+
+    while true
+    do
+        response=$(/usr/bin/systemctl --quiet status ${serviceName})
+        ret=$?
+
+        if [[ $ret == 0 ]]; then
+            logInfo "The [${serviceName}] service is already started." ${syslogEnabled}
+            return 0
+        else
+            logInfo "Starting [${serviceName}] service." ${syslogEnabled}
+            response=$(/usr/bin/systemctl --quiet --job-mode=fail start ${serviceName})
+            ret=$?
+
+            if [[ $ret != 0 ]]; then
+                let retryCount=$((retryCount + 1))
+                logInfo "Failed to start the [${serviceName}] service on attempt [${retryCount}] - error code [${ret}]." ${syslogEnabled}
+    
+                if (( ${retryCount} < ${retryLimit} )); then
+                    logInfo "Backing off for [${sleepTime}] seconds." ${syslogEnabled}
+                    sleep ${sleepTime}
+                else
+                    logError "Failed to start the [${serviceName}] service after [${retryCount}] attempts." ${syslogEnabled}
+                    return 1
+                fi
+            else
+                logInfo "Successfully started the [${serviceName}] service." ${syslogEnabled}
+                return 0
+            fi
+        fi
+        blankline
+    done
+}
+
+function removeLastrun()
+{
+    logInfo "Removing last run file [${1}." ${2}
+    # Note that the lastrun file may not be present
+    response=$(rm -f "${1}")
+    ret=$?
+    if [[  -f ${1} ]]; then
+        logError "Failed to remove last run file [${1}] - error code [${ret}]." ${2}
+        return 1
+    else
+        logInfo "Successfully removed last run file [${1}]." ${2}
+    fi
+
+    return 0
+}
+
+function removeLockfile()
+{
+    logInfo "Removing lock file [${1}]." ${syslogEnabled}
+
+    response=$(rm -f "${1}")
+    ret=$?
+    if [[  -f ${1} ]]; then
+        logError "Failed to remove the Process Lock File: [${1}] - error code [${ret}]." ${2}
+        return 1
+    else
+        logInfo "Lock File: [${1}] has been removed." ${2}
+        return 0
+    fi
+}
+
+function enableReplicas()
+{
+    index="${1}" 
+    newVersion="${2}"
+    syslogEnabled="${3}"
+    awsAccount="${4}"
+
+    if [[ "${awsAccount}" == "dev-dvsacloud" ]]; then 
+        logInfo "No need for replicas for [${index}_v${newVersion}] index in [${awsAccount}] account." ${syslogEnabled}
+        return 0
+    else
+        logInfo "Enable replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
+        response=$(curl -s -XPUT "https://$ELASTIC_HOST/${index}_v${newVersion}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
+        if [[ ${response} != "{\"acknowledged\":true}" ]]; then
+            logError "Failed to enable replicas for [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
+            return 1
+        else
+            logInfo "Successfully configured replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
+        fi
+    fi
+
+    return 0
+}
+
+function purgeOldAliases()
+{
+    typeset -i retryCount=0
+    typeset -i sleepTime=20
+    typeset -i retryLimit=6
+
+    index="$1"
+
+    if [[ $2 =~ ^[0-9]+$ ]] ; then
+        let sleepTime=$((10#$2))
+    fi
+
+    if [[ $3 =~ ^[0-9]+$ ]] ; then
+        let retryLimit=$((10#$3))
+    fi
+
+    syslogEnabled="$4"
+    elasticHost="$5"
+
+    while true
+    do
+        singleline
+        logInfo "Deleting indexes matching [${index}] which have no alias." ${syslogEnabled}
+
+        indexsWithoutAlias=$(curl -s -XGET https://${elasticHost}/_aliases | python3 ./py/indexWithoutAlias.py ${index} })
+
+        if [ ! -z $indexsWithoutAlias ]; then
+            logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
+            response=$(curl -XDELETE -s https://${elasticHost}/$indexsWithoutAlias)
+
+            if [[ "$response" != "{\"acknowledged\":true}" ]]; then
+                let retryCount=$((retryCount + 1))
+                logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
+
+                if (( ${retryCount} < ${retryLimit} )); then
+                    logInfo "Backing off for [${sleepTime}] seconds." ${syslogEnabled}
+                    sleep ${sleepTime}
+                else
+                    logError "One or more matching indexes without an alias could not be deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
+                    return 1
+                fi
+            else
+                logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
+                return 0
+            fi
+        else
+            logInfo "No indexes matching [${index}] were found without aliases" ${syslogEnabled}
+            return 0
+        fi
+    
+        blankline
+    done
+}
 
 
 delay=70 # seconds
 newVersion=$(date +%Y%m%d%H%M%S) #timestamp
-CONF_FILE=populate_indices.conf
+confDir='/etc/logstash/conf.d'
 processInParallel=false
 syslogEnabled=true
 promoteNewIndex=false
+awsAccount=$(uname -n | cut -d'.' -f4)
+
 
 #
 # Determine if this is the first run after the SEARCHDATA instance start, 
@@ -102,22 +309,16 @@ promoteNewIndex=false
 
 lastrunCount=$(ls /etc/logstash/lastrun | grep ".*\.lastrun" | wc -l )
 if [[ "$lastrunCount" == "0" ]]; then
-        processInParallel=true
+    processInParallel=true
 fi
 
-while getopts "c:f:d:n:i:lps" opt; do
+while getopts "c:d:n:i:lps" opt; do
   case $opt in
     c)
         if [ ! -f $OPTARG ]; then
           usage "Config file $OPTARG doesn't exist";
         fi
         source $OPTARG
-      ;;
-    f)
-        if [ ! -f $OPTARG ]; then
-          usage "Conf file doesn't exist";
-        fi
-        CONF_FILE=$OPTARG
       ;;
     l)
         promoteNewIndex=true
@@ -146,32 +347,32 @@ while getopts "c:f:d:n:i:lps" opt; do
   esac
 done
 
-if [ -z "$ELASTIC_HOST" ]
+if [ -z "${ELASTIC_HOST}" ]
 then
     usage "ELASTIC_HOST must be specified in config file"
     exit;
 fi
 
 
-if [ -z "$INDEXES" ]
+if [ -z "${INDEXES}" ]
 then
     INDEXES=( "irfo" "busreg" "case" "application" "user" "licence" "psv_disc" "address" "person" "vehicle_current" "publication"  "vehicle_removed" )
 fi
 
 
-LOCKFILE=$(readlink -m build.lock)
-if [ -f $LOCKFILE ]; then
+lockFile=$(readlink -m build.lock)
+if [ -f $lockFile ]; then
     doubleline
-    logWarning "This script may already be running, if this is incorrect delete the lock file ${LOCKFILE}." ${syslogEnabled}
+    logWarning "This script may already be running, if this is incorrect delete the lock file ${lockFile}." ${syslogEnabled}
     doubleline
     exit;
 fi
-touch $LOCKFILE
+touch $lockFile
 
 doubleline
 logInfo "ES REBUILD WITH THE FOLLOWING CONFIGURATION" ${syslogEnabled}
 blankline
-logInfo "ES Rebuild Config File:     ${CONF_FILE}" ${syslogEnabled}
+logInfo "ES Rebuild Config Path Dir: ${confDir}" ${syslogEnabled}
 logInfo "ES Rebuild Target indexes:  ${INDEXES[*]}" ${syslogEnabled}
 logInfo "ES Rebuild Delay:           ${delay}" ${syslogEnabled}
 logInfo "ES Rebuild New version:     ${newVersion}" ${syslogEnabled}
@@ -185,9 +386,9 @@ singleline
 logInfo "INDEX STATS BEFORE" ${syslogEnabled}
 blankline
 
-for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
+for index in "${INDEXES[@]}"; do curl -XGET -ss https://$ELASTIC_HOST/_cat/indices?pretty | grep $index | sort ; done
 if [ "${syslogEnabled}" == "true" ]; then
-    for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+    for index in "${INDEXES[@]}"; do curl -XGET -ss https://$ELASTIC_HOST/_cat/indices?pretty | grep $index | sort ; done | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
 fi
 
 blankline
@@ -201,23 +402,10 @@ if [ $processInParallel = true ]; then
 
     for index in "${INDEXES[@]}"
     do
-        singleline
-        logInfo "Deleting indexes matching [${index}] which have no alias." ${syslogEnabled}
-     
-        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python2.7 ./py/indexWithoutAlias.py $index })
-     
-        if [ ! -z $indexsWithoutAlias ]; then
-            logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
-            response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
-    
-            if [[ "$response" != "{\"acknowledged\":true}" ]]; then
-                logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
-                let errorcount=$((errorcount + 1))
-            else
-                logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
-            fi
-        else
-            logInfo "No indexes matching [${index}] were found without aliases" ${syslogEnabled}
+        purgeOldAliases ${index} 30 6 ${syslogEnabled} ${ELASTIC_HOST}
+        ret=$?
+        if [[ $ret != 0 ]]; then
+            let errorcount=$((errorcount + 1))
         fi
     done
     
@@ -226,19 +414,19 @@ if [ $processInParallel = true ]; then
     blankline
 
     logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
-    response=$(/usr/bin/systemctl stop logstash)
+    stopService "logstash" 30 6
     ret=$?
     if [[ $ret != 0 ]]; then
         let errorcount=$((errorcount + 1))
-        logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+        removeLockfile "${lockFile}" ${syslogEnabled}
+        if [[ $? != 0 ]]; then
+            let errorcount=$((errorcount + 1))
+        fi
+        
         logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
         blankline
         doubleline
         exit $errorcount
-    else
-        logInfo "[${response}]." ${syslogEnabled}
-        logInfo "Successfully stopped the Logstash service." ${syslogEnabled}
-        logInfo "Successfully stopped the Logstash service [${response}]." ${syslogEnabled}
     fi
 
     for index in "${INDEXES[@]}"
@@ -246,37 +434,39 @@ if [ $processInParallel = true ]; then
     
         logInfo "Updating config file for [${index}] index and new version [${index}_v${newVersion}]." ${syslogEnabled}
 
-        sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $CONF_FILE
+        sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $confDir/$index.conf
 
-        logInfo "Removing last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
-        # Note that the lastrun file may not be present
-        response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
-        ret=$?
-        if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
+        removeLastrun "/etc/logstash/lastrun/${index}.lastrun"  ${syslogEnabled}
+        if [[ $? != 0 ]]; then
             let errorcount=$((errorcount + 1))
-            logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
+            removeLockfile "${lockFile}" ${syslogEnabled}
+            if [[ $? != 0 ]]; then
+                let errorcount=$((errorcount + 1))
+            fi
+        
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
             doubleline
             exit $errorcount
-        else
-            logInfo "Successfully removed last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
         fi
+        
     done
     
-    logInfo "Starting logstash" ${syslogEnabled}
-    logInfo "Starting Logstash service." ${syslogEnabled}
-    response=$(/usr/bin/systemctl start logstash)
+    logInfo "Starting Logstash service after config file updates.." ${syslogEnabled}
+
+    startService "logstash" 30 6 
     ret=$?
     if [[ $ret != 0 ]]; then
         let errorcount=$((errorcount + 1))
-        logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+        removeLockfile "${lockFile}" ${syslogEnabled}
+        if [[ $? != 0 ]]; then
+            let errorcount=$((errorcount + 1))
+        fi
+        
         logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
         blankline
         doubleline
         exit $errorcount
-    else
-        logInfo "Successfully started the Logstash service [${response}]." ${syslogEnabled}
     fi
 
     # END OF OPERATIONS SPECIFIC TO THE BUILD IN PARALLEL OPTION
@@ -290,20 +480,10 @@ do
         logInfo "DELETING MATCHING INDEXES WITHOUT AN ALIAS" ${syslogEnabled}
         blankline
      
-        indexsWithoutAlias=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases | python2.7 ./py/indexWithoutAlias.py $index })
-     
-        if [ ! -z $indexsWithoutAlias ]; then
-            logInfo "Matching indexes without aliases are [${indexsWithoutAlias}]." ${syslogEnabled}
-            response=$(curl -XDELETE -s $ELASTIC_HOST:9200/$indexsWithoutAlias)
-    
-            if [[ "$response" != "{\"acknowledged\":true}" ]]; then
-                logError "One or more matching indexes without an alias was not deleted: [${indexsWithoutAlias}] - error code [${response}]." ${syslogEnabled}
-                let errorcount=$((errorcount + 1))
-            else
-                logInfo "The following matching indexes without aliases were deleted: [${indexsWithoutAlias}]." ${syslogEnabled}
-            fi
-        else
-            logInfo "No indexes matching [${index}] were found without aliases" ${syslogEnabled}
+        purgeOldAliases ${index} 30 6 ${syslogEnabled} ${ELASTIC_HOST}
+        ret=$?
+        if [[ $ret != 0 ]]; then
+            let errorcount=$((errorcount + 1))
         fi
 
         blankline
@@ -312,50 +492,51 @@ do
         blankline
         logInfo "Updating config file for [${index}] index and new version [${index}_v${newVersion}]." ${syslogEnabled}
         logInfo "Stopping Logstash service prior to config file updates." ${syslogEnabled}
-        response=$(/usr/bin/systemctl stop logstash)
+        stopService "logstash" 30 6 
         ret=$?
         if [[ $ret != 0 ]]; then
             let errorcount=$((errorcount + 1))
-            logError "Failed to stop the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+            
+            if [[ $? != 0 ]]; then
+                let errorcount=$((errorcount + 1))
+            fi
+        
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
             doubleline
             exit $errorcount
-        else
-            logInfo "[${response}]." ${syslogEnabled}
-            logInfo "Successfully stopped the Logstash service." ${syslogEnabled}
-            logInfo "Successfully stopped the Logstash service [${response}]." ${syslogEnabled}
         fi
 
-        sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $CONF_FILE
+        sed "s/index => \"${index}_v[0-9]*\"/index => \"${index}_v${newVersion}\"/" -i $confDir/$index.conf
 
-        logInfo "Removing last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
-        # Note that the lastrun file may not be present
-        response=$(rm -f /etc/logstash/lastrun/${index}.lastrun)
-        ret=$?
-        if [[  -f /etc/logstash/lastrun/${index}.lastrun ]]; then
+        removeLastrun "/etc/logstash/lastrun/${index}.lastrun"  ${syslogEnabled}
+        if [[ $? != 0 ]]; then
             let errorcount=$((errorcount + 1))
-            logError "Failed to remove last run file [/etc/logstash/lastrun/${index}.lastrun] - error code [${ret}]." ${syslogEnabled}
+            removeLockfile "${lockFile}" ${syslogEnabled}
+            if [[ $? != 0 ]]; then
+                let errorcount=$((errorcount + 1))
+            fi
+        
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
             doubleline
             exit $errorcount
-        else
-            logInfo "Successfully removed last run file [/etc/logstash/lastrun/${index}.lastrun]." ${syslogEnabled}
         fi
-
+        
         logInfo "Starting Logstash service." ${syslogEnabled}
-        response=$(/usr/bin/systemctl start logstash)
+        startService "logstash" 30 6 
         ret=$?
         if [[ $ret != 0 ]]; then
             let errorcount=$((errorcount + 1))
-            logError "Failed to start the Logstash service [${response}] - error code [${ret}]." ${syslogEnabled}
+            removeLockfile "${lockFile}" ${syslogEnabled}
+            if [[ $? != 0 ]]; then
+                let errorcount=$((errorcount + 1))
+            fi
+        
             logError "Processing aborted due to a fatal error - [${errorcount}] errors were detected - please check logs." ${syslogEnabled}
             blankline
             doubleline
             exit $errorcount
-        else
-            logInfo "Successfully started the Logstash service [${response}]." ${syslogEnabled}
         fi
     
         # END OF OPERATIONS SPECIFIC TO THE BUILD SEQUENTIALLY OPTION
@@ -368,7 +549,7 @@ do
         # wait X seconds before checking
         sleep $delay
 
-        size=$(curl -XGET -s "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_stats" | python2.7 ./py/getIndexSize.py)
+        size=$(curl -XGET -s "https://$ELASTIC_HOST/${index}_v${newVersion}/_stats" | python3 ./py/getIndexSize.py)
         logInfo "Loading data to [${index}_v${newVersion}] document count is $size" ${syslogEnabled}
         if [ "$size" -lt 10 ]; then
             continue
@@ -389,8 +570,8 @@ do
         logInfo "Alias [${index}] is not being moved to the new index [${index}_v${newVersion}]." ${syslogEnabled}
     else
         logInfo "Moving the alias [${index}] to the new index [${index}_v${newVersion}]." ${syslogEnabled}
-        modifyBody=$(curl -s -XGET $ELASTIC_HOST:9200/_aliases?pretty=1 | python2.7 ./py/modifyAliases.py $newVersion $index)
-        response=$(curl -XPOST -s $ELASTIC_HOST':9200/_aliases' -d "$modifyBody")
+        modifyBody=$(curl -s -XGET https://$ELASTIC_HOST/_aliases?pretty | python3 ./py/modifyAliases.py $newVersion $index)
+        response=$(curl -XPOST -s "https://$ELASTIC_HOST/_aliases" -H 'Content-Type: application/json' -d "$modifyBody")
         if [[ "${response}" != "{\"acknowledged\":true}" ]]; then
             logError "Alias [${index}] not moved to [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
             let errorcount=$((errorcount + 1))
@@ -399,48 +580,30 @@ do
         fi
     fi
     
-    logInfo "Enable replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
-    response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/${index}_v${newVersion}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
-    if [[ ${response} != "{\"acknowledged\":true}" ]]; then
+    enableReplicas "${index}" "${newVersion}" "${syslogEnabled}" "${awsAccount}"
+    if [[ $? != 0 ]]; then
         logError "Failed to enable replicas for [${index}_v${newVersion}] - error code is [${response}]." ${syslogEnabled}
         let errorcount=$((errorcount + 1))
-    else
-        logInfo "Successfully configured replicas for [${index}_v${newVersion}] index." ${syslogEnabled}
     fi
 
     blankline
 done
 
-logInfo "Enable ALL replicas" ${syslogEnabled}
-response=$(curl -s -XPUT "http://$ELASTIC_HOST:9200/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 1}}')
-if [[ $response != "{\"acknowledged\":true}" ]]; then
-    logError "Failed to configure replicas for all indexes - error code is [${response}]." ${syslogEnabled}
-    let errorcount=$((errorcount + 1))
-else
-    logInfo "Successfully configured replicas for all indexes." ${syslogEnabled}
-fi
-
-blankline
 singleline
 logInfo "INDEX STATS AFTER" ${syslogEnabled}
 blankline
 
-for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done
+for index in "${INDEXES[@]}"; do curl -XGET -ss https://$ELASTIC_HOST/_cat/indices?pretty | grep $index | sort ; done
 
 if [ "${syslogEnabled}" == "true" ]; then
-    for index in "${INDEXES[@]}"; do curl -XGET -ss http://$ELASTIC_HOST:9200/_cat/indices?pretty | grep $index | sort ; done | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
+    for index in "${INDEXES[@]}"; do curl -XGET -ss https://$ELASTIC_HOST/_cat/indices?pretty | grep $index | sort ; done | sed "s/^/INFO:   /" | while read oneLine; do logger -i -p user.warning -t ESbuild -- "$oneLine"; done
 fi
 
 blankline
-logInfo "Removing lock file [${LOCKFILE}]." ${syslogEnabled}
 
-rm -f $LOCKFILE
-ret=$?
-if [[ $ret != 0 ]]; then
-    logError "Failed to remove the Process Lock File: [${LOCKFILE}] - error code [${ret}]." ${syslogEnabled}
+removeLockfile "${lockFile}" ${syslogEnabled}
+if [[ $? != 0 ]]; then
     let errorcount=$((errorcount + 1))
-else
-    logInfo "Lock File: [${LOCKFILE}] has been removed." ${syslogEnabled}
 fi
 
 if [[ $errorcount != 0 ]]; then
@@ -454,5 +617,3 @@ else
     doubleline
     exit 0
 fi
-
-

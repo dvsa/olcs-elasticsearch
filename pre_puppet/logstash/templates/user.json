@@ -1,77 +1,97 @@
 {
-  "template" : "user*",
+"template" : "user*",
   "mappings": {
     "user": {
+      "_all": {
+        "enabled": false
+      },
       "properties": {
         "user_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "role_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "login_id": {
-          "type": "text"
+          "type": "string"
         },
         "con_det_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "identity_pid": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "team_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "email_address": {
-          "type": "text",
+          "type": "string",
           "analyzer": "urls-links-emails"
         },
         "forename": {
-          "type": "text"
+          "type": "string"
         },
         "family_name": {
-          "type": "text"
+          "type": "string"
         },
         "full_name": {
-          "type": "text"
+          "type": "string"
         },
         "team_name": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_name": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_name_wildcard": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "lic_nos": {
-          "type": "text",
-          "analyzer": "comma_sep"
+          "type": "string",
+              "analyzer" : "comma_sep"
         },
         "user_type": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "role": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "description": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "partner_name": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "la_name": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "deleted_date": {
           "type": "date",
           "format": "yyyy-MM-dd"
         },
         "entity": {
-          "type": "text",
+          "type": "string",
           "analyzer": "companies"
+        },
+        "ta_id": {
+          "type": "string"
         }
       }
     }

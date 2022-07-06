@@ -1,49 +1,35 @@
 {
-"template": "psv_disc*",
+  "template": "psv_disc*",
   "mappings": {
     "psv_disc": {
-      "_all": {
-        "enabled": false
-      },
       "properties": {
         "disc_no": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_id": {
-          "type": "string"
+          "type": "text"
         },
         "lic_no": {
-          "type": "string"
+          "type": "text"
         },
         "org_id": {
-          "type": "string"
+          "type": "text"
         },
         "org_name": {
-          "type": "string",
+          "type": "text",
           "analyzer": "companies"
         },
         "org_name_wildcard": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "psv_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_type_desc": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "ta_id": {
-          "type": "string"
-        },
-        "ni_flag": {
-          "type": "string"
+          "type": "keyword"
         }
       }
     }

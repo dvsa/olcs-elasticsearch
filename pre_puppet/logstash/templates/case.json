@@ -1,65 +1,85 @@
 {
-  "template" : "vehicle_current*",
+"template": "case*",
   "mappings": {
-    "vehicle_current": {
+    "case": {
+      "_all": {
+        "enabled": false
+      },
       "properties": {
-        "removal_date": {
+        "app_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "case_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "app_status_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "lic_status_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "case_type_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "case_status_desc": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "case_desc": {
+          "type": "string"
+        },
+        "correspondence_postcode": {
+          "type": "string"
+        },
+        "lic_id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "lic_no": {
+          "type": "string"
+        },
+        "open_date": {
           "type": "date",
           "format": "yyyy-MM-dd"
         },
-        "disc_no": {
-          "type": "keyword"
-        },
-        "gd_id": {
-          "type": "keyword"
-        },
-        "lic_id": {
-          "type": "keyword"
-        },
-        "lic_no": {
-          "type": "text"
-        },
-        "lic_veh_id": {
-          "type": "keyword"
-        },
         "org_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_name": {
-          "type": "text",
+          "type": "string",
           "analyzer": "companies"
         },
         "org_name_wildcard": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
-        "ref_data_id": {
-          "type": "keyword"
+        "tm_family_name": {
+          "type": "string"
+
         },
-        "specified_date": {
-          "type": "date",
-          "format": "yyyy-MM-dd"
+        "tm_forename": {
+          "type": "string"
+
         },
-        "lic_status": {
-          "type": "keyword"
+        "tm_name": {
+          "type": "string"
+
         },
-        "lic_status_desc": {
-          "type": "keyword"
+        "tm_id": {
+          "type": "string",
+          "index": "not_analyzed"
         },
-        "lic_type_desc": {
-          "type": "keyword"
+        "ta_id": {
+          "type": "string"
         },
-        "veh_id": {
-          "type": "keyword"
-        },
-        "vrm": {
-          "type": "text",
-          "analyzer": "vehicle_current_edgengram_analyzer"
-        },
-        "section_26": {
-          "type": "keyword"
-        },
-        "goods_or_psv_desc": {
-          "type": "keyword"
+        "ni_flag": {
+          "type": "string"
         }
       }
     }
@@ -76,6 +96,7 @@
           "replacement": ""
         }
       },
+
       "analyzer": {
         "companies": {
           "type": "standard",
@@ -121,23 +142,8 @@
             "incorporated",
             "llp"
           ]
-        },
-        "vehicle_current_edgengram_analyzer": {
-          "tokenizer": "vehicle_current_edgengram_tokenizer",
-          "filter" : ["standard", "lowercase", "stop"],
-          "char_filter" : ["spaces_removed_pattern"]
         }
-      },
-      "tokenizer": {
-        "vehicle_current_edgengram_tokenizer": {
-          "type": "edgeNGram",
-          "min_gram": "2",
-          "max_gram": "10",
-          "token_chars": [
-            "letter",
-            "digit"
-          ]
-        }
+
       }
     }
   }

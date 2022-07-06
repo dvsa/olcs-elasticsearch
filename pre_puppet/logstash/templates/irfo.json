@@ -1,13 +1,17 @@
 {
-  "template": "irfo*",
+"template": "irfo*",
   "mappings": {
     "irfo": {
+      "_all": {
+        "enabled": false
+      },
       "properties": {
         "org_id": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "org_name": {
-          "type": "text",
+          "type": "string",
           "analyzer": "companies"
         },
         "org_name_wildcard": {
@@ -15,10 +19,11 @@
           "normalizer": "lowerasciinormalizer"
         },
         "org_type_desc": {
-          "type": "keyword"
+          "type": "string",
+          "index": "not_analyzed"
         },
         "organisation_trading_names": {
-          "type": "text",
+          "type": "string",
           "analyzer": "pipe_sep"
         }
       }
@@ -35,7 +40,7 @@
           "pattern": "\\s",
           "replacement": ""
         }
-      },
+    },
       "analyzer": {
         "companies": {
           "tokenizer":"standard",
@@ -72,13 +77,13 @@
         }
       },
       "filter" : {
-        "word_delimiter" : {
-          "type" : "word_delimiter",
-          "preserve_original": "true"
-        },
-        "my_stopwords":{
-          "type":"stop",
-          "stopwords": [
+            "word_delimiter" : {
+                "type" : "word_delimiter",
+                "preserve_original": "true"
+            },
+            "my_stopwords":{
+                "type":"stop",
+                "stopwords": [
             "a",
             "an",
             "and",
@@ -120,9 +125,8 @@
             "incorporated",
             "llp"
           ]
+            }
         }
-      }
     }
   }
 }
-  
