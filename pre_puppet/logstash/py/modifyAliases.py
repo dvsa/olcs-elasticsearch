@@ -23,4 +23,4 @@ for index in data:
         if alias in aliases:
             actions.append( { "remove" : { "index" : index , "alias" : alias } } )
 
-print(json.dumps({'actions' : actions}))
+print json.dumps({'actions' : actions})

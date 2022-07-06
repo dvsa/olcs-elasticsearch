@@ -13,7 +13,7 @@ then
     ELASTIC_HOST="localhost"
 fi
 
-response=$(curl -XDELETE -s "https://$ELASTIC_HOST/${index}_v${version}")
+response=$(curl -XDELETE -s $ELASTIC_HOST':9200/'$index'_v'$version'')
 if [ "$response" != "{\"acknowledged\":true}" ]; then
     echo $response
 fi

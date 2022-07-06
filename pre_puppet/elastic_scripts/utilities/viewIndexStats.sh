@@ -5,4 +5,4 @@ then
     ELASTIC_HOST="localhost"
 fi
 
-curl -XGET -s "https://$ELASTIC_HOST/_stats?pretty=1"
+curl -XGET -s "http://$ELASTIC_HOST:9200/_stats?pretty=1"

@@ -16,7 +16,7 @@ then
     ELASTIC_HOST="localhost"
 fi
 
-curl -XPOST https://$ELASTIC_HOST/_aliases -d '
+curl -XPOST $ELASTIC_HOST:9200/_aliases -d '
 {
     "actions": [
         { "'"$action"'": {

@@ -1,69 +1,51 @@
 {
-"template": "application*",
+  "template": "application*",
   "mappings": {
     "application": {
-      "_all": {
-        "enabled": false
-      },
       "properties": {
         "app_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "app_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "correspondence_postcode": {
-          "type": "string"
+          "type": "text"
         },
         "lic_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_no": {
-          "type": "string"
+          "type": "text"
         },
         "lic_status_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "lic_type_desc": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "org_name": {
-          "type": "string",
+          "type": "text",
           "analyzer": "companies"
         },
         "org_id": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "org_name_wildcard": {
-          "type": "string"
+          "type": "text"
         },
         "received_date": {
           "type": "date",
           "format": "yyyy-MM-dd"
         },
         "tot_auth_trailers": {
-          "type": "long",
-          "index": "not_analyzed"
+          "type": "long"
         },
         "tot_auth_vehicles": {
-          "type": "long",
-          "index": "not_analyzed"
+          "type": "long"
         },
         "goods_or_psv_desc": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "ta_id": {
-          "type": "string"
-        },
-        "ni_flag": {
-          "type": "string"
+          "type": "keyword"
         }
       }
     }
