@@ -46,6 +46,9 @@
         },
         "goods_or_psv_desc": {
           "type": "keyword"
+        },
+        "ni_flag": {
+          "type": "boolean"
         }
       }
     }
