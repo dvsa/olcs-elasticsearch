@@ -83,6 +83,7 @@
   "settings": {
     "number_of_shards": 3,
     "number_of_replicas": 0,
+    "auto_expand_replicas": ${search_expand_replicas},
     "refresh_interval": "30s",
     "analysis": {
       "char_filter": {
