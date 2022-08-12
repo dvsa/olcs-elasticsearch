@@ -1,43 +1,44 @@
 {
   "template": "psv_disc*",
   "mappings": {
-    "psv_disc": {
-      "properties": {
-        "disc_no": {
-          "type": "keyword"
-        },
-        "lic_id": {
-          "type": "text"
-        },
-        "lic_no": {
-          "type": "text"
-        },
-        "org_id": {
-          "type": "text"
-        },
-        "org_name": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "org_name_wildcard": {
-          "type": "keyword"
-        },
-        "psv_id": {
-          "type": "keyword"
-        },
-        "lic_status_desc": {
-          "type": "keyword"
-        },
-        "lic_type_desc": {
-          "type": "keyword"
-        }
+    "properties": {
+      "disc_no": {
+        "type": "keyword"
+      },
+      "lic_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_no": {
+        "type": "text",
+        "fielddata": true
+      },
+      "org_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "org_name": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "org_name_wildcard": {
+        "type": "keyword"
+      },
+      "psv_id": {
+        "type": "keyword"
+      },
+      "lic_status_desc": {
+        "type": "keyword"
+      },
+      "lic_type_desc": {
+        "type": "keyword"
       }
     }
   },
   "settings": {
     "number_of_shards": 3,
     "number_of_replicas": 0,
-    "auto_expand_replicas": ${search_expand_replicas},
     "refresh_interval": "30s",
     "analysis": {
       "char_filter": {

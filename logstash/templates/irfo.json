@@ -1,33 +1,32 @@
 {
   "template": "irfo*",
   "mappings": {
-    "irfo": {
-      "properties": {
-        "org_id": {
-          "type": "keyword"
-        },
-        "org_name": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "org_name_wildcard": {
-          "type": "keyword",
-          "normalizer": "lowerasciinormalizer"
-        },
-        "org_type_desc": {
-          "type": "keyword"
-        },
-        "organisation_trading_names": {
-          "type": "text",
-          "analyzer": "pipe_sep"
-        }
+    "properties": {
+      "org_id": {
+        "type": "keyword"
+      },
+      "org_name": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "org_name_wildcard": {
+        "type": "keyword",
+        "normalizer": "lowerasciinormalizer"
+      },
+      "org_type_desc": {
+        "type": "keyword"
+      },
+      "organisation_trading_names": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "pipe_sep"
       }
     }
   },
   "settings": {
     "number_of_shards": 3,
     "number_of_replicas": 0,
-    "auto_expand_replicas": ${search_expand_replicas},
     "refresh_interval": "30s",
     "analysis": {
       "char_filter": {
@@ -39,9 +38,13 @@
       },
       "analyzer": {
         "companies": {
-          "tokenizer":"standard",
-          "filter":["my_stopwords","word_delimiter","lowercase"]
-          },
+          "tokenizer": "standard",
+          "filter": [
+            "my_stopwords",
+            "word_delimiter",
+            "lowercase"
+          ]
+        },
         "lowercase": {
           "type": "custom",
           "tokenizer": "keyword",
@@ -72,13 +75,13 @@
           ]
         }
       },
-      "filter" : {
-        "word_delimiter" : {
-          "type" : "word_delimiter",
+      "filter": {
+        "word_delimiter": {
+          "type": "word_delimiter",
           "preserve_original": "true"
         },
-        "my_stopwords":{
-          "type":"stop",
+        "my_stopwords": {
+          "type": "stop",
           "stopwords": [
             "a",
             "an",
@@ -126,4 +129,3 @@
     }
   }
 }
-  

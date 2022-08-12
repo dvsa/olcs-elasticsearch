@@ -1,89 +1,103 @@
 {
   "template": "licence*",
   "mappings": {
-    "licence": {
-      "properties": {
-        "org_type_desc_whole": {
-          "type": "text"
-        },
-        "licence_trading_names": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "fabs_reference": {
-          "type": "text"
-        },
-        "company_or_llp_no": {
-          "type": "text"
-        },
-        "org_type_desc": {
-          "type": "keyword"
-        },
-        "no_of_licences_held": {
-          "type": "text"
-        },
-        "ref_data_id": {
-          "type": "text"
-        },
-        "licence_traffic_area": {
-          "type": "keyword"
-        },
-        "org_name_wildcard": {
-          "type": "text"
-        },
-        "lead_tc": {
-          "type": "text"
-        },
-        "null": {
-          "type": "text"
-        },
-        "case_count": {
-          "type": "text"
-        },
-        "lic_id": {
-          "type": "text"
-        },
-        "org_id": {
-          "type": "text"
-        },
-        "is_mlh": {
-          "type": "text"
-        },
-        "lic_no": {
-          "type": "text"
-        },
-        "lic_status_desc_whole": {
-          "type": "text"
-        },
-        "org_name": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "ta_id": {
-          "type": "text"
-        },
-        "lic_type_desc": {
-          "type": "keyword"
-        },
-        "lic_type_desc_whole": {
-          "type": "keyword"
-        },
-        "lic_status_desc": {
-          "type": "keyword"
-        },
-        "lic_status": {
-          "type": "keyword"
-        },
-        "goods_or_psv_desc": {
-          "type": "keyword"
-        }
+    "properties": {
+      "org_type_desc_whole": {
+        "type": "text",
+        "fielddata": true
+      },
+      "licence_trading_names": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "fabs_reference": {
+        "type": "text",
+        "fielddata": true
+      },
+      "company_or_llp_no": {
+        "type": "text",
+        "fielddata": true
+      },
+      "org_type_desc": {
+        "type": "keyword"
+      },
+      "no_of_licences_held": {
+        "type": "text",
+        "fielddata": true
+      },
+      "ref_data_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "licence_traffic_area": {
+        "type": "keyword"
+      },
+      "org_name_wildcard": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lead_tc": {
+        "type": "text",
+        "fielddata": true
+      },
+      "null": {
+        "type": "text",
+        "fielddata": true
+      },
+      "case_count": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "org_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "is_mlh": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_no": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_status_desc_whole": {
+        "type": "text",
+        "fielddata": true
+      },
+      "org_name": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "ta_id": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_type_desc": {
+        "type": "keyword"
+      },
+      "lic_type_desc_whole": {
+        "type": "keyword"
+      },
+      "lic_status_desc": {
+        "type": "keyword"
+      },
+      "lic_status": {
+        "type": "keyword"
+      },
+      "goods_or_psv_desc": {
+        "type": "keyword"
       }
     }
   },
   "settings": {
     "number_of_shards": 3,
     "number_of_replicas": 0,
-    "auto_expand_replicas": ${search_expand_replicas},
     "refresh_interval": "30s",
     "analysis": {
       "char_filter": {

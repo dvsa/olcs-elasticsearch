@@ -1,52 +1,54 @@
 {
   "template": "application*",
   "mappings": {
-    "application": {
-      "properties": {
-        "app_id": {
-          "type": "keyword"
-        },
-        "app_status_desc": {
-          "type": "keyword"
-        },
-        "correspondence_postcode": {
-          "type": "text"
-        },
-        "lic_id": {
-          "type": "keyword"
-        },
-        "lic_no": {
-          "type": "text"
-        },
-        "lic_status_desc": {
-          "type": "keyword"
-        },
-        "lic_type_desc": {
-          "type": "keyword"
-        },
-        "org_name": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "org_id": {
-          "type": "keyword"
-        },
-        "org_name_wildcard": {
-          "type": "text"
-        },
-        "received_date": {
-          "type": "date",
-          "format": "yyyy-MM-dd"
-        },
-        "tot_auth_trailers": {
-          "type": "long"
-        },
-        "tot_auth_vehicles": {
-          "type": "long"
-        },
-        "goods_or_psv_desc": {
-          "type": "keyword"
-        }
+    "properties": {
+      "app_id": {
+        "type": "keyword"
+      },
+      "app_status_desc": {
+        "type": "keyword"
+      },
+      "correspondence_postcode": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_id": {
+        "type": "keyword"
+      },
+      "lic_no": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_status_desc": {
+        "type": "keyword"
+      },
+      "lic_type_desc": {
+        "type": "keyword"
+      },
+      "org_name": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "org_id": {
+        "type": "keyword"
+      },
+      "org_name_wildcard": {
+        "type": "text",
+        "fielddata": true
+      },
+      "received_date": {
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      "tot_auth_trailers": {
+        "type": "long"
+      },
+      "tot_auth_vehicles": {
+        "type": "long"
+      },
+      "goods_or_psv_desc": {
+        "type": "keyword"
       }
     }
   },
@@ -111,4 +113,3 @@
       }
     }
   }
-}
