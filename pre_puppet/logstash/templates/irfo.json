@@ -19,7 +19,7 @@
           "normalizer": "lowerasciinormalizer"
         },
         "org_type_desc": {
-          "type": "string",
+          "type": "keyword",
           "index": "not_analyzed"
         },
         "organisation_trading_names": {

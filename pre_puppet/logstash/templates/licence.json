@@ -20,7 +20,7 @@
           "type": "string"
         },
         "org_type_desc": {
-          "type": "string",
+          "type": "keyword",
           "index": "not_analyzed"
         },
         "no_of_licences_held": {
