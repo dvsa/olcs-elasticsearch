@@ -223,6 +223,7 @@ function enableReplicas()
 
     if [[ "${awsAccount}" == "dev-dvsacloud" ]]; then 
         logInfo "No need for replicas for [${index}_v${newVersion}] index in [${awsAccount}] account." ${syslogEnabled}
+        curl -s -XPUT "https://$ELASTIC_HOST/${index}_v${newVersion}/_settings" -H 'Content-Type: application/json' -d '{"index": {"number_of_replicas": 0,"auto_expand_replicas": false}}'
         return 0
     else
         logInfo "Enable replicas for [${index}_v${newVersion}] index." ${syslogEnabled}

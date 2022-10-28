@@ -1,64 +1,69 @@
 {
   "template": "case*",
   "mappings": {
-    "case": {
-      "properties": {
-        "app_id": {
-          "type": "keyword"
-        },
-        "case_id": {
-          "type": "keyword"
-        },
-        "app_status_desc": {
-          "type": "keyword"
-        },
-        "lic_status_desc": {
-          "type": "keyword"
-        },
-        "case_type_desc": {
-          "type": "keyword"
-        },
-        "case_status_desc": {
-          "type": "keyword"
-        },
-        "case_desc": {
-          "type": "text"
-        },
-        "correspondence_postcode": {
-          "type": "text"
-        },
-        "lic_id": {
-          "type": "keyword"
-        },
-        "lic_no": {
-          "type": "text"
-        },
-        "open_date": {
-          "type": "date",
-          "format": "yyyy-MM-dd"
-        },
-        "org_id": {
-          "type": "keyword"
-        },
-        "org_name": {
-          "type": "text",
-          "analyzer": "companies"
-        },
-        "org_name_wildcard": {
-          "type": "keyword"
-        },
-        "tm_family_name": {
-          "type": "text"
-        },
-        "tm_forename": {
-          "type": "text"
-        },
-        "tm_name": {
-          "type": "text"
-        },
-        "tm_id": {
-          "type": "keyword"
-        }
+    "properties": {
+      "app_id": {
+        "type": "keyword"
+      },
+      "case_id": {
+        "type": "keyword"
+      },
+      "app_status_desc": {
+        "type": "keyword"
+      },
+      "lic_status_desc": {
+        "type": "keyword"
+      },
+      "case_type_desc": {
+        "type": "keyword"
+      },
+      "case_status_desc": {
+        "type": "keyword"
+      },
+      "case_desc": {
+        "type": "text",
+        "fielddata": true
+      },
+      "correspondence_postcode": {
+        "type": "text",
+        "fielddata": true
+      },
+      "lic_id": {
+        "type": "keyword"
+      },
+      "lic_no": {
+        "type": "text",
+        "fielddata": true
+      },
+      "open_date": {
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      "org_id": {
+        "type": "keyword"
+      },
+      "org_name": {
+        "type": "text",
+        "fielddata": true,
+        "analyzer": "companies"
+      },
+      "org_name_wildcard": {
+        "type": "keyword"
+      },
+      "tm_family_name": {
+        "type": "text",
+        "fielddata": true
+      },
+      "tm_forename": {
+        "type": "text",
+        "fielddata": true
+      },
+      "tm_name": {
+        "type": "text",
+        "fielddata": true
+      },
+      "tm_id": {
+        "type": "keyword"
       }
     }
   },
@@ -74,7 +79,6 @@
           "replacement": ""
         }
       },
-
       "analyzer": {
         "companies": {
           "type": "standard",

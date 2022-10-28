@@ -27,10 +27,10 @@ output {
         ssl_certificate_verification => false
         index => "<INDEX_NAME>_v<INDEX_VERSION>"
         document_id => "%{doc_id}"
-        document_type => "<INDEX_NAME>"
         template => "<BASEDIR>/templates/<INDEX_NAME>.json"
         manage_template => true
         template_overwrite => true
         template_name => "<INDEX_NAME>"
+        ilm_enabled => false
     }
 }
